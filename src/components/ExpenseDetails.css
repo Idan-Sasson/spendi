@@ -1,0 +1,20 @@
+.DatePicker {
+  border: none;
+  background: none;
+  font-size: 16px;
+  border-bottom: 0 solid gray;
+  padding: 4px 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+input {
+  color: black;
+  border: none;
+  background: none;
+  font-size: 16px;
+  border-bottom: 0 solid gray;
+  padding: 4px 6px;
+  outline: none;
+  cursor: pointer;
+}
