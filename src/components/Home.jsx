@@ -8,9 +8,12 @@ const Home = () => {
 
     const dayAvg = () => {
         if (expenses.length === 0) return 0;
-        const firstDay = new Date(expenses[0].id).setHours(0, 0, 0, 0);
-        const lastDay = new Date(expenses[expenses.length - 1].id).setHours(0, 0, 0, 0);
+        expenses.sort((a, b) => a.date - b.date);
+        const firstDay = new Date(expenses[0].date).setHours(0, 0, 0, 0);
+        const lastDay = new Date(expenses[expenses.length - 1].date).setHours(0, 0, 0, 0);
         const days = (lastDay - firstDay) / (1000 * 60 * 60 * 24) + 1;
+        console.log(total);
+        console.log(days);
         return (total / days).toFixed(2);
     };
 
