@@ -30,6 +30,7 @@ const Home = () => {
                     <span className='number'>{dayAvg()}₪</span>
                 </div>                
             </div>
+            <button className='reset' onClick={() => setExpenses([])}>Reset</button>
         </div>
     );
 };

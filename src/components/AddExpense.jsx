@@ -79,7 +79,7 @@ const AddExpense = () => {
           </li>
         ))}
       </ul>
-      <button onClick={() => setExpenses([])}>Reset</button>
+      {/* <button onClick={() => setExpenses([])}>Reset</button> */}
 
     </div>
   );
