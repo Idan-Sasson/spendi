@@ -17,6 +17,6 @@ input {
 }
 
 .price-container::before {
-  content: "$";
+  content: "₪";
   
 }

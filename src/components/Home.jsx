@@ -65,7 +65,7 @@ const Home = () => {
             result[isoDate].push(item);
             return result;
         }, {});
-        Object.entries(groupedExpenses).map(([isoDate, items]) => {
+        Object.entries(groupedExpenses).sort((a, b) => new Date(a[0]) - new Date(b[0])).map(([isoDate, items]) => {
             const sum = items.reduce((sum, item) => sum + item.price, 0);
             labels.push(isoDate);
             sums.push(sum);

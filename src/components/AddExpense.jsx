@@ -60,26 +60,29 @@ const AddExpense = () => {
         {Object.entries(groupedExpenses).sort((a, b) => new Date(a[0]) - new Date(b[0])).map(([isoDate, items]) => (
           <li key={isoDate}>
             <div className="date-header">
+              <span className="total"> ₪{items.reduce((sum, item) => sum + item.price, 0).toFixed(2)} </span>
               <span className="date">{isoDate}</span>
-              <span className="total"> {items.reduce((sum, item) => sum + item.price, 0).toFixed(2)}₪ </span>
             </div>
             <ul className="expenses">
               {/* For each item under the date, show its name and price */}
               {items.map((item) => (
-                <li key={item.id} onClick={() => navigate(`/expense/${item.id}`)}>
-                  {item.name}: {item.price}₪
-                  <button className="remove" onClick={(e) => {
-                    e.stopPropagation();  // Prevent the click from bubbling up to the li
-                    handleRemove(item.id);
-                  }}>🗑️</button>
+                <li key={item.id}>
+                <div className="item-header" key={item.id} onClick={() => navigate(`/expense/${item.id}`)}>
+                 <span className="item-price">₪{item.price} </span>
+                  <div className="item-actions">
+                    <span className="item-name">{item.name} </span>
+                    <button className="remove" onClick={(e) => {
+                      e.stopPropagation();  // Prevent the click from bubbling up to the li
+                      handleRemove(item.id); }}>
+                    🗑️</button>
+                  </div>
+                </div>
                 </li>
               ))}
             </ul>
           </li>
         ))}
       </ul>
-      {/* <button onClick={() => setExpenses([])}>Reset</button> */}
-
     </div>
   );
 };

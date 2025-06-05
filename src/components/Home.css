@@ -53,7 +53,7 @@
 }
 
 .reset {
-    background-color: #ff0000; /* Green */
+    background-color: rgb(255, 0, 0); /* Green */
     border: none;
     color: rgb(255, 255, 255);
     /* padding: 6px 16px; */
@@ -71,4 +71,6 @@
 .chart-container {
   background-color: rgba(142, 142, 142, 0.1);
   padding: 0 0 20px 5px;
+  margin: 20px 0 0 0;
+  border-radius: 20px;
 }

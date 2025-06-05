@@ -23,19 +23,6 @@ input {
     margin: 0 2px;
 }
 
-.remove {
-    background-color: rgba(0, 0, 0, 0);
-    border: none;
-    color: rgb(255, 255, 255);
-    padding: 2px 8px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
-    margin-left: 2px;
-    cursor: pointer;
-}
-
 ul {
     list-style-type: none;
     padding: 0;
@@ -74,14 +61,44 @@ small {
     border-radius: 4px; */
 }
 
-.total {
-    text-align: right;;
-}
 .expense-list {
-    padding-left: 0px
+    padding-left: 0px;
 }
 
 .expenses {
     padding-left: 10px;
     font-size: 16px;
+    text-align: right;
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item-name {
+    white-space: nowrap;
+}
+
+.item-price {
+    white-space: nowrap;
+}
+
+.item-actions {
+    display: flex;
+    align-items: center;
+}
+
+.remove {
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    color: rgb(255, 255, 255);
+    padding: 2px 8px;
+    /* text-align: center; */
+    text-decoration: none;
+    display: flex;
+    font-size: 14px;
+    margin-left: 2px;
+    cursor: pointer;
 }
