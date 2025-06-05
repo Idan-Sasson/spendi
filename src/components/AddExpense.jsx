@@ -32,7 +32,6 @@ const AddExpense = () => {
     result[isoDate].push(item);
     return result;
   }, {});
-  console.log(groupedExpenses);
 
   // Function to remove an expense
   const handleRemove = (id) => {

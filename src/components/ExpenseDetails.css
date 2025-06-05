@@ -14,12 +14,9 @@ input {
   display: flex;
   align-items: center;
   gap: 2px;
-  /* padding-right: 0px; */
-  /* margin-right: 0px; */
-  /* font-size: 12px; */
 }
 
 .price-container::before {
   content: "$";
-  /* padding-right: 4px; */
+  
 }
