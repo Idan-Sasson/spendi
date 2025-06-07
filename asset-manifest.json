@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/react-gh-pages/static/css/main.f3bb53ca.css",
+    "main.js": "/react-gh-pages/static/js/main.bb8764b7.js",
+    "service-worker.js": "/react-gh-pages/service-worker.js",
+    "index.html": "/react-gh-pages/index.html",
+    "main.f3bb53ca.css.map": "/react-gh-pages/static/css/main.f3bb53ca.css.map",
+    "main.bb8764b7.js.map": "/react-gh-pages/static/js/main.bb8764b7.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f3bb53ca.css",
+    "static/js/main.bb8764b7.js"
+  ]
+}
