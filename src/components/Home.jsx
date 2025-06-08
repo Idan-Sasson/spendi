@@ -14,6 +14,10 @@ const Home = () => {
         const firstDay = new Date(expenses[0].date).setHours(0, 0, 0, 0);
         const lastDay = new Date(expenses[expenses.length - 1].date).setHours(0, 0, 0, 0);
         const days = (lastDay - firstDay) / (1000 * 60 * 60 * 24) + 1;
+        console.log(days);
+        console.log(new Date(firstDay).toISOString().split("T")[0]);
+        console.log(new Date(lastDay).toISOString().split("T")[0]);
+        console.log(lastDay - firstDay);
         return (total / days).toFixed(2);
     };
 
@@ -88,20 +92,17 @@ const Home = () => {
             }
         ]
     };
-
-
-
     return (
         <div className="home">
             <h1 className="spendi">Spendi</h1>
             <div className="box-container">
                 <div className="box">
                     <span className='title'>Total</span>
-                    <span className="number">{total}₪</span>
+                    <span className="number">₪{total.toFixed(2)}</span>
                 </div>
                 <div className="box">
                     <span className='title'>Daily Average</span>
-                    <span className='number'>{dayAvg()}₪</span>
+                    <span className='number'>₪{dayAvg()}</span>
                 </div>
             </div>
             <div className="chart-container">

@@ -1,0 +1,103 @@
+.modal-container {
+    position: fixed;
+    font-size: 18px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background: rgba(245, 246, 246, 0.885);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+    animation: modalFadeIn 0.2s ease-out;
+
+}
+
+.expense-input {
+    width: auto;
+    margin: 10px 6px;
+    /* margin-top: 10px; */
+}
+
+.price-input {
+    width: auto;
+    margin: 6px;
+}
+
+.add-button {
+    /* position: wrap; */
+    background: rgb(255, 132, 55);
+    padding: 4px;
+    margin-top: 6px;
+    font-size: 30px;
+    color: white;
+    font-weight: 600;
+    border-radius: 50%;
+    height: 25px;
+    width: 25px;
+    display: flex;
+    align-items: center;
+    /* vertical center */
+    justify-content: center;
+    /* horizontal center */
+    border: none;
+}
+
+.close-button {
+    position: absolute;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    background: rgba(245, 245, 245, 0);
+    padding: 4px;
+    color: rgb(0, 0, 0);
+    font-weight: 600;
+    top: 10px;
+    right: 10px;
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* dark semi-transparent background */
+    /* backdrop-filter: blur(15px); */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    animation: blurIn 0.1s ease-out forwards;
+}
+
+@keyframes modalFadeIn {
+    0% {
+        opacity: 0;
+        transform: transform(-50%, -50%) scale(0.0);
+    }
+
+    100% {
+        opacity: 1;
+        transform: transform(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes blurIn {
+    from {
+        backdrop-filter: blur(0px);
+    }
+
+    to {
+        backdrop-filter: blur(15px);
+    }
+}
