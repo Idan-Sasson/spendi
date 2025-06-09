@@ -1,17 +1,19 @@
 import { useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useLocalStorage } from './useLocalStorage';
+import CategoryModal from './CategoryModal';
 import './ExpenseDetails.css';
 
 const ExpenseDetails = () => {
   const [expenses, setExpenses] = useLocalStorage('expenses', []);
   const { id } = useParams();
   const expense = expenses.find(exp => exp.id === Number(id));
-    
-
+  
   const ogName = useRef(expense.name);
   const [name, setName] = useState(expense.name);
   const [price, setPrice] = useState(expense.price);
+  const [isCatOpen, setIsCatOpen] = useState(false);
+  const [category, setCategory] = useState(expense.category);
   const [selectedDate, setSelectedDate] = useState(
     new Date(expense.date).toISOString().split('T')[0]
   );
@@ -48,10 +50,6 @@ if (!expense) return <div>Expense not found</div>;
   };
 
   const handlePriceChange = (e) => {
-    // console.log(e.target.value.slice(1))
-    // const isOnlyNumbers = str => /^\d+$/.test(str);
-    // console.log(isOnlyNumbers(e.target.value.slice(1)))
-    // if (!isOnlyNumbers(e.target.value.slice(1))) return
     const newPrice = parseFloat(e.target.value);
     // setPrice(newPrice); // Updates the input field with the new price
     if (isNaN(newPrice)) {
@@ -63,6 +61,12 @@ if (!expense) return <div>Expense not found</div>;
     }
   };
 
+  const updateCat = (newCat) => {
+    updateExpense({ category: newCat })
+  }
+
+  
+
   return (
     <div>
       <div className='name-container'>
@@ -73,6 +77,12 @@ if (!expense) return <div>Expense not found</div>;
       </div>
       <div className="price-container">
         <input className="price-input" value={price} onChange={handlePriceChange} placeholder={expense.price} />
+      </div>
+      <div className="category-container">
+        <button onClick={() => setIsCatOpen(true)}>{category}</button>
+        <div>
+          {isCatOpen && <CategoryModal setIsOpen={setIsCatOpen} setCategory={setCategory} onClose={updateCat}/>}
+        </div>
       </div>
     </div>
   );

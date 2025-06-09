@@ -14,10 +14,6 @@ const Home = () => {
         const firstDay = new Date(expenses[0].date).setHours(0, 0, 0, 0);
         const lastDay = new Date(expenses[expenses.length - 1].date).setHours(0, 0, 0, 0);
         const days = (lastDay - firstDay) / (1000 * 60 * 60 * 24) + 1;
-        console.log(days);
-        console.log(new Date(firstDay).toISOString().split("T")[0]);
-        console.log(new Date(lastDay).toISOString().split("T")[0]);
-        console.log(lastDay - firstDay);
         return (total / days).toFixed(2);
     };
 
