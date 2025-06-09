@@ -2,20 +2,46 @@ input {
   color: black;
   border: none;
   background: none;
-  font-size: 16px;
-  border-bottom: 0 solid gray;
-  padding: 4px 6px;
-  outline: none;
-  cursor: pointer;
   display: block;
+  margin: 6px 0px 6px 6px;
+
+}
+
+input:focus {
+  outline: none;
 }
 
 .price-container {
   display: flex;
-  align-items: center;
+  justify-content: flex-end;
   gap: 2px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.431);
 }
 
-.price-container::before {
+.price-input {
+  text-align: right;
+  /* margin: 6px 0px 6px 6px; */
+}
+
+
+.price-container::after {
   content: "₪";
+}
+
+.name-input {
+  text-align: right;
+  font-size: 18px;
+}
+
+.name-container {
+  display: flex;
+  justify-content: flex-end;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.431);
+}
+
+.date-container {
+  display: flex;
+  justify-content: flex-end;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.431);
+
 }

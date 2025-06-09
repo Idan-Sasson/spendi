@@ -48,6 +48,10 @@ if (!expense) return <div>Expense not found</div>;
   };
 
   const handlePriceChange = (e) => {
+    // console.log(e.target.value.slice(1))
+    // const isOnlyNumbers = str => /^\d+$/.test(str);
+    // console.log(isOnlyNumbers(e.target.value.slice(1)))
+    // if (!isOnlyNumbers(e.target.value.slice(1))) return
     const newPrice = parseFloat(e.target.value);
     // setPrice(newPrice); // Updates the input field with the new price
     if (isNaN(newPrice)) {
@@ -61,10 +65,14 @@ if (!expense) return <div>Expense not found</div>;
 
   return (
     <div>
-      <input value={name} onChange={handleTitleChange} placeholder={ogName.current} />
-      <input type="date" value={selectedDate} onChange={handleDateChange} className="date-input" />
+      <div className='name-container'>
+        <input className="name-input" value={name} onChange={handleTitleChange} placeholder={ogName.current} />
+      </div>
+      <div className='date-container'>
+        <input className="date-input" type="date" value={selectedDate} onChange={handleDateChange}  />
+      </div>
       <div className="price-container">
-      <input value={price} type="number" onChange={handlePriceChange} placeholder={expense.price} />
+        <input className="price-input" value={price} onChange={handlePriceChange} placeholder={expense.price} />
       </div>
     </div>
   );
