@@ -66,10 +66,10 @@
   border: none;
   color: rgb(255, 255, 255);
   /* padding: 6px 16px; */
-  bottom: 50px;
-  left: 50%;
+  bottom: 10% 1;
+  left: 90%;
   /* Start from the middle */
-  transform: translateX(-50%);
+  transform: translateX(-90%);
   /* Shift back by half width */
   position: fixed;
   /* margin: 30px 30px; */
@@ -84,4 +84,13 @@
   padding: 0 0 20px 5px;
   margin: 20px 0 0 0;
   border-radius: 20px;
+}
+
+.pie-container {
+  display: flex;
+  justify-content: center;
+  height: 275px;
+  width: 100%;
+  margin: 5px;
+  /* left: 50 */
 }

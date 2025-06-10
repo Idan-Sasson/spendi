@@ -17,6 +17,7 @@ const ExpenseDetails = () => {
   const [selectedDate, setSelectedDate] = useState(
     new Date(expense.date).toISOString().split('T')[0]
   );
+
 if (!expense) return <div>Expense not found</div>;
 
   const updateExpense = (updatedField) => {
@@ -29,6 +30,11 @@ if (!expense) return <div>Expense not found</div>;
     setExpenses(updatedExpenses);
   };
 
+  if (!category)
+  {
+    setCategory("General");
+    updateExpense({ category: "General" });
+  }
 
   const handleDateChange = (e) => {
     const newDate = e.target.value;

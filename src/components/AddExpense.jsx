@@ -8,20 +8,20 @@ const AddExpense = () => {
   const navigate = useNavigate();
   const [expenses, setExpenses] = useLocalStorage("expenses", []);
 
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
   
-  const handleModalSubmit = ({ name, price, date, category }) => {
-    if (name.trim() === "" || price.trim() === "") return; // Blank input check
-    const newExpense = {  // id - current timestamp
-      id: Date.now(),
-      name: name,
-      price: parseFloat(price),
-      date: date,
-      category: category
-    };
+  // const handleModalSubmit = ({ name, price, date, category }) => {
+  //   if (name.trim() === "" || price.trim() === "") return; // Blank input check
+  //   const newExpense = {  // id - current timestamp
+  //     id: Date.now(),
+  //     name: name,
+  //     price: parseFloat(price),
+  //     date: date,
+  //     category: category
+  //   };
      
-    setExpenses([...expenses, newExpense]);
-  };
+  //   setExpenses([...expenses, newExpense]);
+  // };
 
   // Step 1: Group the expenses by date
   const groupedExpenses = expenses.reduce((result, item) => {
@@ -44,8 +44,6 @@ const AddExpense = () => {
 
   return (
     <div>
-      <button className="open-modal" onClick={() => {setIsOpen(true)}}>+</button>
-      {isOpen && <AddExpenseModal setIsOpen={setIsOpen} onSubmit={handleModalSubmit}/>}
       <ul className="expense-list">
         {/* Go over each date group */}
         {Object.entries(groupedExpenses)

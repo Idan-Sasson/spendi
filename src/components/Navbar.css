@@ -1,10 +1,16 @@
 .navbar {
+  position: fixed;   /*  <-- Add this: Makes it stick relative to the viewport */
+  bottom: 0px;         /*  <-- Now this will work: Stick to the bottom */
+  left: 0;           /*  <-- Add this: Align to the left edge */
+  right: 0;   
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #333;
   color: #fff;
-  padding: 1rem;
+  padding: 15px 15px 35px 15px;
+  /* padding-bottom: 10; */
+  /* bottom: 0; */
 }
 
 .navbar-center .nav-links {

@@ -1,20 +1,33 @@
 import { useState } from "react";
 import './AddExpenseModal.css'
 import CategoryModal from "./CategoryModal";
+import { useLocalStorage } from "./useLocalStorage";
 
-export default function AddExpenseModal( {setIsOpen, onSubmit} ) {
+export default function AddExpenseModal( {setIsOpen} ) {
   const [modalExpense, setModalExpense] = useState("");
   const [modalPrice, setModalPrice] = useState("");
   const [selectedDate, setSelectedDate] = useState(Date.now())
-  const [isClosing, setIsClosing] = useState(false);
+  const [expenses, setExpenses] = useLocalStorage("expenses", []);
   const [category, setCategory] = useState("General");
-  const [isCatOpen, setIsCatOpen] =useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [isCatOpen, setIsCatOpen] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleModalSubmit = () => {
+    if (modalExpense.trim() === "" || modalPrice.trim() === "") return; // Blank input check
+    const newExpense = {  // id - current timestamp
+      id: Date.now(),
+      name: modalExpense,
+      price: parseFloat(modalPrice),
+      date: selectedDate,
+      category: category
+    };
+    console.log(expenses);
+    console.log(newExpense);
+    setExpenses([...expenses, newExpense]);
+    console.log(expenses);
     handleClose();
-    onSubmit({name: modalExpense, price: modalPrice, date: selectedDate, category: category})
-  }
+  };
+
 
   const handleClose = () => {
     setIsClosing(true);
@@ -24,6 +37,7 @@ export default function AddExpenseModal( {setIsOpen, onSubmit} ) {
   const handleAnimationEnd = () => {
     if (isClosing) {
     setIsOpen(false);
+    window.location.reload();  // Arabit solution
     }
   };
 
@@ -42,22 +56,11 @@ export default function AddExpenseModal( {setIsOpen, onSubmit} ) {
               onChange={(e) => setModalPrice(e.target.value)}
               placeholder="Price" />
           <input type="date" value={new Date(selectedDate).toISOString().split('T')[0]} onChange={(e) => setSelectedDate(new Date(e.target.value).getTime())} className="date-input" />
-          {/* <div>
-            <select className="category-select" onChange={(e) =>setCategory(e.target.value)} value={category}>
-              <option value="General">General</option>
-              <option value="Food">Food</option>
-              <option value="Transport">Transport</option>
-              <option value="Entertainment">Entertainment</option>
-              <option value="Groceries">Groceries</option>
-              <option value="Utilities">Utilities</option>
-              <option value="Other">Other</option>
-            </select>
-          </div> */}
           <button className="openCat" onClick={() => setIsCatOpen(true)}>{category}</button>
           <div>
             {isCatOpen && <CategoryModal setIsOpen={setIsCatOpen} setCategory={setCategory}/>}
           </div>
-          <span className="add-button" onClick={handleSubmit}>+</span>
+          <span className="add-button" onClick={handleModalSubmit}>+</span>
           <button className="close-button" onClick={handleClose}>X</button>
       </div>
     </div>
