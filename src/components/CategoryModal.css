@@ -18,11 +18,16 @@
 }
 
 .category-button {
-    /* background-color: rgb(57, 211, 77); */
     margin: 6px;
     font-weight: 600;
     font-size: 16px;
     color: black;
     border: 0;
     border-radius: 10%;
+}
+
+.cat-icons {
+    margin-top: 4px;
+    width: 25px;
+    height: 25px;
 }
