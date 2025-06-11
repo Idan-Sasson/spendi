@@ -11,6 +11,7 @@ export default function AddExpenseModal( {setIsOpen} ) {
   const [category, setCategory] = useState("General");
   const [isClosing, setIsClosing] = useState(false);
   const [isCatOpen, setIsCatOpen] = useState(false);
+  const [isAdd, setIsAdd] = useState(false);
 
   const handleModalSubmit = () => {
     if (modalExpense.trim() === "" || modalPrice.trim() === "") return; // Blank input check
@@ -21,23 +22,20 @@ export default function AddExpenseModal( {setIsOpen} ) {
       date: selectedDate,
       category: category
     };
-    console.log(expenses);
-    console.log(newExpense);
     setExpenses([...expenses, newExpense]);
-    console.log(expenses);
+    setIsAdd(true);
     handleClose();
   };
 
 
   const handleClose = () => {
     setIsClosing(true);
-
   };
 
   const handleAnimationEnd = () => {
     if (isClosing) {
-    setIsOpen(false);
-    window.location.reload();  // Arabit solution
+      setIsOpen(false);
+      if (isAdd) window.location.reload();  // Arabic solution
     }
   };
 

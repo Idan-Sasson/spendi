@@ -21,38 +21,6 @@ const Home = () => {
     // Graph
     ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, ArcElement);
 
-    const chartOptions = {
-        responsive: true,
-        scales: {
-            x: {
-                grid: { display: false }
-            },
-            y: {
-                grid : { display: false }
-            }
-        },
-        plugins: {
-            legend: {
-                position: 'top',
-                display: false
-            },
-        title: { display: true, text: 'Daily Expenses' },
-            tooltip: {
-                backgroundColor: 'rgba(118, 115, 110, 0.9)',
-                bodyFont: { weight: "bold" },
-                callbacks: {
-                    label: function(context) {
-                        return 'Daily Expense: ₪' + context.parsed.y;
-                    }
-               }
-            }
-
-        
-        },
-        animation: {
-            duration: 1200
-        }
-    };
     // const data{
     const labels = [];
     const sums = [];
@@ -129,6 +97,41 @@ const Home = () => {
         }
     }
 
+    
+    const chartOptions = {
+        responsive: true,
+        scales: {
+            x: {
+                grid: { display: false }
+            },
+            y: {
+                grid : { display: false }
+            }
+        },
+        plugins: {
+            legend: {
+                position: 'top',
+                display: false
+            },
+        title: { display: true, text: 'Daily Expenses' },
+            tooltip: {
+                backgroundColor: 'rgba(118, 115, 110, 0.9)',
+                bodyFont: { weight: "bold" },
+                callbacks: {
+                    label: function(context) {
+                        return 'Daily Expense: ₪' + context.parsed.y;
+                    }
+               }
+            }
+
+        
+        },
+        animation: {
+            duration: 1200
+        }
+    };
+
+    
     const backgroundColors = sums.map((value, _) => (value < 0 ? 'rgba(255, 99, 132, 0.5)' : 'rgba(75, 192, 192, 0.5)'));
     const borderColors = sums.map((value, _) => (value < 0 ? 'rgba(255, 99, 132, 0.7)' : 'rgba(75, 192, 192, 0.7)'));
     const chartData = {

@@ -7,8 +7,14 @@
     z-index: 1000;
     background: rgba(245, 246, 246, 0.885);
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    /* border-radius: 8px; */
+    /* box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); */
+    /* background: rgba(207, 223, 255, 0.55); */
+    /* box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); */
+    /* backdrop-filter: blur(5.5px); */
+    /* -webkit-backdrop-filter: blur(5.5px); */
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     animation: modalFadeIn 0.2s ease-out;
 
 }
@@ -22,7 +28,7 @@
     width: auto;
     margin: 10px 6px;
     font-size: 18px;
-    
+
     /* margin-top: 10px; */
 }
 
@@ -37,7 +43,7 @@
     text-align: left;
 }
 
-.add-button {  
+.add-button {
     /* TODO: Change this to a plus icon */
     display: inline-flex;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -94,6 +100,7 @@
     justify-content: center;
     align-items: center;
     z-index: 999;
+
     animation: blurIn 0.1s ease-out forwards;
 }
 
@@ -102,7 +109,7 @@
 }
 
 .category-select {
-    color: black;;
+    color: black;
     background-color: rgba(255, 255, 255, 0);
     border: 1px solid rgba(0, 0, 0, 1);
     padding: 1px;
@@ -151,7 +158,7 @@
 
     to {
         backdrop-filter: blur(15px);
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.2);
 
     }
 }
