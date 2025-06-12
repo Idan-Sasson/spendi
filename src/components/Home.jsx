@@ -97,7 +97,6 @@ const Home = () => {
         }
     }
 
-    
     const chartOptions = {
         responsive: true,
         scales: {
