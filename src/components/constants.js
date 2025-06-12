@@ -1,28 +1,46 @@
 import groceries from '../assets/icons/groceries.png'
-import transport from '../assets/icons/transport.png'
+import car from '../assets/icons/car.png'
 import food from '../assets/icons/food.png'
-import general from '../assets/icons/shekel2.png'
-import flight from '../assets/icons/plane.png'
+import general from '../assets/icons/general.png'
+import flights from '../assets/icons/plane.png'
 import entertainment from '../assets/icons/entertainment.png'
 import other from '../assets/icons/other.png'
+import accommodations from '../assets/icons/accommodations.png'
+import fees from '../assets/icons/fees.png'
+import back from '../assets/icons/back.png'
+import shopping from '../assets/icons/shopping.png'
 
 
 export const categories = [
-  { name: "General", color: "rgba(64, 177, 162, 0.75)" },
+  { name: "General", color: "rgba(32, 212, 140, 0.75)" },
   { name: "Food", color: "rgba(98, 240, 33, 0.75)" },
-  { name: "Transport", color: "rgba(253, 249, 7, 0.75)" },
-  { name: "Entertainment", color: "rgba(230, 48, 48, 0.75)" },
-  { name: "Groceries", color: "rgba(41, 112, 204, 0.75)" },
-  { name: "Flight", color: "rgba(235, 148, 19, 0.75)" },
-  { name: "Other", color: "rgba(215, 20, 233, 0.75)" }
+  { name: "Car", color: "rgba(254, 231, 21, 0.75)" },
+  { name: "Entertainment", color: "rgba(225, 70, 13, 0.75)" },
+  { name: "Groceries", color: "rgba(32, 98, 221, 0.75)" },
+  { name: "Flights", color: "rgba(235, 148, 19, 0.75)" },
+  { name: "Accommodations", color: "rgba(255, 9, 222, 0.75)" },
+  { name: "Shopping", color: "rgba(20, 233, 233, 0.75)" },
+  { name: "Fees", color: "rgba(255, 0, 0, 0.75)" },
+  { name: "Other", color: "rgba(197, 197, 197, 0.75)" }
+
 ];
 
-export const categoryIcons = {
+export const categoriesColors = categories.reduce((acc, { name, color }) => {
+  acc[name] = color;
+  return acc;
+}, {})
+
+export const icons = {
   Groceries: groceries,
-  Transport: transport,
+  Car: car,  // To change
   Food: food,
   General: general,
-  Flight: flight,
+  Flights: flights,
   Entertainment: entertainment,
-  Other: other
+  Other: other,
+  Accommodations: accommodations,
+  Shopping: shopping,
+  Fees: fees,
+  Back: back
 }
+

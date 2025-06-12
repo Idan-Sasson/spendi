@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 import './Home.css';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, plugins} from 'chart.js';
-import { Line, Bar, Pie } from 'react-chartjs-2';
+import { Bar, Pie } from 'react-chartjs-2';
 import { categories } from './constants';
 ;
 const Home = () => {

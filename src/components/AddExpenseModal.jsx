@@ -2,6 +2,8 @@ import { useState } from "react";
 import './AddExpenseModal.css'
 import CategoryModal from "./CategoryModal";
 import { useLocalStorage } from "./useLocalStorage";
+import { categories, icons } from './constants';
+import { setAlpha } from "./HelperFunctions";
 
 export default function AddExpenseModal( {setIsOpen} ) {
   const [modalExpense, setModalExpense] = useState("");
@@ -38,10 +40,13 @@ export default function AddExpenseModal( {setIsOpen} ) {
       if (isAdd) window.location.reload();  // Arabic solution
     }
   };
-
+  
+  const categoryColor = categories.find(cat => cat.name === category).color;
   return (
-    <div className={`modal-overlay ${isClosing ? 'fade-out' : ''}`}>
-      <div className={`modal-container ${isClosing ? 'fade-out' : ''}`} onAnimationEnd={handleAnimationEnd}>
+    <div className={'modal-overlay'}>
+
+      <div className={`modal-container ${isClosing ? 'fade-out' : ''}`} onAnimationEnd={handleAnimationEnd} style={{boxShadow: `0 0 32px 0 ${setAlpha(categoryColor, 0.2)}`}}>
+        <div className='modal-bg-image' style={{ backgroundImage: `url(${icons[category]})` }} />
         Add Expense
           <input className="new-expense-input"
             value={modalExpense}
@@ -54,8 +59,11 @@ export default function AddExpenseModal( {setIsOpen} ) {
               onChange={(e) => setModalPrice(e.target.value)}
               placeholder="Price" />
           <input type="date" value={new Date(selectedDate).toISOString().split('T')[0]} onChange={(e) => setSelectedDate(new Date(e.target.value).getTime())} className="date-input" />
-          <button className="openCat" onClick={() => setIsCatOpen(true)}>{category}</button>
+          <div className='open-cat-container' onClick={() => setIsCatOpen(true)} style={{backgroundColor: categoryColor}}>
+            <img src={icons[category]} className="open-cat" />
+          </div>
           <div>
+            
             {isCatOpen && <CategoryModal setIsOpen={setIsCatOpen} setCategory={setCategory}/>}
           </div>
           <span className="add-button" onClick={handleModalSubmit}>+</span>

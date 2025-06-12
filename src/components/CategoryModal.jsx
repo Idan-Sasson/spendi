@@ -1,29 +1,51 @@
 import { useState } from 'react';
 import './CategoryModal.css';
 import ReactDOM from 'react-dom'
-import { categories, categoryIcons } from './constants';
-// import groceries from '../assets/icons/groceries.png'
+import { categories, icons } from './constants';
+import { setAlpha } from './HelperFunctions';
 
 export default function CategoryModal( {setIsOpen, setCategory, onClose} ) {
+    const [isClosing, setIsClosing] = useState(false);
+  
     const handleClick = (cat) => {
       setCategory(cat);
-      setIsOpen(false);
+      // setIsOpen(false);      handleClose()
       if (onClose) onClose(cat);
+      setIsClosing(true);
     }
+
+    const handleClose = () => {
+      setIsClosing(true)
+    }
+
+    const handleAnimationEnd = () => {
+      if (isClosing) {
+        setIsOpen(false)
+      }
+    }
+
     // console.log(groceries);
     return ReactDOM.createPortal(
       <div className='wrapper'>
-        <div className='categories-container'>
+        <div className={`categories-container ${isClosing ? 'go-out' : ''}`} onAnimationEnd={handleAnimationEnd}>
+          <div className='top-bar' />
           {categories.map((cat) => 
             <div key={cat.name} className='category-item'>
-            <button key={cat.name} className={`category-button ${cat.name}`} style={{ backgroundColor: cat.color}} onClick={() => handleClick(cat.name)}>
-              <img src={categoryIcons[cat.name]} alt='icon' className='cat-icons'/>
+              <div className='button-wrapper'>
+                <div className='back-color' style={{backgroundColor: setAlpha(cat.color, 1)}}></div>
+                  <button key={cat.name} className={`category-button ${cat.name}`} 
+                  style={{ backgroundColor: setAlpha(cat.color, 0.6), boxShadow: ` 0 2px 20px ${setAlpha(cat.color, 0.5)}`,
+                        border: `1px solid ${setAlpha(cat.color, 0.9)}`}} 
+                  onClick={() => handleClick(cat.name)}>
+                
+                <img src={icons[cat.name]} alt='icon' className='cat-icons'/>
             </button>
+                </div>
             <div className='category-title'>{cat.name}</div>
           </div>
           )}
           <div>
-            <button onClick={() => setIsOpen(false)} className='close'>Close</button>
+            <button onClick={handleClose} className={`close ${isClosing ? 'closeDown' : ''}`}>Close</button>
           </div>
         </div>
       </div>,

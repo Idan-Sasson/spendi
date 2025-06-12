@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocalStorage } from "./useLocalStorage";
-import "./AddExpense.css";
+import "./Expenses.css";
 import AddExpenseModal from "./AddExpenseModal";
 import { useNavigate } from "react-router-dom";
 
