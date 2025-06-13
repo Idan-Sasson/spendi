@@ -69,6 +69,17 @@
     aspect-ratio: 1;
 }
 
+.income {
+    /* width: 25vw; */
+    aspect-ratio: 1;
+    backdrop-filter: blur(20px);
+    border: 0;
+    border-radius: 50%;
+    z-index: 2;
+    height: 15vw;
+    aspect-ratio: 1;
+}
+
 .category-item {
     position: relative;
 

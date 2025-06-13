@@ -35,16 +35,18 @@ export default function CategoryModal( {setIsOpen, setCategory, onClose} ) {
               <div className='button-wrapper'>
                 <div className='back-color' style={{backgroundColor: setAlpha(cat.color, 1)}}></div>
                   <button key={cat.name} className={`category-button ${cat.name}`} 
-                  style={{ backgroundColor: setAlpha(cat.color, 0.6), boxShadow: ` 0 2px 20px ${setAlpha(cat.color, 0.5)}`,
-                        border: `1px solid ${setAlpha(cat.color, 0.9)}`}} 
-                  onClick={() => handleClick(cat.name)}>
-                
-                <img src={icons[cat.name]} alt='icon' className='cat-icons'/>
-            </button>
+                          style={{ backgroundColor: setAlpha(cat.color, 0.6), boxShadow: ` 0 2px 20px ${setAlpha(cat.color, 0.5)}`,
+                          border: `1px solid ${setAlpha(cat.color, 0.9)}`}} 
+                          onClick={() => handleClick(cat.name)}>
+                    <img src={icons[cat.name]} alt='icon' className='cat-icons'/>
+                  </button>
                 </div>
             <div className='category-title'>{cat.name}</div>
           </div>
           )}
+          {/* <div className='income-container'>
+            <img src={icons["Shopping"]} alt='icon' className='income'/>
+          </div> */}
           <div>
             <div className={`close-container ${isClosing ? 'closeDown' : ''}`}>
               <img src={icons['Back']} onClick={handleClose} className={`close ${isClosing ? 'closeDown' : ''}`} />

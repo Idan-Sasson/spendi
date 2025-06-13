@@ -6,6 +6,7 @@ import './App.css';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import AddButton from './components/AddButton';
 import Expenses from './components/Expenses';
+import Income from './components/Income';
 
 const isOpen = false;
 
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/expenses" element={<Expenses />} />
+        <Route path="/income" element={<Income />} />
         <Route path="/expense/:id" element={<ExpenseDetails />} />
       </Routes>
     </HashRouter>

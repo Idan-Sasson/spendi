@@ -1,7 +1,8 @@
 import { useState } from "react";
 import AddExpenseModal from "./AddExpenseModal";
-import './AddButton.css'
-import { icons } from "./constants"
+import './AddButton.css';
+import { icons } from "./constants";
+
 export default function AddButton() {
     const [isOpen, setIsOpen] = useState(false);
 

@@ -1,6 +1,8 @@
 import { useLocalStorage } from "./useLocalStorage";
 import "./Expenses.css";
 import { useNavigate } from "react-router-dom";
+import { icons, categoriesColors, categories } from "./constants";
+import { setAlpha } from "./HelperFunctions";
 
 const Expenses = () => {
   const navigate = useNavigate();
@@ -25,6 +27,9 @@ const Expenses = () => {
     setExpenses(updated);
   };
 
+  function getColorFilter(category) {
+      return categories.find(cat => cat.name === category).filter;
+  };
   return (
     <div className="expenses-body">
       <ul className="expense-list">
@@ -53,7 +58,9 @@ const Expenses = () => {
                     >
                       <span className="item-price">₪{item.price} </span>
                       <div className="item-actions">
-                        <span className="item-name">{item.name} </span>
+                        <img src={icons[item.category]} className="item-icon"
+                        style={{filter: getColorFilter(item.category)}}/>
+                        <span className="item-name" >{item.name} </span>
                         <button
                           className="remove"
                           onClick={(e) => {

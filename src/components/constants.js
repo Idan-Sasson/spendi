@@ -12,17 +12,17 @@ import shopping from '../assets/icons/shopping.png'
 import plus from '../assets/icons/plus.png'
 
 
-export const categories = [
-  { name: "General", color: "rgba(32, 212, 140, 0.75)" },
-  { name: "Food", color: "rgba(98, 240, 33, 0.75)" },
-  { name: "Car", color: "rgba(254, 231, 21, 0.75)" },
-  { name: "Entertainment", color: "rgba(225, 70, 13, 0.75)" },
-  { name: "Groceries", color: "rgba(32, 98, 221, 0.75)" },
-  { name: "Flights", color: "rgba(235, 148, 19, 0.75)" },
-  { name: "Accommodations", color: "rgba(255, 9, 222, 0.75)" },
-  { name: "Shopping", color: "rgba(20, 233, 233, 0.75)" },
-  { name: "Fees", color: "rgba(255, 0, 0, 0.75)" },
-  { name: "Other", color: "rgba(197, 197, 197, 0.75)" }
+export const categories = [  // https://codepen.io/sosuke/pen/Pjoqqp
+  { name: "General", color: "rgba(32, 212, 140, 0.75)", filter: 'invert(63%) sepia(79%) saturate(449%) hue-rotate(102deg) brightness(94%) contrast(87%)' },
+  { name: "Food", color: "rgba(98, 240, 33, 0.75)", filter: 'invert(85%) sepia(27%) saturate(5463%) hue-rotate(50deg) brightness(109%) contrast(88%)' },
+  { name: "Car", color: "rgba(254, 231, 21, 0.75)", filter: 'invert(85%) sepia(36%) saturate(1053%) hue-rotate(348deg) brightness(111%) contrast(99%)' },
+  { name: "Entertainment", color: "rgba(225, 70, 13, 0.75)", filter: 'invert(31%) sepia(48%) saturate(2706%) hue-rotate(355deg) brightness(96%) contrast(98%)' },
+  { name: "Groceries", color: "rgba(32, 98, 221, 0.75)", filter: 'invert(26%) sepia(84%) saturate(1542%) hue-rotate(204deg) brightness(104%) contrast(100%)' },
+  { name: "Flights", color: "rgba(235, 148, 19, 0.75)", filter: 'invert(66%) sepia(33%) saturate(2122%) hue-rotate(352deg) brightness(95%) contrast(94%)' },
+  { name: "Accommodations", color: "rgba(255, 9, 222, 0.75)", filter: 'invert(17%) sepia(97%) saturate(3899%) hue-rotate(300deg) brightness(111%) contrast(111%)' },
+  { name: "Shopping", color: "rgba(20, 233, 233, 0.75)", filter: 'invert(83%) sepia(97%) saturate(766%) hue-rotate(113deg) brightness(95%) contrast(92%)' },
+  { name: "Fees", color: "rgba(255, 0, 0, 0.75)", filter: 'invert(13%) sepia(82%) saturate(6740%) hue-rotate(4deg) brightness(111%) contrast(122%)' },
+  { name: "Other", color: "rgba(197, 197, 197, 0.75)", filter: 'invert(99%) sepia(0%) saturate(1171%) hue-rotate(181deg) brightness(83%) contrast(84%)' }
 
 ];
 
