@@ -164,7 +164,7 @@ const Home = () => {
             <div className='pie-container'>
                 <Pie options={pieOptions} data={pieData}/>
             </div>
-            <button className='reset' onClick={() => setExpenses([])}>Reset</button>
+            {/* <button className='reset' onClick={() => setExpenses([])}>Reset</button> */}
         </div>
     );
 };

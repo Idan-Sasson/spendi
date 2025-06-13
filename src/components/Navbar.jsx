@@ -1,18 +1,28 @@
 import React from 'react';
 import './Navbar.css';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
-  return (
 
+return (
 <nav className="navbar">
   <div className="navbar-center">
     <ul className="nav-links">
       <li>
-        <Link to="/">Home</Link>
+        <NavLink
+          to="/"
+          className={({ isActive }) => (isActive ? 'nav-link active-link' : 'nav-link')}
+        >
+          Home
+        </NavLink>
       </li>
       <li>
-        <Link to="/expenses">Expenses</Link>
+        <NavLink
+          to="/expenses"
+          className={({ isActive }) => (isActive ? 'nav-link active-link' : 'nav-link')}
+        >
+          Expenses
+        </NavLink>
       </li>
     </ul>
   </div>

@@ -1,27 +1,10 @@
-import { useState } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import "./Expenses.css";
-import AddExpenseModal from "./AddExpenseModal";
 import { useNavigate } from "react-router-dom";
 
-const AddExpense = () => {
+const Expenses = () => {
   const navigate = useNavigate();
   const [expenses, setExpenses] = useLocalStorage("expenses", []);
-
-  // const [isOpen, setIsOpen] = useState(false);
-  
-  // const handleModalSubmit = ({ name, price, date, category }) => {
-  //   if (name.trim() === "" || price.trim() === "") return; // Blank input check
-  //   const newExpense = {  // id - current timestamp
-  //     id: Date.now(),
-  //     name: name,
-  //     price: parseFloat(price),
-  //     date: date,
-  //     category: category
-  //   };
-     
-  //   setExpenses([...expenses, newExpense]);
-  // };
 
   // Step 1: Group the expenses by date
   const groupedExpenses = expenses.reduce((result, item) => {
@@ -43,7 +26,7 @@ const AddExpense = () => {
   };
 
   return (
-    <div>
+    <div className="expenses-body">
       <ul className="expense-list">
         {/* Go over each date group */}
         {Object.entries(groupedExpenses)
@@ -92,4 +75,4 @@ const AddExpense = () => {
   );
 };
 
-export default AddExpense;
+export default Expenses;

@@ -12,7 +12,7 @@
     position: fixed;
     top: 7%;
     font-size: 20px;
-    /* z-index: 1003; */
+    z-index: 1;
     background-color: rgb(119, 119, 119);
     width: 40vw;
     height: 1.9vw;
@@ -20,7 +20,10 @@
     transform: translate(-50%, -50%);
     border-radius: 15px 15px 0 0;
 
+    animation: modalGoIn 0.2s ease forwards;
 }
+
+
 
 .categories-container {
     border-radius: 20px 20px 0 0;
@@ -38,7 +41,7 @@
     animation: modalGoIn 0.2s ease forwards;
 }
 
-.categories-container.go-out {
+.go-out {
     animation: modalGoOut 0.2s ease forwards;
 }
 
@@ -87,17 +90,32 @@
 
 
 .close {
-    /* add arrow */
-    position: fixed;
     font-size: 25px;
+    width: 8vw;
+    border-radius: 50%;
+    aspect-ratio: 1;
     top: 90%;
-    background: rgba(0, 0, 0, 0.2);
     border: none;
-
-    animation: closeUp 0.2s ease forwards;
+    filter: invert(51%) sepia(81%) saturate(327%) hue-rotate(314deg) brightness(99%) contrast(92%);
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
 }
 
-.close.closeDown {
+.close-container {
+    position: fixed;
+    top: 90%;
+    left: 5%;
+    background-color: rgba(89, 89, 89, 0.2);
+    width: 12vw;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: closeUp 0.2s ease forwards;
+
+}
+
+.close-container.closeDown {
     animation: closeDown 0.2s ease forwards;
 }
 
@@ -111,41 +129,43 @@
 
 @keyframes closeUp {
     0% {
-        top: 180%
+        top: 180%;
     }
 
     100% {
-        top: 90%
+        top: 90%;
     }
 }
 
 @keyframes closeDown {
     0% {
-        top: 90%
+        top: 90%;
     }
 
     100% {
-        top: 180%
+        top: 180%;
     }
 }
 
 
 @keyframes modalGoIn {
     0% {
-        top: 100%
+        top: 100%;
+
     }
 
     100% {
-        top: 7%
+        top: 7%;
+
     }
 }
 
 @keyframes modalGoOut {
     0% {
-        top: 7%
+        top: 7%;
     }
 
     100% {
-        top: 100%
+        top: 100%;
     }
 }

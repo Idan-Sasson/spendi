@@ -9,6 +9,7 @@ import accommodations from '../assets/icons/accommodations.png'
 import fees from '../assets/icons/fees.png'
 import back from '../assets/icons/back.png'
 import shopping from '../assets/icons/shopping.png'
+import plus from '../assets/icons/plus.png'
 
 
 export const categories = [
@@ -41,6 +42,7 @@ export const icons = {
   Accommodations: accommodations,
   Shopping: shopping,
   Fees: fees,
-  Back: back
+  Back: back,
+  Plus: plus
 }
 

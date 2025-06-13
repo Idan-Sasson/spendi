@@ -27,8 +27,9 @@ export default function CategoryModal( {setIsOpen, setCategory, onClose} ) {
     // console.log(groceries);
     return ReactDOM.createPortal(
       <div className='wrapper'>
+        <div className={`top-bar ${isClosing ? 'go-out' : ''}`} />
         <div className={`categories-container ${isClosing ? 'go-out' : ''}`} onAnimationEnd={handleAnimationEnd}>
-          <div className='top-bar' />
+
           {categories.map((cat) => 
             <div key={cat.name} className='category-item'>
               <div className='button-wrapper'>
@@ -45,7 +46,9 @@ export default function CategoryModal( {setIsOpen, setCategory, onClose} ) {
           </div>
           )}
           <div>
-            <button onClick={handleClose} className={`close ${isClosing ? 'closeDown' : ''}`}>Close</button>
+            <div className={`close-container ${isClosing ? 'closeDown' : ''}`}>
+              <img src={icons['Back']} onClick={handleClose} className={`close ${isClosing ? 'closeDown' : ''}`} />
+            </div>
           </div>
         </div>
       </div>,

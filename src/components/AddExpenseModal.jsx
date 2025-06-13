@@ -63,10 +63,9 @@ export default function AddExpenseModal( {setIsOpen} ) {
             <img src={icons[category]} className="open-cat" />
           </div>
           <div>
-            
             {isCatOpen && <CategoryModal setIsOpen={setIsCatOpen} setCategory={setCategory}/>}
           </div>
-          <span className="add-button" onClick={handleModalSubmit}>+</span>
+          <img src={icons["Plus"]} className="add-button" onClick={handleModalSubmit}/>
           <button className="close-button" onClick={handleClose}>X</button>
       </div>
     </div>

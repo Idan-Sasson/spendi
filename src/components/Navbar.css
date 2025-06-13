@@ -1,8 +1,11 @@
 .navbar {
-  position: fixed;   /*  <-- Add this: Makes it stick relative to the viewport */
-  bottom: 0px;         /*  <-- Now this will work: Stick to the bottom */
-  left: 0;           /*  <-- Add this: Align to the left edge */
-  right: 0;   
+  position: fixed;
+  /*  <-- Add this: Makes it stick relative to the viewport */
+  bottom: 0px;
+  /*  <-- Now this will work: Stick to the bottom */
+  left: 0;
+  /*  <-- Add this: Align to the left edge */
+  right: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -25,6 +28,14 @@
 }
 
 .navbar-center .nav-links a {
-  color: #fff;
   text-decoration: none;
+}
+
+.nav-link {
+  color: #fff;
+  /* font-weight: 400; */
+}
+
+.active-link {
+  color: rgb(195, 98, 98);
 }
