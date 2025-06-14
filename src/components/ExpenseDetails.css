@@ -1,3 +1,13 @@
+.expenses-container {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background-color: rgb(255, 255, 255);
+}
+
 input {
   color: black;
   border: none;
@@ -20,7 +30,6 @@ input:focus {
 
 .price-input {
   text-align: right;
-  /* margin: 6px 0px 6px 6px; */
 }
 
 

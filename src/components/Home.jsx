@@ -161,8 +161,15 @@ const Home = () => {
             <div className="chart-container">
                 <Bar options={chartOptions} data={chartData} />
             </div>
-            <div className='pie-container'>
-                <Pie options={pieOptions} data={pieData}/>
+            <div className='pie-wrapper'>
+                <div className='pie-container'>
+                    <Pie options={pieOptions} data={pieData}/>
+                </div>
+                <div className='categories-total'>
+                    {Object.entries(catSums).map(([cat, sum]) => (
+                        <div className='cat-expense'>{cat}- {sum}</div>
+                    ))}
+                </div>
             </div>
             {/* <button className='reset' onClick={() => setExpenses([])}>Reset</button> */}
         </div>

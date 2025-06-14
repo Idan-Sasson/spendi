@@ -4,10 +4,10 @@ import { useLocalStorage } from './useLocalStorage';
 import CategoryModal from './CategoryModal';
 import './ExpenseDetails.css';
 
-const ExpenseDetails = () => {
-  const [expenses, setExpenses] = useLocalStorage('expenses', []);
-  const { id } = useParams();
-  const expense = expenses.find(exp => exp.id === Number(id));
+export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpenses} ) {
+  // const [expenses, setExpenses] = useLocalStorage('expenses', []);
+  // const { id } = useParams();
+  const expense = expenses.find(exp => exp.id === Number(expenseId));
   
   const ogName = useRef(expense.name);
   const [name, setName] = useState(expense.name);
@@ -22,7 +22,7 @@ if (!expense) return <div>Expense not found</div>;
 
   const updateExpense = (updatedField) => {
     const updatedExpenses = expenses.map(exp => {
-      if (exp.id === Number(id)) {
+      if (exp.id === Number(expense.id)) {
         return { ...exp, ...updatedField };
       }
       return exp;
@@ -71,10 +71,18 @@ if (!expense) return <div>Expense not found</div>;
     updateExpense({ category: newCat })
   }
 
-  
+  const handleClose = () => {
+    setIsOpen(false);
+  }
+
+  const handleRemove =  () => {
+    const updated = expenses.filter((item) => item.id !== expense.id);
+    setExpenses(updated);
+    handleClose();
+  }
 
   return (
-    <div>
+    <div className='expenses-container'>
       <div className='name-container'>
         <input className="name-input" value={name} onChange={handleTitleChange} placeholder={ogName.current} />
       </div>
@@ -90,8 +98,10 @@ if (!expense) return <div>Expense not found</div>;
           {isCatOpen && <CategoryModal setIsOpen={setIsCatOpen} setCategory={setCategory} onClose={updateCat}/>}
         </div>
       </div>
+      <button onClick={handleRemove}>Remove</button>
+      <button onClick={handleClose} >Back</button>
     </div>
   );
 };
 
-export default ExpenseDetails;
+// export default ExpenseDetails;

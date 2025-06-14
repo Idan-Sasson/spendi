@@ -1,15 +1,23 @@
 import { useLocalStorage } from "./useLocalStorage";
 import "./Expenses.css";
-import { useNavigate } from "react-router-dom";
-import { icons, categoriesColors, categories } from "./constants";
-import { setAlpha } from "./HelperFunctions";
+import { icons, categoriesColors, categories, AppOptions } from "./constants";
+import { useEffect, useState } from "react";
+import ExpenseDetails from "./ExpenseDetails";
+import React from "react";
+import { ConvertCurrencies } from "./HelperFunctions";
 
 const Expenses = () => {
-  const navigate = useNavigate();
   const [expenses, setExpenses] = useLocalStorage("expenses", []);
+  const [openDetailId, setOpenDetailId] = useState(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  // useEffect(() => {
+  //   Object.entries(expenses).
+  // }, [])
+  // const [rates, setRates] = useState({});
 
   // Step 1: Group the expenses by date
-  const groupedExpenses = expenses.reduce((result, item) => {
+  const groupedExpenses = [...expenses].sort((a, b) => new Date(a.date) - new Date(b.date)).reduce((result, item) => {
     // Turn the date into something like "12.12.24"
     const isoDate = new Date(item.date).toISOString().split("T")[0];
     // If this date doesn't exist in our groups yet, create an empty list
@@ -21,24 +29,18 @@ const Expenses = () => {
     return result;
   }, {});
 
-  // Function to remove an expense
-  const handleRemove = (id) => {
-    const updated = expenses.filter((item) => item.id !== id);
-    setExpenses(updated);
-  };
-
   function getColorFilter(category) {
       return categories.find(cat => cat.name === category).filter;
   };
+
   return (
     <div className="expenses-body">
       <ul className="expense-list">
         {/* Go over each date group */}
         {Object.entries(groupedExpenses)
-          .sort((a, b) => new Date(a[0]) - new Date(b[0]))
           .map(([isoDate, items]) => (
             <li key={isoDate}>
-              <div className="date-header">
+              <div className={`date-header ${isoDate === Object.keys(groupedExpenses)[0] ? 'first' : ''}`}>
                 <span className="total">
                   {" "}
                   ₪{items
@@ -47,21 +49,27 @@ const Expenses = () => {
                 </span>
                 <span className="date">{isoDate}</span>
               </div>
-              <ul className="expenses">
+              <ul key={isoDate} className="expenses">
                 {/* For each item under the date, show its name and price */}
                 {items.map((item) => (
+                  <React.Fragment key={item.id}>
                   <li key={item.id}>
                     <div
                       className="item-header"
                       key={item.id}
-                      onClick={() => navigate(`/expense/${item.id}`)}
+                      onClick={() => {setOpenDetailId(item.id); setIsDetailOpen(true)}}
                     >
-                      <span className="item-price">₪{item.price} </span>
+                      <div>
+                      <span className="item-price">₪{Number(item.convertedPrice).toFixed(2)} </span>
+                      {item.currency !== AppOptions.baseCurrency &&
+                      <span className="real-currency">({item.price.toFixed(2)} {item.currency.toUpperCase()})</span>}
+                      </div>
+                      {/* <span className="item-price">₪{ConvertCurrencies(Number(item.price), "ils", item.currency)} </span> */}
                       <div className="item-actions">
                         <img src={icons[item.category]} className="item-icon"
                         style={{filter: getColorFilter(item.category)}}/>
                         <span className="item-name" >{item.name} </span>
-                        <button
+                        {/* <button
                           className="remove"
                           onClick={(e) => {
                             e.stopPropagation(); // Prevent the click from bubbling up to the li
@@ -69,10 +77,12 @@ const Expenses = () => {
                           }}
                         >
                           🗑️
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </li>
+                  {isDetailOpen && openDetailId === item.id && <ExpenseDetails setIsOpen={setIsDetailOpen} expenseId={openDetailId} expenses={expenses} setExpenses={setExpenses}/>}
+                  </React.Fragment>
                 ))}
               </ul>
             </li>

@@ -29,7 +29,7 @@ export default function CategoryModal( {setIsOpen, setCategory, onClose} ) {
       <div className='wrapper'>
         <div className={`top-bar ${isClosing ? 'go-out' : ''}`} />
         <div className={`categories-container ${isClosing ? 'go-out' : ''}`} onAnimationEnd={handleAnimationEnd}>
-
+          {/* <div className='expenses-container'> */}
           {categories.map((cat) => 
             <div key={cat.name} className='category-item'>
               <div className='button-wrapper'>
@@ -44,8 +44,11 @@ export default function CategoryModal( {setIsOpen, setCategory, onClose} ) {
             <div className='category-title'>{cat.name}</div>
           </div>
           )}
+          {/* </div> */}
           {/* <div className='income-container'>
-            <img src={icons["Shopping"]} alt='icon' className='income'/>
+            <div className='income-item'>
+              <img src={icons["Shopping"]} alt='icon' className='income'/>
+            </div>
           </div> */}
           <div>
             <div className={`close-container ${isClosing ? 'closeDown' : ''}`}>

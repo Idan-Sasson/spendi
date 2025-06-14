@@ -7,6 +7,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import AddButton from './components/AddButton';
 import Expenses from './components/Expenses';
 import Income from './components/Income';
+import Tests from './components/tests';
 
 const isOpen = false;
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/expenses" element={<Expenses />} />
         <Route path="/income" element={<Income />} />
         <Route path="/expense/:id" element={<ExpenseDetails />} />
+        <Route path="/tests" element={<Tests />} />
       </Routes>
     </HashRouter>
   );

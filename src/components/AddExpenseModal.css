@@ -19,8 +19,6 @@
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.18);
     animation: modalFadeIn 0.2s ease-out;
-    overflow: hidden;
-
 }
 
 
@@ -131,7 +129,6 @@
     justify-content: center;
     align-items: center;
     z-index: 999;
-    overflow-y: hidden;
 
     animation: blurIn 0.1s ease forwards;
 }
@@ -162,6 +159,20 @@
     width: 20px;
     aspect-ratio: 1;
 
+}
+
+.cat-currency {
+    display: flex;
+    /* justify-content: center; */
+    /* padding: 0 50px; */
+}
+
+.select-country {
+    max-height: 20px;
+}
+
+.currencies {
+    padding: 0 30px;
 }
 
 @keyframes modalFadeIn {
