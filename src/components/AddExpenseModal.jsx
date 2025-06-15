@@ -16,6 +16,8 @@ export default function AddExpenseModal( {setIsOpen} ) {
   const [isCatOpen, setIsCatOpen] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
   const [country, setCountry] = useState("Israel");
+  const [note, setNote] = useState("");
+  const [isAddNote, setIsAddNote] = useState(false);
   // const [convertedPrice, setConvertedPrice] = useState("");
 
   const handleModalSubmit = () => {
@@ -24,12 +26,14 @@ export default function AddExpenseModal( {setIsOpen} ) {
 
     const saveExpense = async () => {
       let convertedPrice = modalPrice;
+      let rate = 1;
       // setConvertedPrice(modalPrice);
       if (countries[country] !== AppOptions.baseCurrency) {
         // Convert currency
-        const response = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${countries[country]}.json`);
+        const response = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${AppOptions.baseCurrency}.json`);
         const data = await response.json();
-        convertedPrice = (data[countries[country]][AppOptions.baseCurrency] * modalPrice)
+        rate = data[AppOptions.baseCurrency][countries[country]]
+        convertedPrice = (modalPrice / data[AppOptions.baseCurrency][countries[country]])
         // setConvertedPrice(data[countries[country]][AppOptions.baseCurrency] * modalPrice);
       }
     const newExpense = {  // id - current timestamp
@@ -39,7 +43,10 @@ export default function AddExpenseModal( {setIsOpen} ) {
       date: selectedDate,
       category: category,
       currency: countries[country],
-      convertedPrice: parseFloat(convertedPrice)  // Price after conversion
+      convertedPrice: parseFloat(convertedPrice),  // Price after conversion
+      country: country,
+      rate: rate,
+      note: note
     }
     setIsAdd(true);
     setExpenses([...expenses, newExpense]);
@@ -60,22 +67,6 @@ export default function AddExpenseModal( {setIsOpen} ) {
       if (isAdd) window.location.reload();  // Arabic solution
     }
   };
-  
-  // const handleCountryChange = (e) => {
-  //   setCountry(e.target.value);
-  //   if (countries[country] != AppOptions.baseCurrency) {
-  //     // fetch from API
-  //     fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${countries[country]}.json`)
-  //       .then(response => response.json())
-  //       .then(data => {
-  //         // Update the currency based on the fetched data
-  //         setConvertedPrice(data[countries[country]][AppOptions.baseCurrency]);
-  //       });
-  //       if (modalPrice) {
-  //         setConvertedPrice((modalPrice * convertedPrice).toFixed(2));
-  //       } // Otherwise will do that when user sets the price
-  //     }
-  // }
 
   const categoryColor = categories.find(cat => cat.name === category).color;
   return (
@@ -90,7 +81,7 @@ export default function AddExpenseModal( {setIsOpen} ) {
             placeholder="Expense"
           />
           <input className="new-price-input"
-              type="number"
+              inputMode='numeric'pattern="[0-9]*" type="number"
               value={modalPrice}
               onChange={(e) => setModalPrice(e.target.value)}
               placeholder="Price" />
@@ -106,6 +97,10 @@ export default function AddExpenseModal( {setIsOpen} ) {
                 ))}
               </select>
             </div>
+          </div>
+          <div>
+            {(!isAddNote) && <button onClick={() => setIsAddNote(true)} className="add-note-button">Add description</button>}
+            {(isAddNote) && <textarea className='note' placeholder="Description" onChange={(e) => setNote(e.target.value)}/>}
           </div>
           <div>
             {isCatOpen && <CategoryModal setIsOpen={setIsCatOpen} setCategory={setCategory}/>}

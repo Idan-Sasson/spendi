@@ -8,7 +8,7 @@ export default function Tests() {
     const updatedExpenses = expenses.map(item => {
         return {
             ...item, 
-            convertedPrice: item.price
+            rate: 1
         }
     })
  

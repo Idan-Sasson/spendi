@@ -1,23 +1,21 @@
 import { useLocalStorage } from "./useLocalStorage";
 import "./Expenses.css";
-import { icons, categoriesColors, categories, AppOptions } from "./constants";
-import { useEffect, useState } from "react";
+import { icons, categories, AppOptions } from "./constants";
+import { useState, useEffect } from "react";
 import ExpenseDetails from "./ExpenseDetails";
 import React from "react";
-import { ConvertCurrencies } from "./HelperFunctions";
 
 const Expenses = () => {
   const [expenses, setExpenses] = useLocalStorage("expenses", []);
   const [openDetailId, setOpenDetailId] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
-  // useEffect(() => {
-  //   Object.entries(expenses).
-  // }, [])
-  // const [rates, setRates] = useState({});
 
+  useEffect(() => {
+    document.body.style.overflow = isDetailOpen ? "hidden" : "";
+  }, [isDetailOpen])
   // Step 1: Group the expenses by date
-  const groupedExpenses = [...expenses].sort((a, b) => new Date(a.date) - new Date(b.date)).reduce((result, item) => {
+  const groupedExpenses = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date)).reduce((result, item) => {
     // Turn the date into something like "12.12.24"
     const isoDate = new Date(item.date).toISOString().split("T")[0];
     // If this date doesn't exist in our groups yet, create an empty list
@@ -42,9 +40,8 @@ const Expenses = () => {
             <li key={isoDate}>
               <div className={`date-header ${isoDate === Object.keys(groupedExpenses)[0] ? 'first' : ''}`}>
                 <span className="total">
-                  {" "}
                   ₪{items
-                    .reduce((sum, item) => sum + item.price, 0)
+                    .reduce((sum, item) => sum + item.convertedPrice, 0)
                     .toFixed(2)}{" "}
                 </span>
                 <span className="date">{isoDate}</span>
@@ -64,7 +61,6 @@ const Expenses = () => {
                       {item.currency !== AppOptions.baseCurrency &&
                       <span className="real-currency">({item.price.toFixed(2)} {item.currency.toUpperCase()})</span>}
                       </div>
-                      {/* <span className="item-price">₪{ConvertCurrencies(Number(item.price), "ils", item.currency)} </span> */}
                       <div className="item-actions">
                         <img src={icons[item.category]} className="item-icon"
                         style={{filter: getColorFilter(item.category)}}/>

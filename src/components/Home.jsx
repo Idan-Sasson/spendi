@@ -4,8 +4,9 @@ import './Home.css';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, plugins} from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
 import { categories } from './constants';
-;
+
 const Home = () => {
+
     const [expenses, setExpenses] = useLocalStorage("expenses", []);
     const total = expenses.reduce((sum, item) => sum + (item.price || 0), 0);
 

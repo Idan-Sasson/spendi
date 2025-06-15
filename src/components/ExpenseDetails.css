@@ -8,49 +8,172 @@
   background-color: rgb(255, 255, 255);
 }
 
-input {
+/* input {
   color: black;
   border: none;
   background: none;
-  display: block;
-  margin: 6px 0px 6px 6px;
-
 }
+ */
 
 input:focus {
   outline: none;
 }
 
+.name-input {
+  text-align: right;
+  font-size: 25px;
+  /* text-overflow: ellipsis; */
+  font-size: auto;
+  font-weight: 700;
+  width: 70%;
+  border: none;
+  background: none;
+}
+
+.top-container {
+  /* background-color: rgba(32, 212, 140, 0.129); */
+  height: 10%;
+  display: flex;
+  align-items: center;
+  position: relative;
+  /* justify-content: space-between; */
+  /* border-bottom: 1px solid rgb(32, 212, 140); */
+}
+
+.cat-container {
+  border-radius: 50%;
+  margin-left: 10px;
+  /* background-color: rgb(32, 212, 140); */
+  height: 70%;
+  aspect-ratio: 1;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.cat-button {
+  width: 35px;
+  aspect-ratio: 1;
+  /* padding: 5px; */
+}
+
+.note-icon-container {
+  display: flex;
+  justify-content: center;
+  /* width: 5px; */
+  /* aspect-ratio: 1; */
+}
+
+.note-icon {
+  width: 40px;
+  height: 30px;
+  /* aspect-ratio: 1; */
+}
+
+.note-container {
+  padding-top: 8px;
+  display: flex;
+  justify-content: center;
+}
+
+.note-detail {
+  width: 35vw;
+  height: 3vh;
+  transition:
+    width 0.3s ease,
+    height 0.3s ease;
+  resize: none;
+  padding: 5px 10px;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  outline: none;
+  border-color: rgb(0, 0, 0);
+  box-shadow: 0 0 10px white;
+}
+
+.note-detail:focus {
+  width: 70%;
+  height: 20vh;
+}
+
+
+.add-desc-text {
+  /* Move without moving the other elements */
+  transform: translate(-5%, 0);
+  flex: 1;
+  font-size: 15px;
+  margin-top: 5px;
+  color: rgb(80, 80, 80)
+}
+
+.invisible {
+  opacity: 0;
+  flex: 1;
+}
+
 .price-container {
   display: flex;
-  justify-content: flex-end;
-  gap: 2px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.431);
+  justify-content: right;
+  padding: 10px 10px 0 0;
+  /* border-bottom: 1px solid rgba(0, 0, 0, 0.431); */
 }
 
 .price-input {
+  margin-right: 10px;
+  font-size: 30px;
   text-align: right;
+  color: black;
+  border: none;
+  background: none;
 }
 
-
-.price-container::after {
-  content: "₪";
+.currency-container {
+  background: rgba(197, 197, 197, 0.813);
+  padding: 2px 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 1);
 }
 
-.name-input {
-  text-align: right;
+.currency {
   font-size: 18px;
 }
 
-.name-container {
-  display: flex;
-  justify-content: flex-end;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.431);
+.rate {
+  font-size: 12px;
+}
+
+/* .price-container::after {
+  content: "₪";
+} */
+
+.date-input {
+  border: none;
+  background: none;
+  color: black;
+  width: 140px;
 }
 
 .date-container {
+  margin: 10px 0;
   display: flex;
   justify-content: flex-end;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.431);
+}
 
+.back-icon {
+  position: fixed;
+  top: 0;
+  right: 15px;
+  width: 40px;
+  aspect-ratio: 1.2;
+  rotate: 180deg;
+}
+
+.remove-container {
+  position: fixed;
+  top: 92%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  color: rgb(255, 0, 0);
+  font-size: 16px;
+  text-shadow: 1px 1px 0.5px rgb(0, 0, 0);
 }
