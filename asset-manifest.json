@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/spendi/static/css/main.d528040f.css",
-    "main.js": "/spendi/static/js/main.5622fa88.js",
-    "service-worker.js": "/spendi/service-worker.js",
-    "static/media/entertainment.png": "/spendi/static/media/entertainment.6c58e68ff5b8eb68038b.png",
-    "static/media/fees.png": "/spendi/static/media/fees.b25aa52495896586c938.png",
-    "static/media/shopping.png": "/spendi/static/media/shopping.9c816c6b923ef947a58e.png",
-    "static/media/groceries.png": "/spendi/static/media/groceries.6440715f167253aa3751.png",
-    "index.html": "/spendi/index.html",
-    "main.d528040f.css.map": "/spendi/static/css/main.d528040f.css.map",
-    "main.5622fa88.js.map": "/spendi/static/js/main.5622fa88.js.map"
+    "main.css": "./static/css/main.07954cac.css",
+    "main.js": "./static/js/main.233eb54c.js",
+    "service-worker.js": "./service-worker.js",
+    "static/media/entertainment.png": "./static/media/entertainment.6c58e68ff5b8eb68038b.png",
+    "static/media/fees.png": "./static/media/fees.b25aa52495896586c938.png",
+    "static/media/shopping.png": "./static/media/shopping.9c816c6b923ef947a58e.png",
+    "static/media/groceries.png": "./static/media/groceries.6440715f167253aa3751.png",
+    "index.html": "./index.html",
+    "main.07954cac.css.map": "./static/css/main.07954cac.css.map",
+    "main.233eb54c.js.map": "./static/js/main.233eb54c.js.map"
   },
   "entrypoints": [
-    "static/css/main.d528040f.css",
-    "static/js/main.5622fa88.js"
+    "static/css/main.07954cac.css",
+    "static/js/main.233eb54c.js"
   ]
 }
