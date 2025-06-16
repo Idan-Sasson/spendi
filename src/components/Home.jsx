@@ -3,12 +3,13 @@ import { useLocalStorage } from './useLocalStorage';
 import './Home.css';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, plugins} from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
-import { categories } from './constants';
+import { AppOptions, categories } from './constants';
+import AddButton from './AddButton';
 
 const Home = () => {
 
     const [expenses, setExpenses] = useLocalStorage("expenses", []);
-    const total = expenses.reduce((sum, item) => sum + (item.price || 0), 0);
+    const total = expenses.reduce((sum, item) => sum + (item.convertedPrice || 0), 0);
 
     const dayAvg = () => {
         if (expenses.length === 0) return 0;
@@ -35,7 +36,7 @@ const Home = () => {
         return result;
     }, {});
     Object.entries(groupedExpenses).sort((a, b) => new Date(a[0]) - new Date(b[0])).map(([isoDate, items]) => {
-        const sum = items.reduce((sum, item) => sum + item.price, 0);
+        const sum = items.reduce((sum, item) => sum + item.convertedPrice, 0);
         labels.push(isoDate);
         sums.push(sum);
     });
@@ -50,7 +51,7 @@ const Home = () => {
         return result;
     }, {});
     Object.entries(groupedCats).map(([cat, items]) => {
-        const sum = items.reduce((sum, item) => sum + item.price, 0);
+        const sum = items.reduce((sum, item) => sum + item.convertedPrice, 0);
         if (!catSums[cat]) catSums[cat] = sum
         else catSums[cat] += sum
     });
@@ -148,6 +149,7 @@ const Home = () => {
     };
     return (
         <div className="home">
+        <AddButton  expenses={expenses} setExpenses={setExpenses}/>
             <h1 className="spendi">Spendi</h1>
             <div className="box-container">
                 <div className="box">
@@ -168,7 +170,7 @@ const Home = () => {
                 </div>
                 <div className='categories-total'>
                     {Object.entries(catSums).map(([cat, sum]) => (
-                        <div className='cat-expense'>{cat}- {sum}</div>
+                        <div className='cat-expense'>{cat}- {sum.toFixed(2)}</div>
                     ))}
                 </div>
             </div>

@@ -26,9 +26,9 @@ export default function CategoryModal( {setIsOpen, setCategory, onClose} ) {
 
     // console.log(groceries);
     return ReactDOM.createPortal(
-      <div className='wrapper'>
+      <div className='wrapper' onClick={handleClose}>
         <div className={`top-bar ${isClosing ? 'go-out' : ''}`} />
-        <div className={`categories-container ${isClosing ? 'go-out' : ''}`} onAnimationEnd={handleAnimationEnd}>
+        <div className={`categories-container ${isClosing ? 'go-out' : ''}`} onAnimationEnd={handleAnimationEnd} onClick={(e) => e.stopPropagation()}>
           {/* <div className='expenses-container'> */}
           {categories.map((cat) => 
             <div key={cat.name} className='category-item'>

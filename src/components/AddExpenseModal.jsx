@@ -1,16 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import './AddExpenseModal.css'
 import CategoryModal from "./CategoryModal";
-import { useLocalStorage } from "./useLocalStorage";
 import { categories, icons, AppOptions } from './constants';
 import { setAlpha } from "./HelperFunctions";
 import countries from "./countries.json"
 
-export default function AddExpenseModal( {setIsOpen} ) {
+export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [modalExpense, setModalExpense] = useState("");
   const [modalPrice, setModalPrice] = useState("");
   const [selectedDate, setSelectedDate] = useState(Date.now())
-  const [expenses, setExpenses] = useLocalStorage("expenses", []);
+  // const [expenses, setExpenses] = useLocalStorage("expenses", []);
   const [category, setCategory] = useState("General");
   const [isClosing, setIsClosing] = useState(false);
   const [isCatOpen, setIsCatOpen] = useState(false);
@@ -64,15 +63,21 @@ export default function AddExpenseModal( {setIsOpen} ) {
   const handleAnimationEnd = () => {
     if (isClosing) {
       setIsOpen(false);
-      if (isAdd) window.location.reload();  // Arabic solution
+      // if (isAdd) window.location.reload();  // Arabic solution
     }
   };
 
+  const handlePriceChange = (e) => {
+    const isValidNumber = str => /^-?\d*\.?\d*$/.test(str);
+    if (!isValidNumber(e.target.value)) return;
+    setModalPrice(e.target.value)
+  }
+
   const categoryColor = categories.find(cat => cat.name === category).color;
   return (
-    <div className={'modal-overlay'}>
+    <div className={'modal-overlay'} onClick={handleClose}>
 
-      <div className={`modal-container ${isClosing ? 'fade-out' : ''}`} onAnimationEnd={handleAnimationEnd} style={{boxShadow: `0 0 32px 0 ${setAlpha(categoryColor, 0.2)}`}}>
+      <div className={`modal-container ${isClosing ? 'fade-out' : ''}`} onClick={(e) => e.stopPropagation()} onAnimationEnd={handleAnimationEnd} style={{boxShadow: `0 0 32px 0 ${setAlpha(categoryColor, 0.2)}`}}>
         <div className='modal-bg-image' style={{ backgroundImage: `url(${icons[category]})` }} />
         Add Expense
           <input className="new-expense-input"
@@ -81,10 +86,10 @@ export default function AddExpenseModal( {setIsOpen} ) {
             placeholder="Expense"
           />
           <input className="new-price-input"
-              inputMode='numeric'pattern="[0-9]*" type="number"
-              value={modalPrice}
-              onChange={(e) => setModalPrice(e.target.value)}
-              placeholder="Price" />
+            // type='number'
+            value={modalPrice}
+            onChange={handlePriceChange}
+            placeholder="Price" />
           <input type="date" value={new Date(selectedDate).toISOString().split('T')[0]} onChange={(e) => setSelectedDate(new Date(e.target.value).getTime())} className="date-input" />
           <div className="cat-currency">
             <div className='open-cat-container' onClick={() => setIsCatOpen(true)} style={{backgroundColor: categoryColor}}>

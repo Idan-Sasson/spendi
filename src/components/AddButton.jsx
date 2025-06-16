@@ -3,7 +3,7 @@ import AddExpenseModal from "./AddExpenseModal";
 import './AddButton.css';
 import { icons } from "./constants";
 
-export default function AddButton() {
+export default function AddButton({ expenses, setExpenses }) {
     const [isOpen, setIsOpen] = useState(false);
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "";
@@ -15,7 +15,7 @@ export default function AddButton() {
             <div className="button-container">
             <img src={icons["Plus"]} className='open-modal-icon' onClick={() => setIsOpen(true)}/>
             </div>
-            {isOpen && <AddExpenseModal setIsOpen={setIsOpen}/>}
+            {isOpen && <AddExpenseModal setIsOpen={setIsOpen} expenses={expenses} setExpenses={setExpenses} />}
         </div>
     )
 }

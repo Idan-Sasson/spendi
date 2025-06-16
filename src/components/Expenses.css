@@ -1,7 +1,7 @@
 .expenses-body {
     padding-bottom: 180px;
     /* Leaves space for the navbar at bottom */
-    max-height: 100vh;
+    /* max-height: 100vh; */
     /* overflow-y: auto; */
 }
 

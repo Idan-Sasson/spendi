@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useLocalStorage } from './useLocalStorage';
 import CategoryModal from './CategoryModal';
+import CountryModal from './CountryModal';
 import './ExpenseDetails.css';
 import countries from "./countries.json"
 import { AppOptions, icons, categories} from './constants';
@@ -28,7 +29,9 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [selectedCountry, setSelectedCountry] = useState(expense.country);
   const [note, setNote] = useState(expense.note);
   const [isNoteOpen, setIsNoteOpen] = useState(false);
-  const [isNoteFocused, setIsNoteFocused] = useState(false);  
+  const [isNoteFocused, setIsNoteFocused] = useState(false);
+  const [isCountryOpen, setIsCountryOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false)
 
 // if (!expense) return <div>Expense not found</div>;
 
@@ -73,25 +76,40 @@ useEffect(() => {
   };
 
   const handlePriceChange = (e) => {
-    const newPrice = parseFloat(e.target.value);
-    if (isNaN(newPrice)) {
+    const isValidNumber = str => /^-?\d*\.?\d*$/.test(str);
+    const newPrice = e.target.value;
+    const plPrice = parseFloat(newPrice); // ParsedFloat
+    if (!isValidNumber(e.target.value)) return;
+    // const newPrice = parseFloat(e.target.value);
+    if (newPrice === '-') {
+      setPrice("-");
+      setConvertedPrice(0);
+      updateExpense({ price: 0, convertedPrice: 0 });
+    }
+    else if (isNaN(plPrice)) {
+    //   console.log("nan")
       setPrice("");
       setConvertedPrice(0);
       updateExpense({ price: 0, convertedPrice: 0 });
-      
-    } else {
-      setPrice(newPrice);
-      setConvertedPrice(newPrice / rate);
-      updateExpense({ price: newPrice, convertedPrice: (newPrice / rate) });
     }
-  };
+    else {
+    setPrice(plPrice);
+    setConvertedPrice(plPrice / rate);
+    updateExpense({ price: plPrice, convertedPrice: (plPrice / rate) });
+  }};
 
   const updateCat = (newCat) => {
     updateExpense({ category: newCat })
   }
 
   const handleClose = () => {
-    setIsOpen(false);
+    setIsClosing(true);
+  }
+
+  const handleAnimationEnd = () => {
+    if (isClosing) {
+      setIsOpen(false);
+    }
   }
 
   const handleRemove =  () => {
@@ -125,8 +143,8 @@ useEffect(() => {
       }, [selectedCountry])
 
 
-  const handleCountryChange = (e) => {
-    setSelectedCountry(e.target.value);
+  const handleCountryChange = (country) => {
+    setSelectedCountry(country);
     changedCountry.current = true;
   }
 
@@ -138,7 +156,11 @@ useEffect(() => {
   const categoryColor = categories.find(cat => cat.name === category).color;
   const filterColor = categories.find(cat => cat.name === category).filter;
   return (
-    <div className='expenses-container'>
+    <div className={`expenses-container ${isClosing ? 'slide-out' : ''}`} onAnimationEnd={handleAnimationEnd}>
+      <img src={icons["Back"]} className={`back-icon ${isClosing ? 'back-slide-out' : ''}`} onClick={handleClose} style={{filter: filterColor}}/>
+      <div className='remove-container'>
+        <span className='remove-button' onClick={handleRemove}>Delete</span>
+      </div>
       <div className='top-container' style={{borderBottom: `1px solid ${categoryColor}`, backgroundColor: setAlpha(categoryColor, 0.129)}}>
         <div className='cat-container' style={{backgroundColor: categoryColor}}>
           <img src={icons[category]} className="cat-button" onClick={() => setIsCatOpen(true)} />
@@ -163,30 +185,19 @@ useEffect(() => {
         </div>}
       <div className="price-container">
         <input className="price-input" value={price} onChange={handlePriceChange} placeholder={expense.price} />
-        <div className='currency-container' style={{backgroundColor: setAlpha(categoryColor, 0.25),
+        <div onClick={() => setIsCountryOpen(true)} className='currency-container' style={{backgroundColor: setAlpha(categoryColor, 0.25),
            border: `1px solid ${setAlpha(categoryColor, 0.5)}`}}>
           <div className='currency'>{expense.currency.toUpperCase()}</div>
           {AppOptions.baseCurrency != expense.currency && 
           <div className='rate'>{(1/expense.rate).toFixed(2)}{AppOptions.baseCurrency.toUpperCase()}</div>}
         </div>
+        {isCountryOpen && <CountryModal setIsOpen={setIsCountryOpen} selectedCountry={selectedCountry} setSelectedCountry={(country) => handleCountryChange(country)} categoryColor={categoryColor}/>}
       </div>
       <div className='date-container'>
         <input className="date-input" type="date" value={selectedDate} onChange={handleDateChange}  />
       </div>
       <div>
         {isCatOpen && <CategoryModal setIsOpen={setIsCatOpen} setCategory={setCategory} onClose={updateCat}/>}
-      </div>
-      <div>
-        <select className='select-country' value={selectedCountry} onChange={handleCountryChange}>
-          {Object.keys(countries).sort().map((country) => (
-            <option key={country} value={country}>{country}</option>
-          ))}
-        </select>
-      </div>
-      {/* <button onClick={handleClose} >Back</button> */}
-      <img src={icons["Back"]} className='back-icon' onClick={handleClose} style={{filter: filterColor}}/>
-      <div className='remove-container'>
-        <span className='remove-button' onClick={handleRemove}>Delete</span>
       </div>
     </div>
   );

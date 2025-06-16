@@ -1,7 +1,7 @@
 {
   "name": "spendi",
   "version": "0.1.0",
-  "homepage": "https://Idan-Sasson.github.io/spendi",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "chart.js": "^4.4.9",

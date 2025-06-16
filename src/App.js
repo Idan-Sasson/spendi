@@ -1,4 +1,3 @@
-import React from 'react';
 import Home from './components/Home';
 import Navbar from './components/Navbar';
 import ExpenseDetails from './components/ExpenseDetails';
@@ -10,12 +9,11 @@ import Income from './components/Income';
 import Tests from './components/tests';
 
 const isOpen = false;
-
 function App() {
   return (
     <HashRouter>
       <Navbar />
-      <AddButton />
+      {/* <AddButton /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/expenses" element={<Expenses />} />

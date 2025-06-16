@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useLocalStorage } from "./useLocalStorage";
+import AddButton from './AddButton';
 import './Income.css'
+
 
 export default function() {
 
@@ -19,6 +21,7 @@ export default function() {
     console.log(dateKeys)
     return (
         <div>
+            <AddButton  expenses={expenses} setExpenses={setExpenses}/>
             <div>Income</div>
             <div className="income-container">
                 {filteredIncome.map(income => (

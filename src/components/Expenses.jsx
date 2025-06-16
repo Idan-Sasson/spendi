@@ -4,12 +4,12 @@ import { icons, categories, AppOptions } from "./constants";
 import { useState, useEffect } from "react";
 import ExpenseDetails from "./ExpenseDetails";
 import React from "react";
+import AddButton from './AddButton';
 
 const Expenses = () => {
   const [expenses, setExpenses] = useLocalStorage("expenses", []);
   const [openDetailId, setOpenDetailId] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-
 
   useEffect(() => {
     document.body.style.overflow = isDetailOpen ? "hidden" : "";
@@ -33,6 +33,7 @@ const Expenses = () => {
 
   return (
     <div className="expenses-body">
+      <AddButton  expenses={expenses} setExpenses={setExpenses}/>
       <ul className="expense-list">
         {/* Go over each date group */}
         {Object.entries(groupedExpenses)
