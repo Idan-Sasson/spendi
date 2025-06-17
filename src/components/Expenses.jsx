@@ -40,10 +40,7 @@ const Expenses = () => {
           .map(([isoDate, items]) => (
             <li key={isoDate}>
               <div className={`date-header ${isoDate === Object.keys(groupedExpenses)[0] ? 'first' : ''}`}>
-                <span className="total">
-                  ₪{items
-                    .reduce((sum, item) => sum + item.convertedPrice, 0)
-                    .toFixed(2)}{" "}
+                <span className="total">₪{items.reduce((sum, item) => sum + item.convertedPrice, 0).toFixed(2)}{" "}
                 </span>
                 <span className="date">{isoDate}</span>
               </div>
@@ -58,14 +55,15 @@ const Expenses = () => {
                       onClick={() => {setOpenDetailId(item.id); setIsDetailOpen(true)}}
                     >
                       <div>
-                      <span className="item-price">₪{Number(item.convertedPrice).toFixed(2)} </span>
-                      {item.currency !== AppOptions.baseCurrency &&
-                      <span className="real-currency">({item.price.toFixed(2)} {item.currency.toUpperCase()})</span>}
+                        <span className="item-price">₪{Number(item.convertedPrice).toFixed(2)} </span>
+                        {item.currency !== AppOptions.baseCurrency &&
+                          <span className="real-currency">({item.price.toFixed(2)} {item.currency.toUpperCase()})</span>}
                       </div>
                       <div className="item-actions">
-                        <img src={icons[item.category]} className="item-icon"
-                        style={{filter: getColorFilter(item.category)}}/>
                         <span className="item-name" >{item.name} </span>
+                        <img src={icons[item.category]} className="item-icon"
+                          style={{filter: getColorFilter(item.category)}}/>
+                          {item.note && <div className="is-note"/>}
                         {/* <button
                           className="remove"
                           onClick={(e) => {

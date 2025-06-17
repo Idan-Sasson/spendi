@@ -4,6 +4,7 @@ import CategoryModal from "./CategoryModal";
 import { categories, icons, AppOptions } from './constants';
 import { setAlpha } from "./HelperFunctions";
 import countries from "./countries.json"
+import CountryModal from "./CountryModal";
 
 export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [modalExpense, setModalExpense] = useState("");
@@ -17,6 +18,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [country, setCountry] = useState("Israel");
   const [note, setNote] = useState("");
   const [isAddNote, setIsAddNote] = useState(false);
+  const [isCountryOpen, setIsCountryOpen] = useState(false);
   // const [convertedPrice, setConvertedPrice] = useState("");
 
   const handleModalSubmit = () => {
@@ -57,6 +59,10 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   // const countries = Object.values(currencies).flatMap(countries => countries).sort();
 
   const handleClose = () => {
+    // if (isCountryOpen) {
+    //   setIsCountryOpen(false);
+    //   return
+    // }
     setIsClosing(true);
   };
 
@@ -78,6 +84,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
     <div className={'modal-overlay'} onClick={handleClose}>
 
       <div className={`modal-container ${isClosing ? 'fade-out' : ''}`} onClick={(e) => e.stopPropagation()} onAnimationEnd={handleAnimationEnd} style={{boxShadow: `0 0 32px 0 ${setAlpha(categoryColor, 0.2)}`}}>
+
         <div className='modal-bg-image' style={{ backgroundImage: `url(${icons[category]})` }} />
         Add Expense
           <input className="new-expense-input"
@@ -90,25 +97,24 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
             value={modalPrice}
             onChange={handlePriceChange}
             placeholder="Price" />
-          <input type="date" value={new Date(selectedDate).toISOString().split('T')[0]} onChange={(e) => setSelectedDate(new Date(e.target.value).getTime())} className="date-input" />
-          <div className="cat-currency">
+          <div className="aem-cat-wrapper">
             <div className='open-cat-container' onClick={() => setIsCatOpen(true)} style={{backgroundColor: categoryColor}}>
               <img src={icons[category]} className="open-cat" />
             </div>
-            <div className="currencies">
-              <select className='select-country' value={country} onChange={(e) => setCountry(e.target.value)}>
-                {Object.keys(countries).sort().map((country) => (
-                  <option key={country} value={country}>{country}</option>
-                ))}
-              </select>
+            <div className="aem-currency-wrapper">
+              <span className="aem-country-select" onClick={() => setIsCountryOpen(true)} style={{backgroundColor: setAlpha(categoryColor, 0.3)}}>{country}</span>
             </div>
           </div>
+          <input type="date" value={new Date(selectedDate).toISOString().split('T')[0]} onChange={(e) => setSelectedDate(new Date(e.target.value).getTime())} className="date-input" />
+
           <div>
             {(!isAddNote) && <button onClick={() => setIsAddNote(true)} className="add-note-button">Add description</button>}
             {(isAddNote) && <textarea className='note' placeholder="Description" onChange={(e) => setNote(e.target.value)}/>}
           </div>
           <div>
             {isCatOpen && <CategoryModal setIsOpen={setIsCatOpen} setCategory={setCategory}/>}
+          {isCountryOpen && <CountryModal setIsOpen={setIsCountryOpen} selectedCountry={country} setSelectedCountry={setCountry} categoryColor={categoryColor} wrapperPosition={{top: '45%', right: '15%', height: '40vh'}}/>}
+
           </div>
           <img src={icons["Plus"]} className="add-button" onClick={handleModalSubmit}/>
           <button className="close-button" onClick={handleClose}>X</button>

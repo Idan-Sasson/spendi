@@ -1,8 +1,9 @@
 import React from 'react';
 import './Navbar.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation  } from 'react-router-dom';
 
 const Navbar = () => {
+  const location = useLocation();
 
 return (
 <nav className="navbar">
@@ -16,6 +17,9 @@ return (
       </li>
       <li>
         <NavLink to="/income" className={({ isActive }) => (isActive ? 'nav-link active-link' : 'nav-link')}>Income</NavLink>
+      </li>      
+      <li>
+        <NavLink to="/filter/all" className={`nav-link ${location.pathname.startsWith('/filter/') ? 'active-link' : ''}`}>Filter </NavLink>
       </li>
     </ul>
   </div>

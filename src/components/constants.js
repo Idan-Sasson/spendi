@@ -2,7 +2,7 @@ import groceries from '../assets/icons/groceries.png'
 import car from '../assets/icons/car.png'
 import food from '../assets/icons/food.png'
 import general from '../assets/icons/general.png'
-import flights from '../assets/icons/plane.png'
+import flights from '../assets/icons/flights.png'
 import entertainment from '../assets/icons/entertainment.png'
 import other from '../assets/icons/other.png'
 import accommodations from '../assets/icons/accommodations.png'
@@ -11,6 +11,17 @@ import back from '../assets/icons/back.png'
 import shopping from '../assets/icons/shopping.png'
 import plus from '../assets/icons/plus.png'
 import note from "../assets/icons/note.png"
+import coloredAccommodation from "../assets/icons/colored/coloredAccommodations.png"
+import coloredCar from "../assets/icons/colored/coloredCar.png"
+import coloredEntertainment from "../assets/icons/colored/coloredEntertainment.png"
+import coloredFees from "../assets/icons/colored/coloredFees.png"
+import coloredFlights from "../assets/icons/colored/coloredFlights.png"
+import coloredGeneral from "../assets/icons/colored/coloredGeneral.png"
+import coloredFood from "../assets/icons/colored/coloredFood.png"
+import coloredGroceries from "../assets/icons/colored/coloredGroceries.png"
+import coloredOther from "../assets/icons/colored/coloredOther.png"
+import coloredShopping from "../assets/icons/colored/coloredShopping.png"
+
 
 
 export const categories = [  // https://codepen.io/sosuke/pen/Pjoqqp
@@ -53,5 +64,18 @@ export const icons = {
   Back: back,
   Plus: plus,
   Note: note
+}
+
+export const coloredIcons = {
+  Groceries: coloredGroceries,
+  Car: coloredCar,
+  Food: coloredFood,
+  General: coloredGeneral,
+  Flights: coloredFlights,
+  Entertainment: coloredEntertainment,
+  Other: coloredOther,
+  Accommodations: coloredAccommodation,
+  Shopping: coloredShopping,
+  Fees: coloredFees
 }
 

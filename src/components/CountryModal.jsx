@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import countries from "./countries.json";
 import './CountryModal.css'
+import ReactDOM from 'react-dom'
 
-export default function CountryModal({setIsOpen, selectedCountry, setSelectedCountry, categoryColor}) {
+export default function CountryModal({setIsOpen, selectedCountry, setSelectedCountry, categoryColor, wrapperPosition}) {
     // const [selectedCountry]
     const selectedRef = useRef(null);
     const [isClosing, setIsClosing] = useState(false);
@@ -29,10 +30,10 @@ export default function CountryModal({setIsOpen, selectedCountry, setSelectedCou
   }, 100);
   }, []);
   
-    return(
+    return ReactDOM.createPortal(
       <>
         <div className="countries-overlay" onClick={handleClose} />
-        <div className={`modal-wrapper ${isClosing ? 'scale-down' : ''}`} onAnimationEnd={handleAnimationEnd} style={{borderColor: categoryColor}}>
+        <div className={`modal-wrapper ${isClosing ? 'scale-down' : ''}`} onAnimationEnd={handleAnimationEnd} style={{borderColor: categoryColor, ...wrapperPosition}}>
           <div className="countries-wrapper">
             {Object.keys(countries).sort().map(country => (
               <div key={country} onClick={() => handleCountryClick(country)}
@@ -48,6 +49,6 @@ export default function CountryModal({setIsOpen, selectedCountry, setSelectedCou
             ))}
           </div>
         </div>
-        </>
+        </>, document.body
     )
 }

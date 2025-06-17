@@ -159,17 +159,22 @@
 }
 
 .cat-currency {
-    display: flex;
+    /* display: flex; */
     /* justify-content: center; */
     /* padding: 0 50px; */
 }
 
-.select-country {
-    max-height: 20px;
+.aem-country-select {
+    font-size: 18px;
+    /* background-color: rgb(210, 210, 210); */
+    padding: 0px 5px;
+    border-radius: 8%;
+    border: 0.8px solid rgb(0, 0, 0);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.243);
 }
 
-.currencies {
-    padding: 0 30px;
+.aem-currency-wrapper {
+    padding: 7px 0px;
 }
 
 .note {

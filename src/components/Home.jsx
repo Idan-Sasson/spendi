@@ -3,13 +3,17 @@ import { useLocalStorage } from './useLocalStorage';
 import './Home.css';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, plugins} from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
-import { AppOptions, categories } from './constants';
+import { AppOptions, categories, icons, coloredIcons } from './constants';
 import AddButton from './AddButton';
+import CategoryDetails from './CategoryDetail';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
 
+    const navigate = useNavigate();
     const [expenses, setExpenses] = useLocalStorage("expenses", []);
     const total = expenses.reduce((sum, item) => sum + (item.convertedPrice || 0), 0);
+    const [catDetail, setCatDetail] = useState('');
 
     const dayAvg = () => {
         if (expenses.length === 0) return 0;
@@ -71,6 +75,7 @@ const Home = () => {
 
     const pieOptions = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 // display: false
@@ -120,7 +125,7 @@ const Home = () => {
                 bodyFont: { weight: "bold" },
                 callbacks: {
                     label: function(context) {
-                        return 'Daily Expense: ₪' + context.parsed.y;
+                        return 'Daily Expense: ₪' + context.parsed.y.toFixed(2);
                     }
                }
             }
@@ -147,6 +152,11 @@ const Home = () => {
             }
         ]
     };
+
+    const handleCategoryClick = (category) => {
+      navigate(`/filter/${encodeURIComponent(category)}`);
+    };
+
     return (
         <div className="home">
         <AddButton  expenses={expenses} setExpenses={setExpenses}/>
@@ -165,15 +175,26 @@ const Home = () => {
                 <Bar options={chartOptions} data={chartData} />
             </div>
             <div className='pie-wrapper'>
+                {/* <div className='Nonesda'> */}
                 <div className='pie-container'>
                     <Pie options={pieOptions} data={pieData}/>
                 </div>
                 <div className='categories-total'>
-                    {Object.entries(catSums).map(([cat, sum]) => (
-                        <div className='cat-expense'>{cat}- {sum.toFixed(2)}</div>
+                {/* {catDetail && <CategoryDetails category={catDetail} setCat={setCatDetail}/>} */}
+
+                    {Object.entries(catSums).sort((a, b) => b[1] - a[1]).map(([cat, sum]) => (
+                        <div className='category-header' onClick={() => handleCategoryClick(cat)}>
+                            <div className='icon-title'>
+                                <img src={coloredIcons[cat]} className='cat-icon' />
+                                <span className='cat-title'>{cat}</span>
+                            </div>
+                            <span className='cat-sum'>{sum.toFixed(2)} {AppOptions.baseCurrency.toUpperCase()}</span>
+                        </div>
                     ))}
+                {/* </div> */}
                 </div>
             </div>
+
             {/* <button className='reset' onClick={() => setExpenses([])}>Reset</button> */}
         </div>
     );

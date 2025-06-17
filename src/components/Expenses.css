@@ -14,23 +14,27 @@ ul {
 .item-icon {
     width: 18px;
     aspect-ratio: 1;
-    padding-right: 10px;
+    padding-left: 10px;
 }
 
 .date-header {
     font-size: 12px;
-    margin-top: 8px;
+    border-radius: 13px;
+    margin: 8px 0 8px 0;
     font-weight: 500;
     padding: 8px 12px;
     color: rgba(0, 0, 0, 0.8);
     background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px -4px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.first {
+.date-header.first {
     margin: 0px;
+    border-radius: 0 0 13px 13px;
+
 }
 
 .expense-list {
@@ -46,8 +50,18 @@ ul {
 
 .item-header {
     display: flex;
+    padding-bottom: 5px;
     justify-content: space-between;
     align-items: center;
+}
+
+.is-note {
+    right: 4.5px;
+    position: absolute;
+    width: 8px;
+    aspect-ratio: 1;
+    background-color: rgb(255, 149, 0);
+    border-radius: 50%;
 }
 
 .item-name {
@@ -65,7 +79,7 @@ ul {
 }
 
 .item-actions {
-    padding: 0 10px;
+    padding: 0 15px;
     display: flex;
     align-items: center;
 }

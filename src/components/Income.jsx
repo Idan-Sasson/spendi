@@ -17,8 +17,8 @@ export default function() {
         return result;
     }, {});
     const dateKeys = Object.entries(groupedDate).sort((a, b) => new Date(a[0]) - new Date(b[0]));
-    console.log(groupedDate);
-    console.log(dateKeys)
+    // console.log(groupedDate);
+    // console.log(dateKeys)
     return (
         <div>
             <AddButton  expenses={expenses} setExpenses={setExpenses}/>
