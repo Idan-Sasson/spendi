@@ -1,18 +1,30 @@
 {
   "files": {
-    "main.css": "./static/css/main.07954cac.css",
-    "main.js": "./static/js/main.233eb54c.js",
+    "main.css": "./static/css/main.83c3dbfc.css",
+    "main.js": "./static/js/main.2a1d806a.js",
     "service-worker.js": "./service-worker.js",
-    "static/media/entertainment.png": "./static/media/entertainment.6c58e68ff5b8eb68038b.png",
+    "static/media/coloredFood.png": "./static/media/coloredFood.37192cffa70e082c707b.png",
+    "static/media/coloredGroceries.png": "./static/media/coloredGroceries.52be3625f81f29aa1faa.png",
+    "static/media/coloredEntertainment.png": "./static/media/coloredEntertainment.e69af4e5e4cc308ae8ce.png",
+    "static/media/coloredGeneral.png": "./static/media/coloredGeneral.0cd8a99df7da856751e6.png",
+    "static/media/coloredShopping.png": "./static/media/coloredShopping.690a49bebcd85a504791.png",
+    "static/media/coloredFees.png": "./static/media/coloredFees.a5577017a97477e3af86.png",
     "static/media/fees.png": "./static/media/fees.b25aa52495896586c938.png",
+    "static/media/entertainment.png": "./static/media/entertainment.c1d7fc13bc9561792099.png",
+    "static/media/coloredFlights.png": "./static/media/coloredFlights.5edc465031e6ddc68ae7.png",
+    "static/media/coloredCar.png": "./static/media/coloredCar.be4dcb412c73cf3da492.png",
     "static/media/shopping.png": "./static/media/shopping.9c816c6b923ef947a58e.png",
+    "static/media/food.png": "./static/media/food.ca482020a991f1ade248.png",
+    "static/media/coloredOther.png": "./static/media/coloredOther.00df5ce5c8378f5c7f93.png",
     "static/media/groceries.png": "./static/media/groceries.6440715f167253aa3751.png",
+    "static/media/car.png": "./static/media/car.a0bf3867577713932707.png",
+    "static/media/coloredAccommodations.png": "./static/media/coloredAccommodations.a4070e5772506e6e32da.png",
     "index.html": "./index.html",
-    "main.07954cac.css.map": "./static/css/main.07954cac.css.map",
-    "main.233eb54c.js.map": "./static/js/main.233eb54c.js.map"
+    "main.83c3dbfc.css.map": "./static/css/main.83c3dbfc.css.map",
+    "main.2a1d806a.js.map": "./static/js/main.2a1d806a.js.map"
   },
   "entrypoints": [
-    "static/css/main.07954cac.css",
-    "static/js/main.233eb54c.js"
+    "static/css/main.83c3dbfc.css",
+    "static/js/main.2a1d806a.js"
   ]
 }
