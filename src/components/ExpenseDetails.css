@@ -159,6 +159,7 @@ input:focus {
   padding: 2px 10px;
   border-radius: 5px;
   box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 1);
+  user-select: none;
 }
 
 .currency {
@@ -178,6 +179,7 @@ input:focus {
   background: none;
   color: black;
   width: 140px;
+  user-select: none;
 }
 
 .date-container {
@@ -230,4 +232,5 @@ input:focus {
   color: rgb(255, 0, 0);
   font-size: 16px;
   text-shadow: 1px 1px 0.5px rgb(0, 0, 0);
+  user-select: none;
 }

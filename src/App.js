@@ -7,7 +7,7 @@ import AddButton from './components/AddButton';
 import Expenses from './components/Expenses';
 import Income from './components/Income';
 import Tests from './components/tests';
-import CategoryDetails from './components/CategoryDetail';
+import Search from './components/Search';
 
 const isOpen = false;
 function App() {
@@ -19,7 +19,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/expenses" element={<Expenses />} />
         <Route path="/income" element={<Income />} />
-        <Route path="/filter/:category" element={<CategoryDetails />} />
+        <Route path="/search/:category" element={<Search />} />
         <Route path="/tests" element={<Tests />} />
       </Routes>
     </HashRouter>

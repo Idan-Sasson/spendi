@@ -3,7 +3,7 @@ import countries from "./countries.json";
 import './CountryModal.css'
 import ReactDOM from 'react-dom'
 
-export default function CountryModal({setIsOpen, selectedCountry, setSelectedCountry, categoryColor, wrapperPosition}) {
+export default function CountryModal({setIsOpen, selectedCountry, setSelectedCountry, categoryColor, wrapperPosition, isPortal}) {
     // const [selectedCountry]
     const selectedRef = useRef(null);
     const [isClosing, setIsClosing] = useState(false);
@@ -30,7 +30,8 @@ export default function CountryModal({setIsOpen, selectedCountry, setSelectedCou
   }, 100);
   }, []);
   
-    return ReactDOM.createPortal(
+    // return (isPortal ? ReactDOM.createPortal : '')(
+    const content = (
       <>
         <div className="countries-overlay" onClick={handleClose} />
         <div className={`modal-wrapper ${isClosing ? 'scale-down' : ''}`} onAnimationEnd={handleAnimationEnd} style={{borderColor: categoryColor, ...wrapperPosition}}>
@@ -49,6 +50,7 @@ export default function CountryModal({setIsOpen, selectedCountry, setSelectedCou
             ))}
           </div>
         </div>
-        </>, document.body
+        </>
     )
+  return isPortal ? ReactDOM.createPortal(content, document.body) : content;
 }

@@ -1,0 +1,8 @@
+img {
+    user-drag: none;
+    -webkit-user-drag: none;
+    /* for Safari/Chrome */
+    user-select: none;
+    /* pointer-events: none; */
+
+}

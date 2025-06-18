@@ -1,0 +1,48 @@
+.s-overlay {
+	padding-bottom: 180px;
+}
+
+.s-option-container {
+	display: flex;
+}
+
+.s-filter-icon {
+	width: 20px;
+	padding-right: 7px;
+	aspect-ratio: 1;
+}
+
+.s-options-header {
+	display: flex;
+	padding: 10px 0 15px 0;
+	justify-content: space-around;
+}
+
+.search-input {
+	border-radius: 10px;
+	margin-left: 10px;
+	border: 1px solid;
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.filter-date-header {
+	font-size: 12px;
+	margin-top: 8px;
+	font-weight: 500;
+	padding: 8px 12px;
+	color: rgba(0, 0, 0, 0.8);
+	background-color: rgba(0, 0, 0, 0.1);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.s-price-container {
+	display: flex;
+	align-items: baseline;
+	padding-left: 10px;
+}
+
+.item-header.last {
+	border-bottom: none;
+}

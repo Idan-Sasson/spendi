@@ -19,7 +19,7 @@ return (
         <NavLink to="/income" className={({ isActive }) => (isActive ? 'nav-link active-link' : 'nav-link')}>Income</NavLink>
       </li>      
       <li>
-        <NavLink to="/filter/all" className={`nav-link ${location.pathname.startsWith('/filter/') ? 'active-link' : ''}`}>Filter </NavLink>
+        <NavLink to="/search/all" className={`nav-link ${location.pathname.startsWith('/search/') ? 'active-link' : ''}`}>Search </NavLink>
       </li>
     </ul>
   </div>

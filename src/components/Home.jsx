@@ -5,8 +5,9 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import { Bar, Pie } from 'react-chartjs-2';
 import { AppOptions, categories, icons, coloredIcons } from './constants';
 import AddButton from './AddButton';
-import CategoryDetails from './CategoryDetail';
+import Search from './Search';
 import { useNavigate } from 'react-router-dom';
+import banner from "../assets/Spendi-banner.png"
 
 const Home = () => {
 
@@ -154,13 +155,14 @@ const Home = () => {
     };
 
     const handleCategoryClick = (category) => {
-      navigate(`/filter/${encodeURIComponent(category)}`);
+      navigate(`/search/${encodeURIComponent(category)}`);
     };
 
     return (
         <div className="home">
         <AddButton  expenses={expenses} setExpenses={setExpenses}/>
-            <h1 className="spendi">Spendi</h1>
+            {/* <h1 className="spendi">Spendi</h1> */}
+            <img className='home-banner' src={banner} />
             <div className="box-container">
                 <div className="box">
                     <span className='title'>Total</span>

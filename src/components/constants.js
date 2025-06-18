@@ -21,6 +21,8 @@ import coloredFood from "../assets/icons/colored/coloredFood.png"
 import coloredGroceries from "../assets/icons/colored/coloredGroceries.png"
 import coloredOther from "../assets/icons/colored/coloredOther.png"
 import coloredShopping from "../assets/icons/colored/coloredShopping.png"
+import dropdown from "../assets/icons/dropdown.png"
+import all from "../assets/icons/all.png"
 
 
 
@@ -63,7 +65,9 @@ export const icons = {
   Fees: fees,
   Back: back,
   Plus: plus,
-  Note: note
+  Note: note,
+  Dropdown: dropdown,
+  All: all
 }
 
 export const coloredIcons = {

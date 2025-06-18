@@ -2,6 +2,11 @@
   margin-bottom: 120px;
 }
 
+.home-banner {
+  width: 100%;
+  filter: opacity(1);
+}
+
 .box-container {
   display: flex;
   gap: 10px;
@@ -91,6 +96,7 @@
   padding: 0 0 20px 5px;
   margin: 20px 0 0 0;
   border-radius: 20px;
+  user-select: none;
 }
 
 .pie-wrapper {
@@ -105,6 +111,7 @@
   margin: 10px auto auto auto;
   padding: 0 5px;
   /* background-color: white; */
+  user-select: none;
 }
 
 .pie-container {
