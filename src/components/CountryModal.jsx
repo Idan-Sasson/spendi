@@ -44,7 +44,7 @@ export default function CountryModal({setIsOpen, selectedCountry, setSelectedCou
                 <span className='country-option'
                   ref={country === selectedCountry ? selectedRef : null}>
                   {country}
-                </span>
+                </span >
                 <span className="modal-currency">{countries[country]}</span>
               </div>
             ))}

@@ -1,44 +1,78 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import './AddExpenseModal.css'
 import CategoryModal from "./CategoryModal";
 import { categories, icons, AppOptions } from './constants';
 import { setAlpha } from "./HelperFunctions";
 import countries from "./countries.json"
 import CountryModal from "./CountryModal";
+import { useLocalStorage } from "./useLocalStorage";
 
 export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [modalExpense, setModalExpense] = useState("");
   const [modalPrice, setModalPrice] = useState("");
-  const [selectedDate, setSelectedDate] = useState(Date.now())
+  const [selectedDate, setSelectedDate] = useState(Date.now());
+  const [lastRates, setLastRates] = useLocalStorage("lastRates" , []);
   // const [expenses, setExpenses] = useLocalStorage("expenses", []);
   const [category, setCategory] = useState("General");
   const [isClosing, setIsClosing] = useState(false);
   const [isCatOpen, setIsCatOpen] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
   const [country, setCountry] = useState("Israel");
+  // const [currency, setCurrency] = useState("ils")
+  const [rate, setRate] = useState(null);
+  const [rates, setRates] = useState(null);
   const [note, setNote] = useState("");
-  const [isAddNote, setIsAddNote] = useState(false);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
+  const [isNoteFocused, setIsNoteFocused] = useState(false);
+  const [CategoryFilter, setCategoryFilter] = useState("");
   // const [convertedPrice, setConvertedPrice] = useState("");
+
+  // const handleModalSubmit = () => {
+  //   if (modalExpense.trim() === "" || modalPrice.trim() === "") return; // Blank input check
+  //   handleClose();
+
+  //   const saveExpense = async () => {
+  //     let convertedPrice = modalPrice;
+  //     let rate = 1;
+  //     // setConvertedPrice(modalPrice);
+  //     if (countries[country] !== AppOptions.baseCurrency) {
+  //       // Convert currency
+  //       const response = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${AppOptions.baseCurrency}.json`);
+  //       const data = await response.json();
+  //       rate = data[AppOptions.baseCurrency][countries[country]]
+  //       convertedPrice = (modalPrice / data[AppOptions.baseCurrency][countries[country]])
+  //       // setConvertedPrice(data[countries[country]][AppOptions.baseCurrency] * modalPrice);
+  //     }
+
+  //   const newExpense = {  // id - current timestamp
+  //     id: Date.now(),
+  //     name: modalExpense,
+  //     price: parseFloat(modalPrice),  // Original price
+  //     date: selectedDate,
+  //     category: category,
+  //     currency: countries[country],
+  //     convertedPrice: parseFloat(convertedPrice),  // Price after conversion
+  //     country: country,
+  //     rate: rate,
+  //     note: note
+  //   }
+  //   setIsAdd(true);
+  //   setExpenses([...expenses, newExpense]);
+  //   };
+  //   saveExpense();
+  // };
 
   const handleModalSubmit = () => {
     if (modalExpense.trim() === "" || modalPrice.trim() === "") return; // Blank input check
     handleClose();
 
-    const saveExpense = async () => {
-      let convertedPrice = modalPrice;
-      let rate = 1;
-      // setConvertedPrice(modalPrice);
-      if (countries[country] !== AppOptions.baseCurrency) {
-        // Convert currency
-        const response = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${AppOptions.baseCurrency}.json`);
-        const data = await response.json();
-        rate = data[AppOptions.baseCurrency][countries[country]]
-        convertedPrice = (modalPrice / data[AppOptions.baseCurrency][countries[country]])
-        // setConvertedPrice(data[countries[country]][AppOptions.baseCurrency] * modalPrice);
-      }
-    const newExpense = {  // id - current timestamp
-      id: Date.now(),
+    let tmpRate = 1;
+    if (rate) {
+      tmpRate = rate;
+    }
+    const convertedPrice = modalPrice / tmpRate;
+    const newExpense = {  
+      id: Date.now(),  // id - current timestamp
       name: modalExpense,
       price: parseFloat(modalPrice),  // Original price
       date: selectedDate,
@@ -46,23 +80,49 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
       currency: countries[country],
       convertedPrice: parseFloat(convertedPrice),  // Price after conversion
       country: country,
-      rate: rate,
+      rate: tmpRate,
       note: note
     }
-    setIsAdd(true);
+    // console.log(newExpense)
+
     setExpenses([...expenses, newExpense]);
-    };
-    saveExpense();
+  }
 
-  };
+  useEffect(() => {
+    const getRates = async () => {
+      try {
+        const response = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${AppOptions.baseCurrency}.json`);
+        if (!response.ok){ // No internet 
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        setRates(data);
+        setLastRates(data)
+        setRate(data[AppOptions.baseCurrency][countries[country]]);
+      }
+      catch (error) {
+        console.error(error.message);
+        // setRates(lastRates);
+        console.log("Using last rates");
+        setRate(lastRates[AppOptions.baseCurrency][countries[country]])
+        return
+      }
 
-  // const countries = Object.values(currencies).flatMap(countries => countries).sort();
+    }
+    if (AppOptions.baseCurrency === countries[country]) return;
+    if (!rates) {
+      getRates();
+    }
+    else {
+      setRate(rates[AppOptions.baseCurrency][countries[country]])
+    }
+  }, [country])
+
+  useEffect(() => {
+    setCategoryFilter(categories.find(cat => cat.name === category).filter);
+  }, [category])
 
   const handleClose = () => {
-    // if (isCountryOpen) {
-    //   setIsCountryOpen(false);
-    //   return
-    // }
     setIsClosing(true);
   };
 
@@ -86,37 +146,54 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
       <div className={`modal-container ${isClosing ? 'fade-out' : ''}`} onClick={(e) => e.stopPropagation()} onAnimationEnd={handleAnimationEnd} style={{boxShadow: `0 0 32px 0 ${setAlpha(categoryColor, 0.2)}`}}>
 
         <div className='modal-bg-image' style={{ backgroundImage: `url(${icons[category]})` }} />
-        Add Expense
+        
           <input className="new-expense-input"
             value={modalExpense}
             onChange={(e) => setModalExpense(e.target.value)}
             placeholder="Expense"
+            dir='rtl'
           />
-          <input className="new-price-input"
-            // type='number'
-            value={modalPrice}
-            onChange={handlePriceChange}
-            placeholder="Price" />
-          <div className="aem-cat-wrapper">
-            <div className='open-cat-container' onClick={() => setIsCatOpen(true)} style={{backgroundColor: categoryColor}}>
+
+          <div className="price-container">
+            <div className="aem-currency-container" style={{backgroundColor: setAlpha(categoryColor, 0.5), borderColor: categoryColor}} onClick={() => setIsCountryOpen(true)}>
+              <div className="aem-base-currency">{AppOptions.baseCurrency.toUpperCase()}</div>
+              {countries[country] !== AppOptions.baseCurrency && 
+              <div className="aem-convert-rate">{rate ? `${(1/rate).toFixed(2)}${countries[country].toUpperCase()}` : '0'}</div>}
+            </div>
+            {/* <div>{rate ? `${(1/rate).toFixed(2)}${countries[country].toUpperCase()}` : '0'}</div> */}
+            <input className="new-price-input"
+              // type='number'
+              value={modalPrice}
+              onChange={handlePriceChange}
+              placeholder="Price" />
+          </div>
+          <div>
+            <div className='open-cat-container' onClick={() => setIsCatOpen(true)} style={{backgroundColor: setAlpha(categoryColor, 0.5)}}>
               <img src={icons[category]} className="open-cat" />
             </div>
-            <div className="aem-currency-wrapper">
-              <span className="aem-country-select" onClick={() => setIsCountryOpen(true)} style={{backgroundColor: setAlpha(categoryColor, 0.3)}}>{country}</span>
+
+            <div className="aem-country-wrapper">
+              <span className="aem-country-select" onClick={() => setIsCountryOpen(true)} style={{backgroundColor: setAlpha(categoryColor, 0.5), borderColor: categoryColor}}>{country}</span>
             </div>
           </div>
-          <input type="date" value={new Date(selectedDate).toISOString().split('T')[0]} onChange={(e) => setSelectedDate(new Date(e.target.value).getTime())} className="date-input" />
 
-          <div>
-            {(!isAddNote) && <button onClick={() => setIsAddNote(true)} className="add-note-button">Add description</button>}
-            {(isAddNote) && <textarea className='note' placeholder="Description" onChange={(e) => setNote(e.target.value)}/>}
+          <div className="aem-datepicker">
+            <img src={icons["Calendar"]} className="aem-calendar-icon" style={{filter: CategoryFilter}}/>
+            <input type="date" value={new Date(selectedDate).toISOString().split('T')[0]} onChange={(e) => setSelectedDate(new Date(e.target.value).getTime())} dir='rtl' className="date-input" />
           </div>
+
+          <textarea className='note' placeholder="Description" onChange={(e) => setNote(e.target.value)}
+            onFocus={() => setIsNoteFocused(true)} onBlur={() => setIsNoteFocused(false)}
+            style={{boxShadow: isNoteFocused ? `0 0 10px ${setAlpha(categoryColor, 0.4)}` : 'none',
+            borderColor: isNoteFocused ? categoryColor : undefined}}
+            />
+
           <div>
             {isCatOpen && <CategoryModal setIsOpen={setIsCatOpen} setCategory={setCategory}/>}
           {isCountryOpen && <CountryModal setIsOpen={setIsCountryOpen} selectedCountry={country} setSelectedCountry={setCountry} categoryColor={categoryColor} wrapperPosition={{top: '45%', right: '15%', height: '40vh', transformOrigin: 'top left'}} isPortal={true}/>}
-
           </div>
-          <img src={icons["Plus"]} className="add-button" onClick={handleModalSubmit}/>
+
+          <img src={icons["Plus"]} className={`add-button ${isClosing ? 'spin' : ''}`} onClick={handleModalSubmit}/>
           <button className="close-button" onClick={handleClose}>X</button>
       </div>
     </div>

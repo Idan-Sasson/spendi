@@ -44,7 +44,7 @@ export default function CategoryDetails() {
 			<div className="s-options-header">
 				{/* <div className="s-dropdown">Select</div> */}
 				{/* <CustomSelect onSelect={val => console.log("Selected:", val)} options={[{ name: "All" }, ...categories].map(category => category.name)} optionTitle={selectedCategory} setOption={setSelectedCategory}> */}
-				<CustomSelect onSelect={val => setSelectedCategory(val)} optionTitle={selectedCategory} style={{boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)'}}>
+				<CustomSelect onSelect={val => setSelectedCategory(val)} optionTitle={selectedCategory} style={{boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)', paddingBottom: '1px'}}>
 					<div data-value="All" className="s-option-container">
 						<img className="s-filter-icon" src={icons["All"]} />
 						<div key={"AlLl"} >All</div>
@@ -77,6 +77,8 @@ export default function CategoryDetails() {
 							<div className="item-actions">
 								<span>{item.name}</span>
 								<img className='item-icon' src={coloredIcons[item.category]}/>
+								{item.note && <div className="is-note"/>}
+
 							</div>
 								{isDetailOpen && openDetailId === item.id && <ExpenseDetails setIsOpen={setIsDetailOpen} expenseId={openDetailId} expenses={expenses} setExpenses={setExpenses}/>}
 

@@ -6,7 +6,7 @@ import CountryModal from './CountryModal';
 import './ExpenseDetails.css';
 import countries from "./countries.json"
 import { AppOptions, icons, categories} from './constants';
-import { setAlpha } from './HelperFunctions';
+import { setIconColor, parseRgbaString, setAlpha } from './HelperFunctions';
 
 
 export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpenses} ) {
@@ -14,6 +14,7 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   // const { id } = useParams();
   const expense = expenses.find(exp => exp.id === Number(expenseId));
   
+  const [lastRates, setLastRates] = useLocalStorage("lastRates" , []);
   const ogName = useRef(expense.name);
   const [name, setName] = useState(expense.name);
   const [price, setPrice] = useState(expense.price);
@@ -21,9 +22,7 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [rate, setRate] = useState(expense.rate);
   const [category, setCategory] = useState(expense.category);
   const [convertedPrice, setConvertedPrice] = useState(expense.converted)
-  const [selectedDate, setSelectedDate] = useState(
-    new Date(expense.date).toISOString().split('T')[0]
-  );
+  const [selectedDate, setSelectedDate] = useState(new Date(expense.date).toISOString().split('T')[0]);
   const changedCountry = useRef(false);
   const [rates, setRates] = useState("");
   const [selectedCountry, setSelectedCountry] = useState(expense.country);
@@ -32,6 +31,7 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [isNoteFocused, setIsNoteFocused] = useState(false);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false)
+  const [iconSrc, setIconSrc] = useState(null);
 
 // if (!expense) return <div>Expense not found</div>;
 
@@ -118,29 +118,70 @@ useEffect(() => {
     handleClose();
   }
 
+  // useEffect(() => {
+    // if (!changedCountry.current) {
+    //   return;
+  //   }
+  //   if (countries[selectedCountry] === AppOptions.baseCurrency) {
+  //     updateExpense({ country: selectedCountry, currency: countries[selectedCountry], rate: 1, convertedPrice: price})
+  //   }
+  //   const convertCurrency = async () => {
+  //       const response = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${AppOptions.baseCurrency}.json`);
+  //       const json = await response.json();
+  //       const data = json[AppOptions.baseCurrency];
+  //       setRates(data);
+  //       let newRate = data[countries[selectedCountry]];
+  //       setRate(newRate);
+  //       updateExpense({ convertedPrice: (price/newRate), rate: newRate, country: selectedCountry, currency: countries[selectedCountry] })
+  //     }
+  //   if (!rates) {
+  //     convertCurrency();
+  //     return
+  //   }
+  //   let newRate = rates[countries[selectedCountry]];
+  //   updateExpense({ convertedPrice: (price/newRate), rate: newRate, country: selectedCountry, currency: countries[selectedCountry] });
+  //     }, [selectedCountry])
+
+
   useEffect(() => {
-    if (!changedCountry.current) {
+    if (!changedCountry.current) return;
+    if (countries[selectedCountry] === countries[expense.country]) {  // If it's a different country but same currency
+      updateExpense({ country: selectedCountry });
       return;
     }
     if (countries[selectedCountry] === AppOptions.baseCurrency) {
-      updateExpense({ country: selectedCountry, currency: countries[selectedCountry], rate: 1, convertedPrice: price})
+      updateExpense({ country: selectedCountry, currency: countries[selectedCountry], rate: 1, convertedPrice: price});
+      return;
     }
-    const convertCurrency = async () => {
+    const getRates = async () => {
+      try {
         const response = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${AppOptions.baseCurrency}.json`);
-        const json = await response.json();
-        const data = json[AppOptions.baseCurrency];
+        if (!response.ok){ // No internet 
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
         setRates(data);
-        let newRate = data[countries[selectedCountry]];
-        setRate(newRate);
+        setLastRates(data); // Set the new fetched rates to save for next time failure
+        setRate(data[AppOptions.baseCurrency][countries[selectedCountry]]);
+        let newRate = data[AppOptions.baseCurrency][countries[selectedCountry]];
         updateExpense({ convertedPrice: (price/newRate), rate: newRate, country: selectedCountry, currency: countries[selectedCountry] })
       }
-    if (!rates) {
-      convertCurrency();
-      return
+      catch (error) {  // For any error with fetching the data, use the last saved rates
+        console.error(error.message);
+        console.log("Using last rates");
+        setRate(lastRates[AppOptions.baseCurrency][countries[selectedCountry]])
+        return
+      }
     }
-    let newRate = rates[countries[selectedCountry]];
-    updateExpense({ convertedPrice: (price/newRate), rate: newRate, country: selectedCountry, currency: countries[selectedCountry] });
-      }, [selectedCountry])
+    // if (AppOptions.baseCurrency === countries[selectedCountry]) return;
+    if (!rates) {
+      getRates();
+    }
+    else {
+      let newRate = rates[AppOptions.baseCurrency][countries[selectedCountry]];
+      updateExpense({ convertedPrice: (price/newRate), rate: newRate, country: selectedCountry, currency: countries[selectedCountry] });
+    }
+  }, [selectedCountry])
 
 
   const handleCountryChange = (country) => {
@@ -155,9 +196,16 @@ useEffect(() => {
   
   const categoryColor = categories.find(cat => cat.name === category).color;
   const filterColor = categories.find(cat => cat.name === category).filter;
+ 
+  useEffect(() => {
+    setIconColor(icons["Back"], parseRgbaString(categoryColor)).then(setIconSrc)
+  }, [category])
+
+
   return (
     <div className={`expenses-container ${isClosing ? 'slide-out' : ''}`} onAnimationEnd={handleAnimationEnd}>
-      <img src={icons["Back"]} className={`back-icon ${isClosing ? 'back-slide-out' : ''}`} onClick={handleClose} style={{filter: filterColor}}/>
+      <img src={iconSrc} className={`back-icon ${isClosing ? 'back-slide-out' : ''}`} onClick={handleClose}/>
+      {/* <img src={iconSrc} className={`back-icon ${isClosing ? 'back-slide-out' : ''}`} onClick={handleClose} style={{filter: filterColor}}/> */}
       <div className='remove-container'>
         <span className='remove-button' onClick={handleRemove}>Delete</span>
       </div>
@@ -195,6 +243,8 @@ useEffect(() => {
       </div>
       <div className='date-container'>
         <input className="date-input" type="date" value={selectedDate} onChange={handleDateChange}  />
+        <img src={icons["Calendar"]} className="aem-calendar-icon" style={{filter: filterColor}}/>
+
       </div>
       <div>
         {isCatOpen && <CategoryModal setIsOpen={setIsCatOpen} setCategory={setCategory} onClose={updateCat}/>}

@@ -11,9 +11,8 @@ export default function AddButton({ expenses, setExpenses }) {
 
     return (
         <div style={isOpen ? {} : {}}>
-            {/* <button className="open-modal" onClick={() => setIsOpen(true)}>+</button> */}
-            <div className="button-container">
-            <img src={icons["Plus"]} className='open-modal-icon' onClick={() => setIsOpen(true)}/>
+            <div className="button-container" onClick={() => setIsOpen(true)}>
+            <img src={icons["Plus"]} className='open-modal-icon'/>
             </div>
             {isOpen && <AddExpenseModal setIsOpen={setIsOpen} expenses={expenses} setExpenses={setExpenses} />}
         </div>

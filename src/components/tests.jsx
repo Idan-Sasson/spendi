@@ -1,32 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import countries from "./countries.json"
 import { useLocalStorage } from "./useLocalStorage";
+import { icons } from "./constants";
+import { setIconColor } from "./HelperFunctions";
+import { color } from "chart.js/helpers";
 
 export default function Tests() {
     const [data, setData] = useState("")
     const [expenses, setExpenses] = useLocalStorage("expenses", []);
-    const updatedExpenses = expenses.map(item => {
-        return {
-            ...item, 
-            rate: 1
-        }
-    })
- 
-    useEffect(() => {setExpenses(updatedExpenses);}, [])
-    // console.log(updatedExpenses);
+    const [coloredSrc, setColoredSrc] = useState(null);
 
-    // fix expenses
+    const [iconUrl, setIconUrl] = useState(null);
 
+    useEffect(() => {
+        setIconColor(icons["Back"], [255, 0, 0]).then(setColoredSrc)
+    }, [])
 
-    // useEffect(() => {
-    //     fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/ils.json").then(response => response.json())
-    //     .then(result => {
-    //         setData(result);
-    //     });
-    // }, []);
+    // const updatedExpenses = expenses.map(item => {
+    //     return {
+    //         ...item, 
+    //         rate: 1
+    //     }
+    // }) 
+    // useEffect(() => {setExpenses(updatedExpenses);}, [])
 
-    // console.log(data["ils"]["pen"]);
     return (
-        <div>TEST</div>
+        <div>TEST
+            <img src={coloredSrc} alt="Back icon" />
+        </div>
     );
 }

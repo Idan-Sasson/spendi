@@ -34,13 +34,6 @@
   }
 }
 
-/* input {
-  color: black;
-  border: none;
-  background: none;
-}
- */
-
 input:focus {
   outline: none;
 }
@@ -141,7 +134,8 @@ input:focus {
 .price-container {
   display: flex;
   justify-content: right;
-  padding: 10px 10px 0 0;
+  align-items: center;
+  margin: 10px 10px 0 0;
   /* border-bottom: 1px solid rgba(0, 0, 0, 0.431); */
 }
 

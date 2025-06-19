@@ -23,6 +23,7 @@ import coloredOther from "../assets/icons/colored/coloredOther.png"
 import coloredShopping from "../assets/icons/colored/coloredShopping.png"
 import dropdown from "../assets/icons/dropdown.png"
 import all from "../assets/icons/all.png"
+import calendar from "../assets/icons/calendar.png"
 
 
 
@@ -67,7 +68,8 @@ export const icons = {
   Plus: plus,
   Note: note,
   Dropdown: dropdown,
-  All: all
+  All: all,
+  Calendar: calendar
 }
 
 export const coloredIcons = {
