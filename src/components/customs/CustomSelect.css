@@ -5,12 +5,12 @@
     right: 0;
     bottom: 0;
     background: transparent;
-    z-index: 999;
+    z-index: 101;
 }
 
 .cs-overlay {
     position: relative;
-    z-index: 1000;
+    z-index: 998;
     user-select: none;
 }
 

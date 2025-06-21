@@ -12,8 +12,8 @@
 .modal-wrapper {
   position: fixed;
   margin-top: 60px;
-  /* top: 10%; */
-  /* left: 0; */
+  top: 18%;
+  /* left: 40px; */
   height: 50vh;
   width: 70vw;
   background-color: rgb(255, 255, 255);

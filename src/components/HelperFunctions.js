@@ -1,3 +1,7 @@
+import { icons } from "./constants";
+// import { useLocalStorage } from "./useLocalStorage";
+
+
 export function setAlpha(rgba, newAlpha) {
   // Remove the 'rgba(' prefix and ')' suffix
   const values = rgba.slice(5, -1).split(',').map(v => v.trim());
@@ -69,3 +73,22 @@ export function parseRgbaString(rgbaStr) {
 
   return [r, g, b, a];
 }
+// Gets the icon from localstorage if exists, if not then add to localStorage
+
+export async function getCachedIcon(iconKey, ColorStr, cachedIcons, setCachedIcons) {
+  // const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", {});
+  const cacheKey = `${iconKey}-${ColorStr}`
+  const cached = cachedIcons[cacheKey];
+  // console.log(cached);
+  if (cached) {
+    // console.log("CACHI CACHI");
+    return cached;
+  }
+  // console.log("No cachi cachi", cacheKey);
+  // console.log(cacheKey);
+  const iconRgba = parseRgbaString(ColorStr);
+  const iconSrc = icons[iconKey];
+  const dataUrl = await setIconColor(iconSrc, iconRgba);
+  setCachedIcons({ ...cachedIcons, [cacheKey]: dataUrl })
+  return dataUrl;
+} 

@@ -3,19 +3,20 @@ import { useLocalStorage } from './useLocalStorage';
 import './Home.css';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, plugins} from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
-import { AppOptions, categories, icons, coloredIcons } from './constants';
+import { AppOptions, categories, icons } from './constants';
 import AddButton from './AddButton';
-import Search from './Search';
 import { useNavigate } from 'react-router-dom';
 import banner from "../assets/Spendi-banner.png"
+import { setIconColor, parseRgbaString } from "./HelperFunctions";
+
 
 const Home = () => {
 
     const navigate = useNavigate();
     const [expenses, setExpenses] = useLocalStorage("expenses", []);
     const total = expenses.reduce((sum, item) => sum + (item.convertedPrice || 0), 0);
-    const [catDetail, setCatDetail] = useState('');
-
+    const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
+    
     const dayAvg = () => {
         if (expenses.length === 0) return 0;
         expenses.sort((a, b) => a.date - b.date);
@@ -24,6 +25,40 @@ const Home = () => {
         const days = (lastDay - firstDay) / (1000 * 60 * 60 * 24) + 1;
         return (total / days).toFixed(2);
     };
+
+    useEffect(() => {
+    const isAllColored = () => {
+    return categories.map(cat => {
+        const cacheKey = `${cat.name}-${cat.color}`;
+        if (cachedIcons[cacheKey]) return false
+        return [cat.name, cat.color];
+    })};
+    let toColor = isAllColored()
+    if (toColor.every(item => item === false)) {
+    }
+    else {
+        console.log(toColor);
+        async function iconsCach(iconName, colorStr) {
+        const cacheKey = `${iconName}-${colorStr}`;
+        const iconRgba = parseRgbaString(colorStr);
+        const iconSrc = icons[iconName];
+        const dataUrl = await setIconColor(iconSrc, iconRgba);
+        setCachedIcons(prev => ({ ...prev, [cacheKey]: dataUrl }));
+        }
+        toColor = toColor.filter(val => val !== false);
+        Promise.all(
+        toColor.map(([name, color]) => iconsCach(name, color)))
+    }
+    }, [])
+
+    const getIconSrc = (category) => {
+    const color = categories.find(cat => cat.name == category)?.color
+    const cacheKey = `${category}-${color}`
+    if (cachedIcons[cacheKey]) {
+        return cachedIcons[cacheKey];
+    }
+    return icons[category]
+    }
 
     // Graph
     ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, ArcElement);
@@ -177,17 +212,15 @@ const Home = () => {
                 <Bar options={chartOptions} data={chartData} />
             </div>
             <div className='pie-wrapper'>
-                {/* <div className='Nonesda'> */}
                 <div className='pie-container'>
                     <Pie options={pieOptions} data={pieData}/>
                 </div>
                 <div className='categories-total'>
-                {/* {catDetail && <CategoryDetails category={catDetail} setCat={setCatDetail}/>} */}
 
                     {Object.entries(catSums).sort((a, b) => b[1] - a[1]).map(([cat, sum]) => (
                         <div className='category-header' onClick={() => handleCategoryClick(cat)}>
                             <div className='icon-title'>
-                                <img src={coloredIcons[cat]} className='cat-icon' />
+                                <img src={getIconSrc(cat)} className='cat-icon' />
                                 <span className='cat-title'>{cat}</span>
                             </div>
                             <span className='cat-sum'>{sum.toFixed(2)} {AppOptions.baseCurrency.toUpperCase()}</span>
@@ -196,7 +229,6 @@ const Home = () => {
                 {/* </div> */}
                 </div>
             </div>
-
             {/* <button className='reset' onClick={() => setExpenses([])}>Reset</button> */}
         </div>
     );

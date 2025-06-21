@@ -2,19 +2,24 @@ import { useEffect, useState } from "react";
 import './Search.css'
 import { useLocalStorage } from "./useLocalStorage";
 import { useParams } from "react-router-dom";
-import { AppOptions, coloredIcons, categories, icons } from "./constants";
+import { AppOptions, categories, icons } from "./constants";
+import { setIconColor, parseRgbaString } from "./HelperFunctions";
 import AddButton from "./AddButton";
 import ExpenseDetails from "./ExpenseDetails";
 import CustomSelect from "./customs/CustomSelect";
 // import { setDefaultLocale } from "react-datepicker";
 
 export default function CategoryDetails() {
-	const [expenses, setExpenses] = useLocalStorage("expenses", []);
-	const [selectedCategory, setSelectedCategory] = useState('');
-	const [isDetailOpen, setIsDetailOpen] = useState(false);
-	const [openDetailId, setOpenDetailId] = useState('');
-	const [search, setSearch] = useState('');
 
+  const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
+  const [expenses, setExpenses] = useLocalStorage("expenses", []);
+  // const recoloredIconsRef = useRef({});
+  // const [, forceUpdate] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [openDetailId, setOpenDetailId] = useState('');
+  const [search, setSearch] = useState('');
+	
 	let { category } = useParams();
 	useEffect(() => {
 		if (!categories.some(c => c.name === category)) {
@@ -38,6 +43,40 @@ export default function CategoryDetails() {
 		return result;
 	}, {});
 
+  useEffect(() => {
+    const isAllColored = () => {
+    return categories.map(cat => {
+      const cacheKey = `${cat.name}-${cat.color}`;
+      if (cachedIcons[cacheKey]) return false
+      return [cat.name, cat.color];
+    })};
+    let toColor = isAllColored()
+    if (toColor.every(item => item === false)) {
+    }
+    else {
+      console.log(toColor);
+      async function iconsCach(iconName, colorStr) {
+        const cacheKey = `${iconName}-${colorStr}`;
+        const iconRgba = parseRgbaString(colorStr);
+        const iconSrc = icons[iconName];
+        const dataUrl = await setIconColor(iconSrc, iconRgba);
+        setCachedIcons(prev => ({ ...prev, [cacheKey]: dataUrl }));
+      }
+      toColor = toColor.filter(val => val !== false);
+      Promise.all(
+      toColor.map(([name, color]) => iconsCach(name, color)))
+    }
+  }, [])
+  
+  const getIconSrc = (category) => {
+    const color = categories.find(cat => cat.name == category)?.color
+    const cacheKey = `${category}-${color}`
+    if (cachedIcons[cacheKey]) {
+      return cachedIcons[cacheKey];
+    }
+    return icons[category]
+  }
+  
 	return (
 		<div className="s-overlay">
 			<AddButton  expenses={expenses} setExpenses={setExpenses}/>
@@ -51,7 +90,7 @@ export default function CategoryDetails() {
 					</div>
 					{categories.map((cat) => (
 						<div data-value={cat.name} className="s-option-container">
-							<img className="s-filter-icon" src={coloredIcons[cat.name]} />
+							<img className="s-filter-icon" src={getIconSrc(cat.name)} />
 							<div key={cat.name} >{cat.name}</div>
 						</div>
 					))}
@@ -76,7 +115,8 @@ export default function CategoryDetails() {
 							</div>
 							<div className="item-actions">
 								<span>{item.name}</span>
-								<img className='item-icon' src={coloredIcons[item.category]}/>
+								{/* <img className='item-icon' src={coloredIcons[item.category]}/> */}
+								<img className='item-icon' src={getIconSrc(item.category)}/>
 								{item.note && <div className="is-note"/>}
 
 							</div>

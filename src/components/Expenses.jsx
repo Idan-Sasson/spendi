@@ -2,18 +2,22 @@ import { useLocalStorage } from "./useLocalStorage";
 import "./Expenses.css";
 import { icons, categories, AppOptions } from "./constants";
 import { useState, useEffect } from "react";
+import { setIconColor, parseRgbaString } from "./HelperFunctions";
 import ExpenseDetails from "./ExpenseDetails";
 import React from "react";
 import AddButton from './AddButton';
-
+ 
 const Expenses = () => {
+
   const [expenses, setExpenses] = useLocalStorage("expenses", []);
+  const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
   const [openDetailId, setOpenDetailId] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = isDetailOpen ? "hidden" : "";
   }, [isDetailOpen])
+
   // Step 1: Group the expenses by date
   const groupedExpenses = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date)).reduce((result, item) => {
     // Turn the date into something like "12.12.24"
@@ -27,9 +31,39 @@ const Expenses = () => {
     return result;
   }, {});
 
-  function getColorFilter(category) {
-      return categories.find(cat => cat.name === category).filter;
-  };
+  useEffect(() => {
+    const isAllColored = () => {
+    return categories.map(cat => {
+      const cacheKey = `${cat.name}-${cat.color}`;
+      if (cachedIcons[cacheKey]) return false
+      return [cat.name, cat.color];
+    })};
+    let toColor = isAllColored()
+    if (toColor.every(item => item === false)) {
+    }
+    else {
+      console.log(toColor);
+      async function iconsCach(iconName, colorStr) {
+        const cacheKey = `${iconName}-${colorStr}`;
+        const iconRgba = parseRgbaString(colorStr);
+        const iconSrc = icons[iconName];
+        const dataUrl = await setIconColor(iconSrc, iconRgba);
+        setCachedIcons(prev => ({ ...prev, [cacheKey]: dataUrl }));
+      }
+      toColor = toColor.filter(val => val !== false);
+      Promise.all(
+      toColor.map(([name, color]) => iconsCach(name, color)))
+    }
+  }, [])
+
+  const getIconSrc = (category) => {
+    const color = categories.find(cat => cat.name == category)?.color
+    const cacheKey = `${category}-${color}`
+    if (cachedIcons[cacheKey]) {
+      return cachedIcons[cacheKey];
+    }
+    return icons[category]
+  }
 
   return (
     <div className="expenses-body">
@@ -61,18 +95,8 @@ const Expenses = () => {
                       </div>
                       <div className="item-actions">
                         <span className="item-name" >{item.name} </span>
-                        <img src={icons[item.category]} className="item-icon"
-                          style={{filter: getColorFilter(item.category)}}/>
+                        <img src={getIconSrc(item.category)} className="item-icon"/>
                           {item.note && <div className="is-note"/>}
-                        {/* <button
-                          className="remove"
-                          onClick={(e) => {
-                            e.stopPropagation(); // Prevent the click from bubbling up to the li
-                            handleRemove(item.id);
-                          }}
-                        >
-                          🗑️
-                        </button> */}
                       </div>
                     </div>
                   </li>

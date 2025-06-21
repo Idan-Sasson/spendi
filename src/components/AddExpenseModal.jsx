@@ -6,61 +6,23 @@ import { setAlpha } from "./HelperFunctions";
 import countries from "./countries.json"
 import CountryModal from "./CountryModal";
 import { useLocalStorage } from "./useLocalStorage";
+import { setIconColor, parseRgbaString } from "./HelperFunctions";
 
 export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [modalExpense, setModalExpense] = useState("");
   const [modalPrice, setModalPrice] = useState("");
   const [selectedDate, setSelectedDate] = useState(Date.now());
   const [lastRates, setLastRates] = useLocalStorage("lastRates" , []);
-  // const [expenses, setExpenses] = useLocalStorage("expenses", []);
   const [category, setCategory] = useState("General");
   const [isClosing, setIsClosing] = useState(false);
   const [isCatOpen, setIsCatOpen] = useState(false);
-  const [isAdd, setIsAdd] = useState(false);
   const [country, setCountry] = useState("Israel");
-  // const [currency, setCurrency] = useState("ils")
   const [rate, setRate] = useState(null);
   const [rates, setRates] = useState(null);
   const [note, setNote] = useState("");
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isNoteFocused, setIsNoteFocused] = useState(false);
-  const [CategoryFilter, setCategoryFilter] = useState("");
-  // const [convertedPrice, setConvertedPrice] = useState("");
-
-  // const handleModalSubmit = () => {
-  //   if (modalExpense.trim() === "" || modalPrice.trim() === "") return; // Blank input check
-  //   handleClose();
-
-  //   const saveExpense = async () => {
-  //     let convertedPrice = modalPrice;
-  //     let rate = 1;
-  //     // setConvertedPrice(modalPrice);
-  //     if (countries[country] !== AppOptions.baseCurrency) {
-  //       // Convert currency
-  //       const response = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${AppOptions.baseCurrency}.json`);
-  //       const data = await response.json();
-  //       rate = data[AppOptions.baseCurrency][countries[country]]
-  //       convertedPrice = (modalPrice / data[AppOptions.baseCurrency][countries[country]])
-  //       // setConvertedPrice(data[countries[country]][AppOptions.baseCurrency] * modalPrice);
-  //     }
-
-  //   const newExpense = {  // id - current timestamp
-  //     id: Date.now(),
-  //     name: modalExpense,
-  //     price: parseFloat(modalPrice),  // Original price
-  //     date: selectedDate,
-  //     category: category,
-  //     currency: countries[country],
-  //     convertedPrice: parseFloat(convertedPrice),  // Price after conversion
-  //     country: country,
-  //     rate: rate,
-  //     note: note
-  //   }
-  //   setIsAdd(true);
-  //   setExpenses([...expenses, newExpense]);
-  //   };
-  //   saveExpense();
-  // };
+  const [calendarIcon, setCalendarIcon] = useState(icons["Calendar"]);
 
   const handleModalSubmit = () => {
     if (modalExpense.trim() === "" || modalPrice.trim() === "") return; // Blank input check
@@ -118,10 +80,6 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
     }
   }, [country])
 
-  useEffect(() => {
-    setCategoryFilter(categories.find(cat => cat.name === category).filter);
-  }, [category])
-
   const handleClose = () => {
     setIsClosing(true);
   };
@@ -140,6 +98,13 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   }
 
   const categoryColor = categories.find(cat => cat.name === category).color;
+
+  useEffect(() => {
+    // setCategoryFilter(categories.find(cat => cat.name === category).filter);
+    setIconColor(icons["Calendar"], parseRgbaString(categoryColor)).then(setCalendarIcon)
+
+  }, [category])
+
   return (
     <div className={'modal-overlay'} onClick={handleClose}>
 
@@ -156,16 +121,15 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
 
           <div className="price-container">
             <div className="aem-currency-container" style={{backgroundColor: setAlpha(categoryColor, 0.5), borderColor: categoryColor}} onClick={() => setIsCountryOpen(true)}>
-              <div className="aem-base-currency">{AppOptions.baseCurrency.toUpperCase()}</div>
+              <div className="aem-base-currency">{countries[country].toUpperCase()}</div>
               {countries[country] !== AppOptions.baseCurrency && 
-              <div className="aem-convert-rate">{rate ? `${(1/rate).toFixed(2)}${countries[country].toUpperCase()}` : '0'}</div>}
+              <div className="aem-convert-rate">{rate ? `${(1/rate).toFixed(2)}${AppOptions.baseCurrency.toUpperCase()}` : '0'}</div>}
             </div>
-            {/* <div>{rate ? `${(1/rate).toFixed(2)}${countries[country].toUpperCase()}` : '0'}</div> */}
             <input className="new-price-input"
               // type='number'
               value={modalPrice}
               onChange={handlePriceChange}
-              placeholder="Price" />
+              placeholder="0.00" />
           </div>
           <div>
             <div className='open-cat-container' onClick={() => setIsCatOpen(true)} style={{backgroundColor: setAlpha(categoryColor, 0.5)}}>
@@ -178,8 +142,8 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
           </div>
 
           <div className="aem-datepicker">
-            <img src={icons["Calendar"]} className="aem-calendar-icon" style={{filter: CategoryFilter}}/>
-            <input type="date" value={new Date(selectedDate).toISOString().split('T')[0]} onChange={(e) => setSelectedDate(new Date(e.target.value).getTime())} dir='rtl' className="date-input" />
+            <img src={calendarIcon} className="aem-calendar-icon"/>
+            <input type="date" value={new Date(selectedDate).toISOString().split('T')[0]} onChange={(e) => setSelectedDate(new Date(e.target.value).getTime())} dir='rtl' className="aem-date-input" />
           </div>
 
           <textarea className='note' placeholder="Description" onChange={(e) => setNote(e.target.value)}

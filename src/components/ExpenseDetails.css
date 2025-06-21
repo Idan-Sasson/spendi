@@ -56,6 +56,8 @@ input:focus {
   display: flex;
   align-items: center;
   position: relative;
+  border-radius: 0 0 30px 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.145);
   /* justify-content: space-between; */
   /* border-bottom: 1px solid rgb(32, 212, 140); */
 }
@@ -80,6 +82,7 @@ input:focus {
 .note-icon-container {
   display: flex;
   justify-content: center;
+  padding-top: 10px;
   /* width: 5px; */
   /* aspect-ratio: 1; */
 }
@@ -123,7 +126,8 @@ input:focus {
   flex: 1;
   font-size: 15px;
   margin-top: 5px;
-  color: rgb(80, 80, 80)
+  color: rgb(80, 80, 80);
+  text-align: right;
 }
 
 .invisible {
@@ -135,7 +139,7 @@ input:focus {
   display: flex;
   justify-content: right;
   align-items: center;
-  margin: 10px 10px 0 0;
+  margin: 25px 10px 0 0;
   /* border-bottom: 1px solid rgba(0, 0, 0, 0.431); */
 }
 
@@ -168,16 +172,46 @@ input:focus {
   content: "₪";
 } */
 
+.ed-date-input-container {
+  /* background-color: rgba(0, 0, 0, 0.117); */
+  padding-right: 40px;
+}
+
+.date-input-invisible {
+  position: fixed;
+  z-index: 1000;
+  width: 40%;
+  filter: opacity(0);
+}
+
 .date-input {
+  font-size: 16px;
   border: none;
   background: none;
   color: black;
-  width: 140px;
+  /* text-align: right; */
+  width: 100%;
   user-select: none;
+  /* margin-right: 15px; */
+  /* border-right: 60px solid transparent; */
+  /* transform: translateX(-30px); */
 }
 
+.date-input::-webkit-calendar-picker-indicator {
+  visibility: hidden;
+}
+
+.ed-calendar-icon {
+  position: fixed;
+  transform: translateY(2px);
+  width: 28px;
+  padding-right: 10px;
+  aspect-ratio: 1;
+}
+
+
 .date-container {
-  margin: 10px 0;
+  margin: 20px 0;
   display: flex;
   justify-content: flex-end;
 }

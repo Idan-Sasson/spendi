@@ -129,7 +129,7 @@
     font-size: 20px;
     /* background-color: rgb(210, 210, 210); */
     padding: 0px 5px;
-    border-radius: 8%;
+    border-radius: 10px;
     border: 0.8px solid rgb(0, 0, 0);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.243);
 }
@@ -146,14 +146,18 @@
     aspect-ratio: 1;
 }
 
-.date-input {
+.aem-date-input {
     font-size: 16px;
     width: 100%;
-    /* text-align: right; */
+    border: none;
+    background: none;
+    color: black;
+    width: 140px;
+    user-select: none;
     position: fixed;
 }
 
-.date-input::-webkit-calendar-picker-indicator {
+.aem-date-input::-webkit-calendar-picker-indicator {
     visibility: hidden;
 }
 
