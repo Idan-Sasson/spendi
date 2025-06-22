@@ -3,24 +3,21 @@ import './Search.css'
 import { useLocalStorage } from "./useLocalStorage";
 import { useParams } from "react-router-dom";
 import { AppOptions, categories, icons } from "./constants";
-import { setIconColor, parseRgbaString } from "./HelperFunctions";
+import { setIconColor, parseRgbaString, convertCategories } from "./HelperFunctions";
 import AddButton from "./AddButton";
 import ExpenseDetails from "./ExpenseDetails";
 import CustomSelect from "./customs/CustomSelect";
-// import { setDefaultLocale } from "react-datepicker";
 
 export default function CategoryDetails() {
-
   const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
+  const [savedCategories, setSavedCategories] = useLocalStorage("savedCategories", []);
   const [expenses, setExpenses] = useLocalStorage("expenses", []);
-  // const recoloredIconsRef = useRef({});
-  // const [, forceUpdate] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [openDetailId, setOpenDetailId] = useState('');
   const [search, setSearch] = useState('');
-	
-	let { category } = useParams();
+  let { category } = useParams();
+
 	useEffect(() => {
 		if (!categories.some(c => c.name === category)) {
 			setSelectedCategory("All");
@@ -30,7 +27,10 @@ export default function CategoryDetails() {
 		}
 	}, []);
 
-	// const [filterCategory, setFilterCategory] = useState(category);
+  const getColor = (category) => {
+	  return savedCategories[category] || convertCategories()[category].color
+  }
+
 	let filteredExpenses = (selectedCategory.toLowerCase() === "all" ? expenses : expenses.filter(item => item.category === selectedCategory))
 	.filter(item => search === '' || item.name.toLowerCase().includes(search.toLowerCase()));
 
@@ -46,15 +46,13 @@ export default function CategoryDetails() {
   useEffect(() => {
     const isAllColored = () => {
     return categories.map(cat => {
-      const cacheKey = `${cat.name}-${cat.color}`;
+      const cacheKey = `${cat.name}-${getColor(cat.name)}`;
       if (cachedIcons[cacheKey]) return false
-      return [cat.name, cat.color];
+      return [cat.name, getColor(cat.name)];
     })};
     let toColor = isAllColored()
-    if (toColor.every(item => item === false)) {
-    }
-    else {
-      console.log(toColor);
+    if (toColor.every(item => item !== false)) {
+    
       async function iconsCach(iconName, colorStr) {
         const cacheKey = `${iconName}-${colorStr}`;
         const iconRgba = parseRgbaString(colorStr);
@@ -69,7 +67,7 @@ export default function CategoryDetails() {
   }, [])
   
   const getIconSrc = (category) => {
-    const color = categories.find(cat => cat.name == category)?.color
+    const color = getColor(category)
     const cacheKey = `${category}-${color}`
     if (cachedIcons[cacheKey]) {
       return cachedIcons[cacheKey];
@@ -86,7 +84,7 @@ export default function CategoryDetails() {
 				<CustomSelect onSelect={val => setSelectedCategory(val)} optionTitle={selectedCategory} style={{boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)', paddingBottom: '1px'}}>
 					<div data-value="All" className="s-option-container">
 						<img className="s-filter-icon" src={icons["All"]} />
-						<div key={"AlLl"} >All</div>
+						<div key={"All"} >All</div>
 					</div>
 					{categories.map((cat) => (
 						<div data-value={cat.name} className="s-option-container">

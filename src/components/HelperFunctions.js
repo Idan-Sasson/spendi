@@ -1,5 +1,6 @@
 import { icons } from "./constants";
-// import { useLocalStorage } from "./useLocalStorage";
+import { categories } from "./constants";
+import { useLocalStorage } from "./useLocalStorage";
 
 
 export function setAlpha(rgba, newAlpha) {
@@ -91,4 +92,17 @@ export async function getCachedIcon(iconKey, ColorStr, cachedIcons, setCachedIco
   const dataUrl = await setIconColor(iconSrc, iconRgba);
   setCachedIcons({ ...cachedIcons, [cacheKey]: dataUrl })
   return dataUrl;
-} 
+}
+
+export function convertCategories() {
+  return categories.reduce((acc, { name, color, isExpense }) => {
+    acc[name] = { color, isExpense };
+    return acc;
+  }, {});
+}
+
+
+export function useCatColor(category) {
+  const [savedCategories] = useLocalStorage("savedCategories", {});
+  return savedCategories[category] ? savedCategories[category] : convertCategories()[category].color;
+}

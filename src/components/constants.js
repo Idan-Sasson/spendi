@@ -11,19 +11,13 @@ import back from '../assets/icons/back.png'
 import shopping from '../assets/icons/shopping.png'
 import plus from '../assets/icons/plus.png'
 import note from "../assets/icons/note.png"
-import coloredAccommodation from "../assets/icons/colored/coloredAccommodations.png"
-import coloredCar from "../assets/icons/colored/coloredCar.png"
-import coloredEntertainment from "../assets/icons/colored/coloredEntertainment.png"
-import coloredFees from "../assets/icons/colored/coloredFees.png"
-import coloredFlights from "../assets/icons/colored/coloredFlights.png"
-import coloredGeneral from "../assets/icons/colored/coloredGeneral.png"
-import coloredFood from "../assets/icons/colored/coloredFood.png"
-import coloredGroceries from "../assets/icons/colored/coloredGroceries.png"
-import coloredOther from "../assets/icons/colored/coloredOther.png"
-import coloredShopping from "../assets/icons/colored/coloredShopping.png"
 import dropdown from "../assets/icons/dropdown.png"
 import all from "../assets/icons/all.png"
 import calendar from "../assets/icons/calendar.png"
+import home from "../assets/icons/home.png"
+import search from "../assets/icons/search.png"
+import expenses from "../assets/icons/expenses.png"
+import settings from "../assets/icons/settings.png"
 
 
 export const categories = [  // https://codepen.io/sosuke/pen/Pjoqqp
@@ -31,7 +25,7 @@ export const categories = [  // https://codepen.io/sosuke/pen/Pjoqqp
   { name: "Food", color: "rgba(98, 240, 33, 1)", isExpense: true },
   { name: "Car", color: "rgba(254, 231, 21, 1)", isExpense: true },
   { name: "Entertainment", color: "rgba(225, 70, 13, 1)", isExpense: true },
-  { name: "Groceries", color: "rgba(32, 98, 221, 1)", isExpense: true },
+  { name: "Groceries", color: "rgba(79, 166, 255, 1)", isExpense: true },
   { name: "Flights", color: "rgba(235, 148, 19, 1)", isExpense: true },
   { name: "Accommodations", color: "rgba(255, 9, 222, 1)", isExpense: true },
   { name: "Shopping", color: "rgba(20, 233, 233, 1)", isExpense: true },
@@ -43,7 +37,8 @@ export const categories = [  // https://codepen.io/sosuke/pen/Pjoqqp
 ];
 
 export const AppOptions = {
-  "baseCurrency": 'ils'
+  "baseCurrency": 'ils',
+  "backgroundColor": "rgb(239, 240, 239)"
 };
 
 export const categoriesColors = categories.reduce((acc, { name, color }) => {
@@ -67,19 +62,9 @@ export const icons = {
   Note: note,
   Dropdown: dropdown,
   All: all,
-  Calendar: calendar
+  Calendar: calendar,
+  Home: home,
+  Search: search,
+  Expenses: expenses,
+  Settings: settings
 }
-
-export const coloredIcons = {
-  Groceries: coloredGroceries,
-  Car: coloredCar,
-  Food: coloredFood,
-  General: coloredGeneral,
-  Flights: coloredFlights,
-  Entertainment: coloredEntertainment,
-  Other: coloredOther,
-  Accommodations: coloredAccommodation,
-  Shopping: coloredShopping,
-  Fees: coloredFees
-}
-

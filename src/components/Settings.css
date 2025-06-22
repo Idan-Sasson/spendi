@@ -1,0 +1,61 @@
+.settings-topborder {
+    position: fixed;
+    /* Fixed so it can stay when we scoll down */
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background-color: rgba(189, 189, 189, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    font-size: 25px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    border-radius: 0 0 35px 35px;
+    /* align-items: center; */
+}
+
+.settings-title {
+    padding-top: 10px;
+    user-select: none;
+}
+
+.settings-body {
+    padding: 70px 15px 0 15px;
+    user-select: none;
+    font-family: Times New Roman, serif;
+}
+
+.settings-category-title {
+    margin-top: 25px;
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.settings-item-container {
+    background-color: white;
+    border-radius: 10px;
+    padding: 5px 10px;
+    margin: 5px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.settings-item {
+    padding: 5px 0;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgb(239, 240, 239);
+}
+
+.last-item {
+    border: none;
+}
+
+.arrow {
+    width: 20px;
+    height: 15px;
+    /* aspect-ratio: 1; */
+    transform: rotate(180deg);
+}

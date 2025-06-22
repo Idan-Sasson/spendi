@@ -1,5 +1,5 @@
 .home {
-  margin-bottom: 150px;
+  margin-bottom: 170px;
 }
 
 .home-banner {
@@ -90,11 +90,18 @@
   font-weight: bold;
 }
 
+.chart-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
 .chart-container {
   background-color: rgba(142, 142, 142, 0.2);
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.119);
   padding: 0 0 20px 5px;
   margin: 20px 0 0 0;
   border-radius: 20px;
+  width: 95%;
   user-select: none;
 }
 
@@ -105,9 +112,9 @@
   /* background-color: blue; */
   background-color: rgba(142, 142, 142, 0.2);
   border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.119);
+  box-shadow: 0 0px 15px rgba(0, 0, 0, 0.119);
   width: 80vw;
-  margin: 10px auto auto auto;
+  margin: 20px auto auto auto;
   padding: 0 5px;
   /* background-color: white; */
   user-select: none;

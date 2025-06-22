@@ -44,12 +44,6 @@ export default function CategoryModal( {setIsOpen, setCategory, onClose} ) {
             <div className='category-title'>{cat.name}</div>
           </div>
           )}
-          {/* </div> */}
-          {/* <div className='income-container'>
-            <div className='income-item'>
-              <img src={icons["Shopping"]} alt='icon' className='income'/>
-            </div>
-          </div> */}
           <div>
             <div className={`close-container ${isClosing ? 'closeDown' : ''}`}>
               <img src={icons['Back']} onClick={handleClose} className={`close ${isClosing ? 'closeDown' : ''}`} />

@@ -7,12 +7,12 @@ import { AppOptions, categories, icons } from './constants';
 import AddButton from './AddButton';
 import { useNavigate } from 'react-router-dom';
 import banner from "../assets/Spendi-banner.png"
-import { setIconColor, parseRgbaString } from "./HelperFunctions";
+import { setIconColor, parseRgbaString, convertCategories } from "./HelperFunctions";
 
 
 const Home = () => {
-
     const navigate = useNavigate();
+    const [savedCategories, setSavedCategories] = useLocalStorage("savedCategories", []);
     const [expenses, setExpenses] = useLocalStorage("expenses", []);
     const total = expenses.reduce((sum, item) => sum + (item.convertedPrice || 0), 0);
     const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
@@ -26,38 +26,42 @@ const Home = () => {
         return (total / days).toFixed(2);
     };
 
+    const getColor = (category) => {
+        return savedCategories[category] || convertCategories()[category].color
+    }
+
     useEffect(() => {
     const isAllColored = () => {
     return categories.map(cat => {
-        const cacheKey = `${cat.name}-${cat.color}`;
+        const cacheKey = `${cat.name}-${getColor(cat.name)}`;
         if (cachedIcons[cacheKey]) return false
-        return [cat.name, cat.color];
+        return [cat.name, getColor(cat.name)];
     })};
     let toColor = isAllColored()
     if (toColor.every(item => item === false)) {
     }
     else {
-        console.log(toColor);
-        async function iconsCach(iconName, colorStr) {
-        const cacheKey = `${iconName}-${colorStr}`;
-        const iconRgba = parseRgbaString(colorStr);
-        const iconSrc = icons[iconName];
-        const dataUrl = await setIconColor(iconSrc, iconRgba);
-        setCachedIcons(prev => ({ ...prev, [cacheKey]: dataUrl }));
+        async function iconsCache(iconName, colorStr) {
+            const cacheKey = `${iconName}-${colorStr}`;
+            const iconRgba = parseRgbaString(colorStr);
+            const iconSrc = icons[iconName];
+            const dataUrl = await setIconColor(iconSrc, iconRgba);
+            setCachedIcons(prev => ({ ...prev, [cacheKey]: dataUrl }));
         }
         toColor = toColor.filter(val => val !== false);
         Promise.all(
-        toColor.map(([name, color]) => iconsCach(name, color)))
+        toColor.map(([name, color]) => iconsCache(name, color)))
     }
     }, [])
 
     const getIconSrc = (category) => {
-    const color = categories.find(cat => cat.name == category)?.color
-    const cacheKey = `${category}-${color}`
-    if (cachedIcons[cacheKey]) {
-        return cachedIcons[cacheKey];
-    }
-    return icons[category]
+        // const color = categories.find(cat => cat.name == category)?.color
+        const color = getColor(category);
+        const cacheKey = `${category}-${color}`
+        if (cachedIcons[cacheKey]) {
+            return cachedIcons[cacheKey];
+        }
+        return icons[category]
     }
 
     // Graph
@@ -101,8 +105,9 @@ const Home = () => {
         datasets: [{
             data: Object.keys(catSums).map(cat => catSums[cat]),
             backgroundColor: Object.keys(catSums).map(cat => {
-                const match = categories.find(c => c.name === cat);
-                return match ? match.color : 'rgba(0, 0, 0, 0.85)'
+                // const match = categories.find(c => c.name === cat);
+                const catColor = getColor(cat);
+                return catColor || 'rgba(0, 0, 0, 0.85)'
             }),
             borderWidth: 2,
             borderColor: 'rgb(239, 240, 239)'
@@ -208,17 +213,18 @@ const Home = () => {
                     <span className='number'>₪{dayAvg()}</span>
                 </div>
             </div>
-            <div className="chart-container">
-                <Bar options={chartOptions} data={chartData} />
+            <div className="chart-wrapper">
+                <div className='chart-container'>
+                    <Bar options={chartOptions} data={chartData} />
+                </div>
             </div>
             <div className='pie-wrapper'>
                 <div className='pie-container'>
                     <Pie options={pieOptions} data={pieData}/>
                 </div>
                 <div className='categories-total'>
-
                     {Object.entries(catSums).sort((a, b) => b[1] - a[1]).map(([cat, sum]) => (
-                        <div className='category-header' onClick={() => handleCategoryClick(cat)}>
+                        <div className='category-header' key={cat} onClick={() => handleCategoryClick(cat)}>
                             <div className='icon-title'>
                                 <img src={getIconSrc(cat)} className='cat-icon' />
                                 <span className='cat-title'>{cat}</span>
@@ -229,7 +235,7 @@ const Home = () => {
                 {/* </div> */}
                 </div>
             </div>
-            {/* <button className='reset' onClick={() => setExpenses([])}>Reset</button> */}
+            {/* <button className='reset' onClick={() => setCachedIcons([])}>Clear Cache</button> */}
         </div>
     );
 };

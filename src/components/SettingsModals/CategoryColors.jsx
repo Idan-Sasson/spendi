@@ -1,0 +1,107 @@
+import { useEffect, useState } from 'react'
+import './CategoryColors.css'
+import { AppOptions, categories } from '../constants'
+import { RgbaColorPicker } from 'react-colorful'
+
+import CustomSelect from '../customs/CustomSelect'
+import { convertCategories, parseRgbaString, setAlpha, setIconColor } from '../HelperFunctions'
+import { useLocalStorage } from '../useLocalStorage'
+import { icons } from '../constants'
+
+export default function CategoryColors({ setOpen }) {
+  // const catColor = useCatColor()
+  const [savedCategories, setSavedCategories] = useLocalStorage("savedCategories", []);
+	const [color, setColor] = useState(savedCategories["General"] || convertCategories()["General"].color);
+  const [selectedCategory, setSelectedCategory] = useState('General');
+  const [selectedColoredIcon, setSelectedColoredIcon] = useState(null);
+  const [unparsedColor, setUnparsedColor] = useState('')
+  // console.log(convertCategories());
+
+  const rgbaToObj = (rgbaStr) => {
+    const match = rgbaStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),\s*(\d*\.?\d+)\)/);
+    const [, r, g, b, a] = match;
+    return {
+      r: Number(r),
+      g: Number(g),
+      b: Number(b),
+      a: Number(a)
+    };
+  };
+
+  useEffect(() => {
+    const activeColor = savedCategories[selectedCategory] || convertCategories()[selectedCategory].color;
+    // setUnparsedColor(activeColor);
+    setColor(rgbaToObj(activeColor));
+  }, [selectedCategory])
+
+  useEffect(() => {
+    const parsedColor = `rgba(${color['r']}, ${color['g']}, ${color['b']}, ${color['a']})`
+    setUnparsedColor(parsedColor);
+    if (parsedColor === convertCategories()[selectedCategory].color) {  // If the set color is equal to the default color, remove from cache
+      handleRemove(selectedCategory);
+      return;
+    }
+    setSavedCategories(prev => ({ ...prev, [selectedCategory]: parsedColor}));
+  }, [color]);
+
+  const handleRemove = (category) => {
+    setSavedCategories(prev => {
+    const { [category]: _, ...rest } = prev;
+    return rest
+    });
+  }
+
+  const handleDefault = (category) => {
+    handleRemove(category);
+    setColor(rgbaToObj(convertCategories()[category].color));  // Removes from local storage then changes the color picker back to default
+  }
+
+  const handleReset = () => {
+    setSavedCategories({});
+    setColor(rgbaToObj(convertCategories()[selectedCategory].color));  // Removes from local storage then changes the color picker back to default
+  }
+
+  useEffect(() => {
+    setIconColor(icons[selectedCategory], parseRgbaString(unparsedColor)).then(setSelectedColoredIcon)    
+  }, [selectedCategory, unparsedColor])
+
+  return (
+    <div className='cc-overlay' style={{backgroundColor: AppOptions["backgroundColor"]}}>
+    	<div className='cc-wrapper'>
+        <div className='cc-select-wrapper'>
+				  <CustomSelect onSelect={setSelectedCategory} optionTitle={selectedCategory}
+            style={{boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)', paddingBottom: '1px'}}>
+						{categories.map((cat) => (
+							<div data-value={cat.name} className="s-option-container">
+								{/* <img className="s-filter-icon" src={getIconSrc(cat.name)} /> */}
+			  				<div key={cat.name} >{cat.name}</div>
+							</div>
+						))}
+          </CustomSelect>
+          {/* <div className='invisible'>aaaaaa</div> */}
+				<div className="cc-close" onClick={() => setOpen(false)}> Save
+				{/* <div className="cc-close" onClick={() => setOpen(false)} style={{backgroundColor: setAlpha(unparsedColor, 0.5)}}> Save */}
+          {/* <img className='cc-back-icon' src={"assets/icons/back2.png"}/> */}
+        </div>
+        </div>
+        <div className='cc-color-picker-container'>
+				  <RgbaColorPicker color={color} onChange={setColor} className='cc-color-picker'/>
+        </div>
+
+        <div className='cc-icons-container'>
+          <div className='cc-icon-backborder' style={{backgroundColor: setAlpha(unparsedColor, 1)}}>
+          {/* <div className='cc-icon-container' style={{backgroundColor: unparsedColor}}> */}
+            <img className='cc-icon' src={icons[selectedCategory]} />
+          {/* </div> */}
+          </div>
+          <div className='cc-icon-backborder'> 
+            <img className='cc-color-icon' src={selectedColoredIcon} />
+          </div>
+        </div>
+
+        <div className='cc-default' onClick={() => handleDefault(selectedCategory)}>Restore default</div>
+        <div className='cc-reset' onClick={handleReset}>Reset All</div>
+    	</div>
+    </div>
+  )
+}

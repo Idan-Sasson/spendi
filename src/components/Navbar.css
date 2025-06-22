@@ -1,3 +1,15 @@
+.new-navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #333;
+  padding: 15px 15px 20px 15px;
+  display: flex;
+  justify-content: space-around;
+  z-index: 100;
+}
+
 .navbar {
   position: fixed;
   /*  <-- Add this: Makes it stick relative to the viewport */
@@ -11,33 +23,13 @@
   align-items: center;
   background-color: #333;
   color: #fff;
-  padding: 15px 15px 35px 15px;
+  padding: 15px 15px 15px 15px;
   z-index: 100;
   /* padding-bottom: 10; */
   /* bottom: 0; */
 }
 
-.navbar-center .nav-links {
-  list-style-type: none;
-  display: flex;
-  margin: 0;
-  padding: 0;
-}
-
-.navbar-center .nav-links li {
-  margin-right: 1rem;
-}
-
-.navbar-center .nav-links a {
-  text-decoration: none;
-}
-
-.nav-link {
-  color: #fff;
-  /* font-weight: 400; */
-  padding: 10px 0 40px 0;
-}
-
-.active-link {
-  color: rgb(195, 98, 98);
+.navbar-icon {
+  width: 40px;
+  aspect-ratio: 1;
 }

@@ -45,7 +45,7 @@ export default function CountryModal({setIsOpen, selectedCountry, setSelectedCou
                   ref={country === selectedCountry ? selectedRef : null}>
                   {country}
                 </span >
-                <span className="modal-currency">{countries[country]}</span>
+                <span className="modal-currency">{countries[country].toUpperCase()}</span>
               </div>
             ))}
           </div>

@@ -2,14 +2,14 @@ import { useLocalStorage } from "./useLocalStorage";
 import "./Expenses.css";
 import { icons, categories, AppOptions } from "./constants";
 import { useState, useEffect } from "react";
-import { setIconColor, parseRgbaString } from "./HelperFunctions";
+import { setIconColor, parseRgbaString, convertCategories } from "./HelperFunctions";
 import ExpenseDetails from "./ExpenseDetails";
 import React from "react";
 import AddButton from './AddButton';
  
 const Expenses = () => {
-
   const [expenses, setExpenses] = useLocalStorage("expenses", []);
+  const [savedCategories, setSavedCategories] = useLocalStorage("savedCategories", []);
   const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
   const [openDetailId, setOpenDetailId] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -31,18 +31,21 @@ const Expenses = () => {
     return result;
   }, {});
 
+  const getColor = (category) => {
+      return savedCategories[category] || convertCategories()[category].color
+  }
+
   useEffect(() => {
     const isAllColored = () => {
     return categories.map(cat => {
-      const cacheKey = `${cat.name}-${cat.color}`;
+      const cacheKey = `${cat.name}-${getColor(cat.name)}`;
       if (cachedIcons[cacheKey]) return false
-      return [cat.name, cat.color];
+      return [cat.name, getColor(cat.name)];
     })};
     let toColor = isAllColored()
     if (toColor.every(item => item === false)) {
     }
     else {
-      console.log(toColor);
       async function iconsCach(iconName, colorStr) {
         const cacheKey = `${iconName}-${colorStr}`;
         const iconRgba = parseRgbaString(colorStr);
@@ -57,7 +60,7 @@ const Expenses = () => {
   }, [])
 
   const getIconSrc = (category) => {
-    const color = categories.find(cat => cat.name == category)?.color
+    const color = getColor(category);
     const cacheKey = `${category}-${color}`
     if (cachedIcons[cacheKey]) {
       return cachedIcons[cacheKey];

@@ -185,11 +185,6 @@ useEffect(() => {
     setSelectedCountry(country);
     changedCountry.current = true;
   }
-
-  const handleNoteChange = (e)  => {
-    setNote(e.target.value);
-    updateExpense({ note: e.target.value })
-  }
   
   const categoryColor = categories.find(cat => cat.name === category).color;
  
@@ -225,7 +220,6 @@ useEffect(() => {
       }
       {isNoteOpen && 
         <div className='note-container'>
-          {/* <textarea className='note-detail' placeholder="Description" value={note} onChange={handleNoteChange} */}
           <textarea className='note-detail' placeholder="Description" value={note} onChange={(e) => setNote(e.target.value)}
           onFocus={() => setIsNoteFocused(true)} onBlur={() => setIsNoteFocused(false)}
           style={{boxShadow: isNoteFocused ? `0 0 10px ${setAlpha(categoryColor, 0.4)}` : 'none',
@@ -247,7 +241,6 @@ useEffect(() => {
 
         <div className='ed-date-input-container'>
           <input className="date-input" type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)}  />
-          {/* <div className='invisible'>aaaaaa</div> */}
         </div>
         <img src={calendarIcon} className="ed-calendar-icon"/>
 
