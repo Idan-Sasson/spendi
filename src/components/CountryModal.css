@@ -39,6 +39,13 @@
   text-align: left;
 }
 
+.search-country {
+  font-size: 16px;
+  padding: 2% 2%;
+  border: none;
+  border-bottom: 1px solid rgb(221, 221, 221);
+}
+
 .country-wrapper {
   display: flex;
   justify-content: space-between;

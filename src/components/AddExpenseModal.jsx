@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import './AddExpenseModal.css'
 import CategoryModal from "./CategoryModal";
 import { categories, icons, AppOptions } from './constants';
-import { setAlpha } from "./HelperFunctions";
+import { convertCategories, setAlpha } from "./HelperFunctions";
 import countries from "./countries.json"
 import CountryModal from "./CountryModal";
 import { useLocalStorage } from "./useLocalStorage";
 import { setIconColor, parseRgbaString } from "./HelperFunctions";
 
 export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
+  const [savedCategories, setSavedCategories] = useLocalStorage("savedCategories", []);
   const [modalExpense, setModalExpense] = useState("");
   const [modalPrice, setModalPrice] = useState("");
   const [selectedDate, setSelectedDate] = useState(Date.now());
@@ -97,13 +98,19 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
     setModalPrice(e.target.value)
   }
 
-  const categoryColor = categories.find(cat => cat.name === category).color;
+  const getColor = (category) => {
+      return savedCategories[category] || convertCategories()[category].color
+  }
+
+  const categoryColor = getColor(category);
 
   useEffect(() => {
     // setCategoryFilter(categories.find(cat => cat.name === category).filter);
     setIconColor(icons["Calendar"], parseRgbaString(categoryColor)).then(setCalendarIcon)
 
   }, [category])
+
+
 
   return (
     <div className={'modal-overlay'} onClick={handleClose}>

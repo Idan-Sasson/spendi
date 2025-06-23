@@ -5,7 +5,40 @@
     bottom: 0;
     right: 0;
     /* background-color: aqua; */
+    transform: translateX(0);
     z-index: 101;
+
+    animation: slideIn 0.2s ease-in-out forwards;
+}
+
+.cc-overlay.slide-out {
+    animation: slideOut 0.2s ease-in-out forwards;
+}
+
+@keyframes slideOut {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(100vw);
+    }
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(100vw);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.cc-wrapper {
+    padding-top: 80px;
+    user-select: none;
+    /* transform: translateX(100vw); */
 }
 
 .cc-back-icon {

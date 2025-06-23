@@ -5,7 +5,7 @@
   top: 0;
   left: 0;
   z-index: 1000;
-  background-color: rgb(255, 255, 255);
+  /* background-color: rgb(255, 255, 255); */
 
   animation: slideIn 0.1s ease forwards;
 }
@@ -189,12 +189,8 @@ input:focus {
   border: none;
   background: none;
   color: black;
-  /* text-align: right; */
   width: 100%;
   user-select: none;
-  /* margin-right: 15px; */
-  /* border-right: 60px solid transparent; */
-  /* transform: translateX(-30px); */
 }
 
 .date-input::-webkit-calendar-picker-indicator {
@@ -209,6 +205,16 @@ input:focus {
   aspect-ratio: 1;
 }
 
+.ed-country-container {
+  display: flex;
+}
+
+.ed-country {
+  margin-right: 10px;
+  padding: 2px 15px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.263);
+}
 
 .date-container {
   margin: 20px 0;

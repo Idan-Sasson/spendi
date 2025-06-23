@@ -7,7 +7,7 @@
     height: 70px;
     background-color: rgba(189, 189, 189, 1);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    font-size: 25px;
+    font-size: 28px;
     font-weight: 600;
     display: flex;
     justify-content: center;
@@ -23,7 +23,7 @@
 .settings-body {
     padding: 70px 15px 0 15px;
     user-select: none;
-    font-family: Times New Roman, serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .settings-category-title {
@@ -59,3 +59,7 @@
     /* aspect-ratio: 1; */
     transform: rotate(180deg);
 }
+
+/* .notification-overlay.settings-notification {
+    background-color: blue;
+} */

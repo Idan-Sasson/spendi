@@ -38,7 +38,7 @@ export const categories = [  // https://codepen.io/sosuke/pen/Pjoqqp
 
 export const AppOptions = {
   "baseCurrency": 'ils',
-  "backgroundColor": "rgb(239, 240, 239)"
+  "backgroundColor": "rgba(239, 240, 239, 1)"
 };
 
 export const categoriesColors = categories.reduce((acc, { name, color }) => {

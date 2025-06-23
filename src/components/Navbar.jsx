@@ -19,7 +19,6 @@ const Navbar = () => {
       return cachedIcons[cacheKey];
     }
     // If the icon is not catched
-    console.log("heha");
     async function iconsCach(iconName, colorStr) {
       const cacheKey = `${iconName}-${colorStr}`;
       const iconRgba = parseRgbaString(colorStr);

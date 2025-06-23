@@ -8,13 +8,14 @@ import { convertCategories, parseRgbaString, setAlpha, setIconColor } from '../H
 import { useLocalStorage } from '../useLocalStorage'
 import { icons } from '../constants'
 
-export default function CategoryColors({ setOpen }) {
+export default function CategoryColors({ setIsOpen }) {
   // const catColor = useCatColor()
   const [savedCategories, setSavedCategories] = useLocalStorage("savedCategories", []);
 	const [color, setColor] = useState(savedCategories["General"] || convertCategories()["General"].color);
   const [selectedCategory, setSelectedCategory] = useState('General');
   const [selectedColoredIcon, setSelectedColoredIcon] = useState(null);
   const [unparsedColor, setUnparsedColor] = useState('')
+  const [isClosing, setIsClosing] = useState(false);
   // console.log(convertCategories());
 
   const rgbaToObj = (rgbaStr) => {
@@ -30,7 +31,6 @@ export default function CategoryColors({ setOpen }) {
 
   useEffect(() => {
     const activeColor = savedCategories[selectedCategory] || convertCategories()[selectedCategory].color;
-    // setUnparsedColor(activeColor);
     setColor(rgbaToObj(activeColor));
   }, [selectedCategory])
 
@@ -61,28 +61,35 @@ export default function CategoryColors({ setOpen }) {
     setColor(rgbaToObj(convertCategories()[selectedCategory].color));  // Removes from local storage then changes the color picker back to default
   }
 
+  const handleClose = () => {
+    setIsClosing(true);
+  }
+
+  const handleAnimationEnd = () => {
+    if (isClosing) setIsOpen(false)
+  }
+
   useEffect(() => {
     setIconColor(icons[selectedCategory], parseRgbaString(unparsedColor)).then(setSelectedColoredIcon)    
   }, [selectedCategory, unparsedColor])
 
   return (
-    <div className='cc-overlay' style={{backgroundColor: AppOptions["backgroundColor"]}}>
+    <div className={`cc-overlay ${isClosing ? 'slide-out' : ''}`} style={{backgroundColor: AppOptions["backgroundColor"]}} onAnimationEnd={handleAnimationEnd}>
+      <div className='settings-topborder'>
+        <div className='settings-title'>Color Picker</div>
+      </div>
     	<div className='cc-wrapper'>
         <div className='cc-select-wrapper'>
 				  <CustomSelect onSelect={setSelectedCategory} optionTitle={selectedCategory}
             style={{boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)', paddingBottom: '1px'}}>
 						{categories.map((cat) => (
-							<div data-value={cat.name} className="s-option-container">
+							<div key={cat.name} data-value={cat.name} className="s-option-container">
 								{/* <img className="s-filter-icon" src={getIconSrc(cat.name)} /> */}
 			  				<div key={cat.name} >{cat.name}</div>
 							</div>
 						))}
           </CustomSelect>
-          {/* <div className='invisible'>aaaaaa</div> */}
-				<div className="cc-close" onClick={() => setOpen(false)}> Save
-				{/* <div className="cc-close" onClick={() => setOpen(false)} style={{backgroundColor: setAlpha(unparsedColor, 0.5)}}> Save */}
-          {/* <img className='cc-back-icon' src={"assets/icons/back2.png"}/> */}
-        </div>
+				<div className="cc-close" onClick={handleClose}>Save</div>
         </div>
         <div className='cc-color-picker-container'>
 				  <RgbaColorPicker color={color} onChange={setColor} className='cc-color-picker'/>
@@ -90,9 +97,7 @@ export default function CategoryColors({ setOpen }) {
 
         <div className='cc-icons-container'>
           <div className='cc-icon-backborder' style={{backgroundColor: setAlpha(unparsedColor, 1)}}>
-          {/* <div className='cc-icon-container' style={{backgroundColor: unparsedColor}}> */}
             <img className='cc-icon' src={icons[selectedCategory]} />
-          {/* </div> */}
           </div>
           <div className='cc-icon-backborder'> 
             <img className='cc-color-icon' src={selectedColoredIcon} />

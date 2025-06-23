@@ -4,7 +4,7 @@ import AddButton from './AddButton';
 import './Income.css'
 
 
-export default function() {
+export default function Income() {
 
     const [expenses, setExpenses] = useLocalStorage("expenses", []);
     const filteredIncome = expenses.filter(item => item.price < 0);

@@ -75,7 +75,7 @@ const Expenses = () => {
         {/* Go over each date group */}
         {Object.entries(groupedExpenses)
           .map(([isoDate, items]) => (
-            <li key={isoDate}>
+            <div key={isoDate}>
               <div className={`date-header ${isoDate === Object.keys(groupedExpenses)[0] ? 'first' : ''}`}>
                 <span className="total">₪{items.reduce((sum, item) => sum + item.convertedPrice, 0).toFixed(2)}{" "}
                 </span>
@@ -85,7 +85,7 @@ const Expenses = () => {
                 {/* For each item under the date, show its name and price */}
                 {items.map((item) => (
                   <React.Fragment key={item.id}>
-                  <li key={item.id}>
+                  <div key={item.id}>
                     <div
                       className="item-header"
                       key={item.id}
@@ -102,12 +102,12 @@ const Expenses = () => {
                           {item.note && <div className="is-note"/>}
                       </div>
                     </div>
-                  </li>
+                  </div>
                   {isDetailOpen && openDetailId === item.id && <ExpenseDetails setIsOpen={setIsDetailOpen} expenseId={openDetailId} expenses={expenses} setExpenses={setExpenses}/>}
                   </React.Fragment>
                 ))}
               </ul>
-            </li>
+            </div>
           ))}
       </ul>
     </div>

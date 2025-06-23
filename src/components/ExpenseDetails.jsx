@@ -1,20 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import { useLocalStorage } from './useLocalStorage';
 import CategoryModal from './CategoryModal';
 import CountryModal from './CountryModal';
 import './ExpenseDetails.css';
 import countries from "./countries.json"
-import { AppOptions, icons, categories} from './constants';
-import { setIconColor, parseRgbaString, setAlpha } from './HelperFunctions';
-
+import { AppOptions, icons} from './constants';
+import { setIconColor, parseRgbaString, setAlpha, convertCategories } from './HelperFunctions';
 
 export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpenses} ) {
-  // const [expenses, setExpenses] = useLocalStorage('expenses', []);
-  // const { id } = useParams();
   const expense = expenses.find(exp => exp.id === Number(expenseId));
-  
   const [lastRates, setLastRates] = useLocalStorage("lastRates" , []);
+  const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
+  const [savedCategories, setSavedCategories] = useLocalStorage("savedCategories", []);
   const [lastCountry, setLastCountry] = useState(expense.country);
   const ogName = useRef(expense.name);
   const [name, setName] = useState(expense.name);
@@ -22,22 +19,19 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [selectedDate, setSelectedDate] = useState(new Date(expense.date).toISOString().split('T')[0]);
   const [rate, setRate] = useState(expense.rate);
   const [category, setCategory] = useState(expense.category);
-  const [convertedPrice, setConvertedPrice] = useState(expense.converted)
   const [selectedCountry, setSelectedCountry] = useState(expense.country);
   const [note, setNote] = useState(expense.note);
-  const [currency, setCurrency] = useState(expense.currency);
   const [isCatOpen, setIsCatOpen] = useState(false);
-  const changedCountry = useRef(false);
   const [rates, setRates] = useState("");
   const [isNoteOpen, setIsNoteOpen] = useState(false);
   const [isNoteFocused, setIsNoteFocused] = useState(false);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false)
-  const [backIconSrc, setBackIconSrc] = useState(icons["Back"]);
-  const [calendarIcon, setCalendarIcon] = useState(icons["Calendar"]);
-  const [noteIcon, setNoteIcon] = useState(icons["Note"]);
+  const getColor = (category) => {
+    return savedCategories[category] || convertCategories()[category].color
+  }
+  const [categoryColor, setCategoryColor] = useState(getColor(expense.category));
 
-// if (!expense) return <div>Expense not found</div>;
 
   useEffect(() => {
     if (note) setIsNoteOpen(true)
@@ -49,7 +43,6 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
     if (name === '') newName = ogName.current;
     else newName = name;
     updateExpense({ name: newName, price: price, date: selectedDate, category: category, convertedPrice: price/rate, note: note, rate: rate, country: selectedCountry, currency: countries[selectedCountry] })
-
   }
 
   const updateExpense = (updatedField) => {
@@ -69,51 +62,26 @@ useEffect(() => {
   }
 }, []); // Runs only once on mount
 
-  const handleDateChange = (e) => {
-    const newDate = e.target.value;
-    setSelectedDate(newDate);  // Shows the new date in the input  
-    // updateExpense({ date: new Date(newDate).getTime() });
-  };
-
-  const handleTitleChange = (e) => {
-    const newName = e.target.value.trim();
-    setName(e.target.value);  // Updates the input field with the new name
-    // If the new name is empty, revert to the original name
-    // Otherwise, update the expense with the new name
-    if (newName === '') {
-      updateExpense({ name: ogName.current });
-    }
-    else {
-      updateExpense({ name: newName });
-    }
-  };
 
   const handlePriceChange = (e) => {
-    const isValidNumber = str => /^-?\d*\.?\d*$/.test(str);
+    const isValidNumber = str => /^-?\d*\.?\d*$/.test(str); // Can contain -
     const newPrice = e.target.value;
     const pfPrice = parseFloat(newPrice); // ParsedFloat
     if (!isValidNumber(e.target.value)) return;
     // const newPrice = parseFloat(e.target.value);
     if (newPrice === '-') {
       setPrice("-");
-      setConvertedPrice(0);
-      // updateExpense({ price: 0, convertedPrice: 0 });
+
     }
     else if (isNaN(pfPrice)) {
-    //   console.log("nan")
       setPrice("");
-      setConvertedPrice(0);
-      // updateExpense({ price: 0, convertedPrice: 0 });
     }
     else {
     setPrice(pfPrice);
-    setConvertedPrice(pfPrice / rate);
-    // updateExpense({ price: plPrice, convertedPrice: (plPrice / rate) });
   }};
 
   const updateCat = (newCat) => {
     setCategory(newCat)
-    // updateExpense({ category: newCat })
   }
 
   const handleClose = () => {
@@ -132,22 +100,18 @@ useEffect(() => {
     handleClose();
   }
 
-
   useEffect(() => {
-    if (!changedCountry.current) return;
     setLastCountry(selectedCountry);
     if (countries[selectedCountry] === countries[lastCountry]) {  // If it's a different country but same currency
-      // updateExpense({ country: selectedCountry });
       return;
     }
-    if (countries[selectedCountry] === AppOptions.baseCurrency) {
+    if (countries[selectedCountry] === AppOptions.baseCurrency) { // If the country is the same as baseCurrency
       setRate(1);
-      setConvertedPrice(price);
-      // updateExpense({ country: selectedCountry, currency: countries[selectedCountry], rate: 1, convertedPrice: price});
       return;
     }
     const getRates = async () => {
       try {
+        console.log("Fetching");
         const response = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${AppOptions.baseCurrency}.json`);
         if (!response.ok){ // No internet 
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -157,9 +121,7 @@ useEffect(() => {
         setLastRates(data); // Set the new fetched rates to save for next time failure
         setRate(data[AppOptions.baseCurrency][countries[selectedCountry]]);
         let newRate = data[AppOptions.baseCurrency][countries[selectedCountry]];
-        setConvertedPrice(price/newRate);
         setRate(newRate);
-        // updateExpense({ convertedPrice: (price/newRate), rate: newRate, country: selectedCountry, currency: countries[selectedCountry] })
       }
       catch (error) {  // For any error with fetching the data, use the last saved rates
         console.error(error.message);
@@ -174,32 +136,40 @@ useEffect(() => {
     }
     else {
       let newRate = rates[AppOptions.baseCurrency][countries[selectedCountry]];
-      setConvertedPrice(price/newRate);
       setRate(newRate);
-      // updateExpense({ convertedPrice: (price/newRate), rate: newRate, country: selectedCountry, currency: countries[selectedCountry] });
     }
   }, [selectedCountry])
 
-
   const handleCountryChange = (country) => {
     setSelectedCountry(country);
-    changedCountry.current = true;
   }
-  
-  const categoryColor = categories.find(cat => cat.name === category).color;
- 
-  useEffect(() => {
-    setIconColor(icons["Back"], parseRgbaString(categoryColor)).then(setBackIconSrc);
-    setIconColor(icons["Calendar"], parseRgbaString(categoryColor)).then(setCalendarIcon);
-    setIconColor(icons["Note"], parseRgbaString(categoryColor)).then(setNoteIcon);
 
-
+  useEffect(() => {  // Set new category color when we select a new category
+    setCategoryColor(getColor(category));
   }, [category])
 
+  const getIconSrc = (iconName, color)=> { // Checks if icon is cached, if not then change it's color and catch
+    const cacheKey = `${iconName}-${color}`
+    if (cachedIcons[cacheKey]) {
+      return cachedIcons[cacheKey];
+    }
+    // If the icon is not catched
+    async function iconsCach(iconName, colorStr) {
+      const cacheKey = `${iconName}-${colorStr}`;
+      const iconRgba = parseRgbaString(colorStr);
+      const iconSrc = icons[iconName];
+      const dataUrl = await setIconColor(iconSrc, iconRgba);
+      setCachedIcons(prev => ({ ...prev, [cacheKey]: dataUrl }));
+    }
+    Promise.all(
+    [[iconName, color]].map(([name, color]) => iconsCach(name, color)))
+      
+    return icons[iconName]
+  }
 
   return (
-    <div className={`expenses-container ${isClosing ? 'slide-out' : ''}`} onAnimationEnd={handleAnimationEnd}>
-      <img src={backIconSrc} className={`back-icon ${isClosing ? 'back-slide-out' : ''}`} onClick={handleSave}/>
+    <div className={`expenses-container ${isClosing ? 'slide-out' : ''}`} onAnimationEnd={handleAnimationEnd} style={{backgroundColor: AppOptions["backgroundColor"]}}>
+      <img src={getIconSrc("Back", getColor(category))} className={`back-icon ${isClosing ? 'back-slide-out' : ''}`} onClick={handleSave}/>
       <div className='remove-container'>
         <span className='remove-button' onClick={handleRemove}>Delete</span>
       </div>
@@ -214,10 +184,9 @@ useEffect(() => {
       { !isNoteOpen &&
         <div className='note-icon-container' onClick={() => setIsNoteOpen(true)}>
         <span className='add-desc-text'>Add description</span>
-        <img src={noteIcon} value='note' className='note-icon'/>
+        <img src={getIconSrc("Note", getColor(category))} value='note' className='note-icon'/>
         <span className='invisible'>Add description</span>
-      </div>
-      }
+      </div>}
       {isNoteOpen && 
         <div className='note-container'>
           <textarea className='note-detail' placeholder="Description" value={note} onChange={(e) => setNote(e.target.value)}
@@ -226,6 +195,7 @@ useEffect(() => {
                   borderColor: isNoteFocused ? categoryColor : undefined}}
                   />
         </div>}
+
       <div className="price-container">
         <input className="price-input" value={price} onChange={handlePriceChange} placeholder={expense.price} />
         <div onClick={() => setIsCountryOpen(true)} className='currency-container' style={{backgroundColor: setAlpha(categoryColor, 0.25),
@@ -236,13 +206,16 @@ useEffect(() => {
         </div>
         {isCountryOpen && <CountryModal setIsOpen={setIsCountryOpen} selectedCountry={selectedCountry} setSelectedCountry={(country) => handleCountryChange(country)} categoryColor={categoryColor}/>}
       </div>
+      <div className="ed-country-container" dir='rtl' onClick={() => setIsCountryOpen(true)}>
+        <div className="ed-country" style={{backgroundColor: setAlpha(categoryColor, 0.25), borderColor: setAlpha(categoryColor, 0.5)}}>{selectedCountry}</div>
+      </div>
       <div className='date-container'>
           <input className="date-input-invisible" type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)}  />
 
         <div className='ed-date-input-container'>
           <input className="date-input" type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)}  />
         </div>
-        <img src={calendarIcon} className="ed-calendar-icon"/>
+        <img src={getIconSrc("Calendar", getColor(category))} className="ed-calendar-icon"/>
 
       </div>
       <div>

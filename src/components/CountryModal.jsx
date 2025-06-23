@@ -6,7 +6,9 @@ import ReactDOM from 'react-dom'
 export default function CountryModal({setIsOpen, selectedCountry, setSelectedCountry, categoryColor, wrapperPosition, isPortal}) {
     // const [selectedCountry]
     const selectedRef = useRef(null);
+    const [filteredCountries, setFilteredCountries] = useState(Object.keys(countries));
     const [isClosing, setIsClosing] = useState(false);
+    const [search, setSearch] = useState('');
 
     const handleCountryClick = (country) => {
         setSelectedCountry(country);
@@ -24,23 +26,37 @@ export default function CountryModal({setIsOpen, selectedCountry, setSelectedCou
       }
     }
 
+    const handleSearchChange = (e) => {
+      const currentSearch = e.target.value
+      setSearch(currentSearch);
+      if (currentSearch.trim() === '') {
+        // console.log(currentSearch);
+        setFilteredCountries(Object.keys(countries));
+      }
+      else {
+        const countriesFilter = Object.keys(countries).filter(key => key.toLowerCase().split(" ").some(word => word.startsWith(currentSearch.toLowerCase())));
+        const currenciesFilter = Object.values(countries).filter(key => key.toLowerCase().startsWith(currentSearch.toLowerCase()));
+        const currencies2countries = Object.keys(countries).filter(country => currenciesFilter.includes(countries[country]));
+        setFilteredCountries([... new Set([...countriesFilter, ...currencies2countries])]);
+      }
+    };
+
+
   useEffect(() => {
-  const timeout = setTimeout(() => {  // Time out so it can scroll when the animation is finished
-    selectedRef.current?.scrollIntoView({ block: "center", behavior: "auto" });
-  }, 100);
+    setTimeout(() => {  // Time out so it can scroll when the animation is finished
+      selectedRef.current?.scrollIntoView({ block: "center", behavior: "auto" });
+    }, 100);
   }, []);
   
-    // return (isPortal ? ReactDOM.createPortal : '')(
     const content = (
       <>
         <div className="countries-overlay" onClick={handleClose} />
         <div className={`modal-wrapper ${isClosing ? 'scale-down' : ''}`} onAnimationEnd={handleAnimationEnd} style={{borderColor: categoryColor, ...wrapperPosition}}>
+        <input value={search} onChange={handleSearchChange} className="search-country" placeholder="Search Country"/>
           <div className="countries-wrapper">
-            {Object.keys(countries).sort().map(country => (
+            {filteredCountries.sort().map(country => (
               <div key={country} onClick={() => handleCountryClick(country)}
-              className={`country-wrapper ${selectedCountry === country ? 'selected-country' : ''}`}
-              // style={{backgroundColor: selectedCountry === country ? categoryColor : 'rgb(255, 255, 255)'}}
-              >
+              className={`country-wrapper ${selectedCountry === country ? 'selected-country' : ''}`}>
                 <span className='country-option'
                   ref={country === selectedCountry ? selectedRef : null}>
                   {country}
