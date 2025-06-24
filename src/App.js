@@ -9,6 +9,7 @@ import Income from './components/Income';
 import Tests from './components/tests';
 import Search from './components/Search';
 import Settings from './components/Settings';
+import Auth from './components/Auth'
 
 const isOpen = false;
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route path="/search/:category" element={<Search />} />
         <Route path="/tests" element={<Tests />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/auth" element={<Auth />} />
       </Routes>
     </HashRouter>
   );

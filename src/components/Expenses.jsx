@@ -2,7 +2,7 @@ import { useLocalStorage } from "./useLocalStorage";
 import "./Expenses.css";
 import { icons, categories, AppOptions } from "./constants";
 import { useState, useEffect } from "react";
-import { setIconColor, parseRgbaString, convertCategories } from "./HelperFunctions";
+import { setIconColor, parseRgbaString, convertCategories, useBaseCurrency, getSymbol } from "./HelperFunctions";
 import ExpenseDetails from "./ExpenseDetails";
 import React from "react";
 import AddButton from './AddButton';
@@ -13,6 +13,8 @@ const Expenses = () => {
   const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
   const [openDetailId, setOpenDetailId] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const baseCurrency = useBaseCurrency();
+  const curSymbol = getSymbol(baseCurrency);
 
   useEffect(() => {
     document.body.style.overflow = isDetailOpen ? "hidden" : "";
@@ -77,7 +79,7 @@ const Expenses = () => {
           .map(([isoDate, items]) => (
             <div key={isoDate}>
               <div className={`date-header ${isoDate === Object.keys(groupedExpenses)[0] ? 'first' : ''}`}>
-                <span className="total">₪{items.reduce((sum, item) => sum + item.convertedPrice, 0).toFixed(2)}{" "}
+                <span className="total">{curSymbol}{items.reduce((sum, item) => sum + item.convertedPrice, 0).toFixed(2)}{" "}
                 </span>
                 <span className="date">{isoDate}</span>
               </div>
@@ -92,8 +94,8 @@ const Expenses = () => {
                       onClick={() => {setOpenDetailId(item.id); setIsDetailOpen(true)}}
                     >
                       <div>
-                        <span className="item-price">₪{Number(item.convertedPrice).toFixed(2)} </span>
-                        {item.currency !== AppOptions.baseCurrency &&
+                        <span className="item-price">{curSymbol}{Number(item.convertedPrice).toFixed(2)} </span>
+                        {item.currency !== baseCurrency &&
                           <span className="real-currency">({item.price.toFixed(2)} {item.currency.toUpperCase()})</span>}
                       </div>
                       <div className="item-actions">

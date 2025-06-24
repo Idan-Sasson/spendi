@@ -1,6 +1,7 @@
-import { icons } from "./constants";
+import { AppOptions, icons } from "./constants";
 import { categories } from "./constants";
 import { useLocalStorage } from "./useLocalStorage";
+import currenciesSymbols from "./currenciesSymbols.json";
 
 
 export function setAlpha(rgba, newAlpha) {
@@ -101,8 +102,16 @@ export function convertCategories() {
   }, {});
 }
 
-
 export function useCatColor(category) {
   const [savedCategories] = useLocalStorage("savedCategories", {});
   return savedCategories[category] ? savedCategories[category] : convertCategories()[category].color;
+}
+
+export function useBaseCurrency() {
+  const [config] = useLocalStorage("config", {})
+  return config["baseCurrency"] || AppOptions.baseCurrency
+}
+
+export function getSymbol(currency) {
+  return currenciesSymbols[currency];
 }

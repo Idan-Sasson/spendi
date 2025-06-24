@@ -7,6 +7,8 @@ import countries from "./countries.json"
 import CountryModal from "./CountryModal";
 import { useLocalStorage } from "./useLocalStorage";
 import { setIconColor, parseRgbaString } from "./HelperFunctions";
+import { useAddExpense } from "./firebaseHooks/useAddExpense";
+
 
 export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [savedCategories, setSavedCategories] = useLocalStorage("savedCategories", []);
@@ -24,32 +26,30 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isNoteFocused, setIsNoteFocused] = useState(false);
   const [calendarIcon, setCalendarIcon] = useState(icons["Calendar"]);
+  const { addExpense } = useAddExpense();
 
-  const handleModalSubmit = () => {
+  const handleModalSubmit = async () => {
     if (modalExpense.trim() === "" || modalPrice.trim() === "") return; // Blank input check
     handleClose();
 
-    let tmpRate = 1;
-    if (rate) {
-      tmpRate = rate;
-    }
-    const convertedPrice = modalPrice / tmpRate;
-    const newExpense = {  
-      id: Date.now(),  // id - current timestamp
-      name: modalExpense,
-      price: parseFloat(modalPrice),  // Original price
-      date: selectedDate,
-      category: category,
-      currency: countries[country],
-      convertedPrice: parseFloat(convertedPrice),  // Price after conversion
-      country: country,
-      rate: tmpRate,
-      note: note
-    }
-    // console.log(newExpense)
+   const tmpRate = rate || 1;
+  const convertedPrice = parseFloat(modalPrice) / tmpRate;
 
-    setExpenses([...expenses, newExpense]);
-  }
+  const expenseData = {
+    name: modalExpense,
+    price: parseFloat(modalPrice),
+    date: selectedDate, // keep this if you're intentionally overriding current time
+    category,
+    currency: countries[country],
+    convertedPrice: parseFloat(convertedPrice),
+    country,
+    rate: tmpRate,
+    note
+  };
+
+  await addExpense(expenseData);
+  setExpenses([...expenses, { ...expenseData, expenseId: Date.now() }]);
+};
 
   useEffect(() => {
     const getRates = async () => {

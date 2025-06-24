@@ -7,7 +7,7 @@ import { AppOptions, categories, icons } from './constants';
 import AddButton from './AddButton';
 import { useNavigate } from 'react-router-dom';
 import banner from "../assets/Spendi-banner.png"
-import { setIconColor, parseRgbaString, convertCategories } from "./HelperFunctions";
+import { setIconColor, parseRgbaString, convertCategories, useBaseCurrency, getSymbol } from "./HelperFunctions";
 
 
 const Home = () => {
@@ -16,6 +16,9 @@ const Home = () => {
     const [expenses, setExpenses] = useLocalStorage("expenses", []);
     const total = expenses.reduce((sum, item) => sum + (item.convertedPrice || 0), 0);
     const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
+    const baseCurrency = useBaseCurrency();
+    const currencySymbol = getSymbol(baseCurrency);
+
     
     const dayAvg = () => {
         if (expenses.length === 0) return 0;
@@ -166,7 +169,7 @@ const Home = () => {
                 bodyFont: { weight: "bold" },
                 callbacks: {
                     label: function(context) {
-                        return 'Daily Expense: ₪' + context.parsed.y.toFixed(2);
+                        return `Daily Expense: ${currencySymbol}` + context.parsed.y.toFixed(2);
                     }
                }
             }
@@ -206,11 +209,11 @@ const Home = () => {
             <div className="box-container">
                 <div className="box">
                     <span className='title'>Total</span>
-                    <span className="number">₪{total.toFixed(2)}</span>
+                    <span className="number">{currencySymbol}{total.toFixed(2)}</span>
                 </div>
                 <div className="box">
                     <span className='title'>Daily Average</span>
-                    <span className='number'>₪{dayAvg()}</span>
+                    <span className='number'>{currencySymbol}{dayAvg()}</span>
                 </div>
             </div>
             <div className="chart-wrapper">
@@ -229,7 +232,7 @@ const Home = () => {
                                 <img src={getIconSrc(cat)} className='cat-icon' />
                                 <span className='cat-title'>{cat}</span>
                             </div>
-                            <span className='cat-sum'>{sum.toFixed(2)} {AppOptions.baseCurrency.toUpperCase()}</span>
+                            <span className='cat-sum'>{sum.toFixed(2)} {currencySymbol}</span>
                         </div>
                     ))}
                 {/* </div> */}

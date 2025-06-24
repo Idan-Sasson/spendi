@@ -17,6 +17,7 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [name, setName] = useState(expense.name);
   const [price, setPrice] = useState(expense.price);
   const [selectedDate, setSelectedDate] = useState(new Date(expense.date).toISOString().split('T')[0]);
+  const [saveDate, setSaveDate] = useState(expense.date);
   const [rate, setRate] = useState(expense.rate);
   const [category, setCategory] = useState(expense.category);
   const [selectedCountry, setSelectedCountry] = useState(expense.country);
@@ -26,7 +27,7 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [isNoteOpen, setIsNoteOpen] = useState(false);
   const [isNoteFocused, setIsNoteFocused] = useState(false);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false)
+  const [isClosing, setIsClosing] = useState(false);
   const getColor = (category) => {
     return savedCategories[category] || convertCategories()[category].color
   }
@@ -42,7 +43,7 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
     let newName = ''
     if (name === '') newName = ogName.current;
     else newName = name;
-    updateExpense({ name: newName, price: price, date: selectedDate, category: category, convertedPrice: price/rate, note: note, rate: rate, country: selectedCountry, currency: countries[selectedCountry] })
+    updateExpense({ name: newName, price: price, date: saveDate, category: category, convertedPrice: price/rate, note: note, rate: rate, country: selectedCountry, currency: countries[selectedCountry] })
   }
 
   const updateExpense = (updatedField) => {
@@ -94,11 +95,17 @@ useEffect(() => {
     }
   }
 
-  const handleRemove =  () => {
+  const handleRemove = () => {
     const updated = expenses.filter((item) => item.id !== expense.id);
     setExpenses(updated);
     handleClose();
   }
+
+  const handleDateChange = (e) => {
+    const newDate = e.target.value;
+    setSelectedDate(newDate);  // Shows the new date in the input
+    setSaveDate(new Date(newDate).getTime());
+  };
 
   useEffect(() => {
     setLastCountry(selectedCountry);
@@ -210,10 +217,10 @@ useEffect(() => {
         <div className="ed-country" style={{backgroundColor: setAlpha(categoryColor, 0.25), borderColor: setAlpha(categoryColor, 0.5)}}>{selectedCountry}</div>
       </div>
       <div className='date-container'>
-          <input className="date-input-invisible" type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)}  />
+          <input className="date-input-invisible" type="date" value={selectedDate} onChange={handleDateChange}  />
 
         <div className='ed-date-input-container'>
-          <input className="date-input" type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)}  />
+          <input className="date-input" type="date" value={selectedDate} onChange={handleDateChange}  />
         </div>
         <img src={getIconSrc("Calendar", getColor(category))} className="ed-calendar-icon"/>
 

@@ -3,7 +3,7 @@ import './Search.css'
 import { useLocalStorage } from "./useLocalStorage";
 import { useParams } from "react-router-dom";
 import { AppOptions, categories, icons } from "./constants";
-import { setIconColor, parseRgbaString, convertCategories } from "./HelperFunctions";
+import { setIconColor, parseRgbaString, convertCategories, useBaseCurrency, getSymbol } from "./HelperFunctions";
 import AddButton from "./AddButton";
 import ExpenseDetails from "./ExpenseDetails";
 import CustomSelect from "./customs/CustomSelect";
@@ -16,6 +16,8 @@ export default function CategoryDetails() {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [openDetailId, setOpenDetailId] = useState('');
   const [search, setSearch] = useState('');
+  const baseCurrency = useBaseCurrency();
+  const curSymbol = getSymbol(baseCurrency);
   let { category } = useParams();
 
 	useEffect(() => {
@@ -99,15 +101,15 @@ export default function CategoryDetails() {
 				<div>
 					<div className="date-header" key={isoDate}>
 						<span className="total">
-							₪{items.reduce((sum, item) => sum + item.convertedPrice, 0).toFixed(2)}{" "}
+							{curSymbol}{items.reduce((sum, item) => sum + item.convertedPrice, 0).toFixed(2)}{" "}
 						</span>
 						<span>{isoDate}</span>
 					</div>
 					{items.map((item) => (
 						<div className='item-header' key={item.id} onClick={() => {setIsDetailOpen(true); setOpenDetailId(item.id)}}>
 							<div className="s-price-container">
-								<div className="">₪{item.convertedPrice.toFixed(2)}</div>
-								{ item.currency !== AppOptions.baseCurrency &&
+								<div className="">{curSymbol}{item.convertedPrice.toFixed(2)}</div>
+								{ item.currency !== baseCurrency &&
 								<span className="real-currency">({item.price.toFixed(2)} {item.currency.toUpperCase()})</span>
 								}
 							</div>
