@@ -6,8 +6,10 @@ import './ExpenseDetails.css';
 import countries from "./countries.json"
 import { AppOptions, icons} from './constants';
 import { setIconColor, parseRgbaString, setAlpha, convertCategories } from './HelperFunctions';
+import { useDeleteExpense } from './firebaseHooks/useDeleteExpense';
 
 export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpenses} ) {
+  const {deleteExpense} = useDeleteExpense(); 
   const expense = expenses.find(exp => exp.id === Number(expenseId));
   const [lastRates, setLastRates] = useLocalStorage("lastRates" , []);
   const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
@@ -98,6 +100,7 @@ useEffect(() => {
   const handleRemove = () => {
     const updated = expenses.filter((item) => item.id !== expense.id);
     setExpenses(updated);
+    
     handleClose();
   }
 

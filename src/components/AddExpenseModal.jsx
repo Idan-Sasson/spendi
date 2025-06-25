@@ -8,9 +8,11 @@ import CountryModal from "./CountryModal";
 import { useLocalStorage } from "./useLocalStorage";
 import { setIconColor, parseRgbaString } from "./HelperFunctions";
 import { useAddExpense } from "./firebaseHooks/useAddExpense";
+import { useGetUserInfo } from "./firebaseHooks/useGetUserInfo";
 
 
 export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
+  const { userID } = useGetUserInfo();
   const [savedCategories, setSavedCategories] = useLocalStorage("savedCategories", []);
   const [modalExpense, setModalExpense] = useState("");
   const [modalPrice, setModalPrice] = useState("");
@@ -26,7 +28,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isNoteFocused, setIsNoteFocused] = useState(false);
   const [calendarIcon, setCalendarIcon] = useState(icons["Calendar"]);
-  const { addExpense } = useAddExpense();
+  const { addExpense } = useAddExpense(expenses, setExpenses);
 
   const handleModalSubmit = async () => {
     if (modalExpense.trim() === "" || modalPrice.trim() === "") return; // Blank input check
@@ -44,11 +46,22 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
     convertedPrice: parseFloat(convertedPrice),
     country,
     rate: tmpRate,
-    note
+    note, 
+    expenseId: new Date().getTime(),
+    userID,
   };
 
-  await addExpense(expenseData);
-  setExpenses([...expenses, { ...expenseData, expenseId: Date.now() }]);
+  // Update localStorage
+  const updatedExpenses = [...expenses, { ...expenseData}]
+  setExpenses(updatedExpenses);
+  // Update firebase and get firebase's ID
+  const fbId = await addExpense(expenseData);
+    if (fbId) {
+      const patched = updatedExpenses.map(exp =>
+      exp.expenseId === expenseData.expenseId ? { ...exp, id: fbId } : exp
+    );
+    setExpenses(patched); 
+    }
 };
 
   useEffect(() => {

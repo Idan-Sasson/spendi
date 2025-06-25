@@ -22,6 +22,7 @@ export default function Auth() {
   };
 
   const handlelogOut = async () => {
+    setAuthInfo({});
     await signOut(auth);
   }
 

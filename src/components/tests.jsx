@@ -11,28 +11,30 @@ import { useAddExpense } from "./firebaseHooks/useAddExpense";
 
 export default function Tests() {
     const { addExpense } = useAddExpense();
-    // useGetAllExpenses();
+    const expenses = useGetAllExpenses();
+    // console.log(expenses);
+
     // useAddExpense();
     // const [data, setData] = useState("")
     // const [expenses, setExpenses] = useLocalStorage("expenses", []);
     // const [fbExpenses, setFbExpenses] = useState([])
-    const expenseRef = collection(db, "expenses");
+    // const expenseRef = collection(db, "expenses");
 
 
-    const getExpensesList = async () => {
-    try {
-        const data = await getDocs(expenseRef);
-        // console.log(data);
-        const filteredData = data.docs.map((doc) => ({...doc.data(), id: doc.id}));
-        // console.log(filteredData);
-    }
-    catch (err) {
-        console.error(err)
-    }
-}
-    useEffect(() => {
-        getExpensesList();
-    }, [])
+//     const getExpensesList = async () => {
+//     try {
+//         const data = await getDocs(expenseRef);
+//         // console.log(data);
+//         const filteredData = data.docs.map((doc) => ({...doc.data(), id: doc.id}));
+//         // console.log(filteredData);
+//     }
+//     catch (err) {
+//         console.error(err)
+//     }
+// }
+//     useEffect(() => {
+//         getExpensesList();
+//     }, [])
 
     const handleSubmit = async() => {
         const category = "Car";
