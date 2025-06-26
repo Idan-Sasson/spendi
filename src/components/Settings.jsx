@@ -4,13 +4,18 @@ import "./Settings.css";
 import CategoryColors from './SettingsModals/CategoryColors';
 import CustomNotification from './customs/CustomNotification';
 import CurrencySettings from './SettingsModals/CurrencySettings';
+import { useGetUserInfo } from './firebaseHooks/useGetUserInfo';
+import Auth from './Auth';
+import AuthModal from './SettingsModals/AuthModal';
 
 
 export default function Settings() {
+  const { email } = useGetUserInfo();
   const [isCatColorOpen, setIsCatColorOpen] = useState(false);
   const [isCurrenciesOpen, setIsCurrenciesOpen] = useState(false);
   const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
   const [isNotification, setIsNotification] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   const arrowPath = "./assets/icons/left.png"
 
@@ -24,6 +29,7 @@ export default function Settings() {
     <div>
       {isCatColorOpen && <CategoryColors setIsOpen={setIsCatColorOpen} />}
       {isCurrenciesOpen && <CurrencySettings setIsOpen={setIsCurrenciesOpen} />}
+      {isAuthOpen && <AuthModal setIsOpen={setIsAuthOpen} />}
       <div className='settings-topborder'>
         <div className='settings-title'>Settings</div>
       </div>
@@ -57,6 +63,19 @@ export default function Settings() {
           <div>Cleared Cache</div>
         </CustomNotification>}
         </div>
+                <div className='settings-category-container'>   
+          <div className='settings-category-title'>Account</div>
+          <div className='settings-item-container'>
+            <div className='settings-item last-item' onClick={() => setIsAuthOpen(true)}>
+              <span>{email || 'Not signed in'}</span>
+              <img src={arrowPath} className='arrow'></img>
+            </div>
+          </div>
+        </div>
+        <div>
+          {email || 'Not signed in'}
+        </div>
+        <Auth />
 
       </div>
     </div>

@@ -8,15 +8,24 @@ import { db, auth } from "../config/firebase";
 import { getDocs, collection, addDoc } from "firebase/firestore";
 import { useGetAllExpenses } from "./firebaseHooks/useGetAllExpenses";
 import { useAddExpense } from "./firebaseHooks/useAddExpense";
+import { getAllExpenses } from "./firebaseHooks/getAllExpenses";
 
 export default function Tests() {
+    console.log(getAllExpenses("pnwF52jchcbmI8TbWxeR88BpN742"))
+    useEffect(() => {
+        const t = async () => {
+        const ex = await getAllExpenses("pnwF52jchcbmI8TbWxeR88BpN742")
+        console.log(ex);
+        }
+        t();
+    }, [])
     const { addExpense } = useAddExpense();
-    const expenses = useGetAllExpenses();
+    // const expenses = useGetAllExpenses();
     // console.log(expenses);
 
     // useAddExpense();
     // const [data, setData] = useState("")
-    // const [expenses, setExpenses] = useLocalStorage("expenses", []);
+    const [expenses, setExpenses] = useLocalStorage("expenses", []);
     // const [fbExpenses, setFbExpenses] = useState([])
     // const expenseRef = collection(db, "expenses");
 
@@ -75,13 +84,11 @@ export default function Tests() {
     //     setIconColor(icons["Back"], [255, 0, 0]).then(setColoredSrc)
     // }, [])
 
-    // const updatedExpenses = expenses.map(item => {
-    //     return {
-    //         ...item, 
-    //         date: new Date(item.date).getTime()
-    //     }
-    // }) 
-    // useEffect(() => {setExpenses(updatedExpenses);}, [])
+const updatedExpenses = expenses.map(({ id, ...rest }) => ({
+  ...rest,
+  expenseId: id
+}));
+    useEffect(() => {setExpenses(updatedExpenses);}, [])
 
     // console.log(getSymbol("ils"));
 

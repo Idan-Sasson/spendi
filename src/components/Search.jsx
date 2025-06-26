@@ -8,7 +8,7 @@ import AddButton from "./AddButton";
 import ExpenseDetails from "./ExpenseDetails";
 import CustomSelect from "./customs/CustomSelect";
 
-export default function CategoryDetails() {
+export default function Search() {
   const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
   const [savedCategories, setSavedCategories] = useLocalStorage("savedCategories", []);
   const [expenses, setExpenses] = useLocalStorage("expenses", []);
@@ -89,24 +89,24 @@ export default function CategoryDetails() {
 						<div key={"All"} >All</div>
 					</div>
 					{categories.map((cat) => (
-						<div data-value={cat.name} className="s-option-container">
+						<div key={cat.name} data-value={cat.name} className="s-option-container">
 							<img className="s-filter-icon" src={getIconSrc(cat.name)} />
-							<div key={cat.name} >{cat.name}</div>
+							<div>{cat.name}</div>
 						</div>
 					))}
 				</CustomSelect>
 					<input className='search-input' onChange={(e) => setSearch(e.target.value)} placeholder="Search"/>
 			</div>
 			{Object.entries(groupedExpenses).map(([isoDate, items]) => (
-				<div>
-					<div className="date-header" key={isoDate}>
+				<div key={isoDate}>
+					<div className="date-header">
 						<span className="total">
 							{curSymbol}{items.reduce((sum, item) => sum + item.convertedPrice, 0).toFixed(2)}{" "}
 						</span>
 						<span>{isoDate}</span>
 					</div>
 					{items.map((item) => (
-						<div className='item-header' key={item.id} onClick={() => {setIsDetailOpen(true); setOpenDetailId(item.id)}}>
+						<div className='item-header' key={item.expenseId} onClick={() => {setIsDetailOpen(true); setOpenDetailId(item.expenseId)}}>
 							<div className="s-price-container">
 								<div className="">{curSymbol}{item.convertedPrice.toFixed(2)}</div>
 								{ item.currency !== baseCurrency &&
@@ -120,7 +120,7 @@ export default function CategoryDetails() {
 								{item.note && <div className="is-note"/>}
 
 							</div>
-								{isDetailOpen && openDetailId === item.id && <ExpenseDetails setIsOpen={setIsDetailOpen} expenseId={openDetailId} expenses={expenses} setExpenses={setExpenses}/>}
+								{isDetailOpen && openDetailId === item.expenseId && <ExpenseDetails setIsOpen={setIsDetailOpen} expenseId={openDetailId} expenses={expenses} setExpenses={setExpenses}/>}
 
 						</div>
 					))}

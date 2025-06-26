@@ -86,12 +86,12 @@ const Expenses = () => {
               <ul key={isoDate} className="expenses">
                 {/* For each item under the date, show its name and price */}
                 {items.map((item) => (
-                  <React.Fragment key={item.id}>
-                  <div key={item.id}>
+                  <React.Fragment key={item.expenseId}>
+                  <div key={item.expenseId}>
                     <div
                       className="item-header"
-                      key={item.id}
-                      onClick={() => {setOpenDetailId(item.id); setIsDetailOpen(true)}}
+                      key={item.expenseId}
+                      onClick={() => {setOpenDetailId(item.expenseId); setIsDetailOpen(true)}}
                     >
                       <div>
                         <span className="item-price">{curSymbol}{Number(item.convertedPrice).toFixed(2)} </span>
@@ -105,7 +105,7 @@ const Expenses = () => {
                       </div>
                     </div>
                   </div>
-                  {isDetailOpen && openDetailId === item.id && <ExpenseDetails setIsOpen={setIsDetailOpen} expenseId={openDetailId} expenses={expenses} setExpenses={setExpenses}/>}
+                  {isDetailOpen && openDetailId === item.expenseId && <ExpenseDetails setIsOpen={setIsDetailOpen} expenseId={openDetailId} expenses={expenses} setExpenses={setExpenses}/>}
                   </React.Fragment>
                 ))}
               </ul>

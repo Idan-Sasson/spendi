@@ -5,9 +5,10 @@ import { useGetUserInfo } from "./useGetUserInfo"
 import { useLocalStorage } from "../useLocalStorage";
 
 export const useAddExpense = () => {
-    const { userID } = useGetUserInfo();
+    const { userID: hookUserId } = useGetUserInfo();
     // const [expenses, setExpenses] = useLocalStorage("expenses", []);
-    const addExpense = async (expense) => {
+    const addExpense = async (expense, passedId = null) => {
+        const userID = hookUserId || passedId;
         if (!userID) return;
 
         try {
@@ -17,13 +18,6 @@ export const useAddExpense = () => {
             });
             return docRef.id  // Firebase's expense ID
 
-            // Updates the localExpense with the firebase's ID (doing it later so the user doens't have to wait for the firebase update)
-            // const patchedExpenses = expenses.map((exp) =>
-            //     Number(exp.expenseId) === Number(expense.expenseId)
-            //         ? { ...exp, id: fbId }
-            //         : exp
-            // );
-            // setExpenses(patchedExpenses);
         } catch (err) {
             console.error(err);
         }

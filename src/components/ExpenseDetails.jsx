@@ -7,10 +7,12 @@ import countries from "./countries.json"
 import { AppOptions, icons} from './constants';
 import { setIconColor, parseRgbaString, setAlpha, convertCategories } from './HelperFunctions';
 import { useDeleteExpense } from './firebaseHooks/useDeleteExpense';
+import { useUpdateExpense } from './firebaseHooks/useUpdateExpense';
 
 export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpenses} ) {
-  const {deleteExpense} = useDeleteExpense(); 
-  const expense = expenses.find(exp => exp.id === Number(expenseId));
+  const { deleteExpense } = useDeleteExpense();
+  const { updateExpense: updateFirebaseExpense } = useUpdateExpense();  // Already have updateExpense
+  const expense = expenses.find(exp => exp.expenseId === expenseId);
   const [lastRates, setLastRates] = useLocalStorage("lastRates" , []);
   const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
   const [savedCategories, setSavedCategories] = useLocalStorage("savedCategories", []);
@@ -45,12 +47,14 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
     let newName = ''
     if (name === '') newName = ogName.current;
     else newName = name;
-    updateExpense({ name: newName, price: price, date: saveDate, category: category, convertedPrice: price/rate, note: note, rate: rate, country: selectedCountry, currency: countries[selectedCountry] })
+    const updatedFields = { name: newName, price: price, date: saveDate, category: category, convertedPrice: price/rate, note: note, rate: rate, country: selectedCountry, currency: countries[selectedCountry] }
+    updateExpense(updatedFields);
+    updateFirebaseExpense(updatedFields, expense.id)
   }
 
   const updateExpense = (updatedField) => {
     const updatedExpenses = expenses.map(exp => {
-      if (exp.id === Number(expense.id)) {
+      if (exp.expenseId ===expense.expenseId) {
         return { ...exp, ...updatedField };
       }
       return exp;
@@ -98,10 +102,10 @@ useEffect(() => {
   }
 
   const handleRemove = () => {
-    const updated = expenses.filter((item) => item.id !== expense.id);
-    setExpenses(updated);
-    
     handleClose();
+    const updated = expenses.filter((item) => item.expenseId !== expense.expenseId); 
+    setExpenses(updated); // Deletes from 
+    if (expense.id) deleteExpense(expense.id) // Removes from firestore
   }
 
   const handleDateChange = (e) => {
