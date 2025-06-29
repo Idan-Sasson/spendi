@@ -7,3 +7,9 @@
     background-color: white;
     z-index: 99999;
 }
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

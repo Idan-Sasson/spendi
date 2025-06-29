@@ -78,7 +78,7 @@ export default function CategoryColors({ setIsOpen }) {
       <div className='settings-topborder'>
         <div className='settings-title'>Color Picker</div>
       </div>
-    	<div className='cc-wrapper'>
+    	<div className='settings-modal-body-wrapper'>
         <div className='cc-select-wrapper'>
 				  <CustomSelect onSelect={setSelectedCategory} optionTitle={selectedCategory}
             style={{boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)', paddingBottom: '1px'}}>

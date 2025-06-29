@@ -35,6 +35,17 @@ export default function Settings() {
       </div>
       <div className='settings-body'>
 
+        {/* Account */}
+        <div className='settings-category-container'>   
+          <div className='settings-category-title'>Account</div>
+          <div className='settings-item-container'>
+            <div className='settings-item last-item' onClick={() => setIsAuthOpen(true)}>
+              <span>{email || 'Not signed in'}</span>
+              <img src={arrowPath} className='arrow'></img>
+            </div>
+          </div>
+        </div>
+
         {/* Appearance */}
         <div className='settings-category-container'>   
           <div className='settings-category-title'>Appearance</div>
@@ -50,6 +61,7 @@ export default function Settings() {
           </div>
         </div>
 
+        {/* Data */}
         <div className='settings-category-container'>
           <div className='settings-category-title'>Data</div>
           <div className='settings-item-container'>
@@ -63,20 +75,9 @@ export default function Settings() {
           <div>Cleared Cache</div>
         </CustomNotification>}
         </div>
-                <div className='settings-category-container'>   
-          <div className='settings-category-title'>Account</div>
-          <div className='settings-item-container'>
-            <div className='settings-item last-item' onClick={() => setIsAuthOpen(true)}>
-              <span>{email || 'Not signed in'}</span>
-              <img src={arrowPath} className='arrow'></img>
-            </div>
-          </div>
-        </div>
         <div>
-          {email || 'Not signed in'}
+          {/* {email || 'Not signed in'} */}
         </div>
-        <Auth />
-
       </div>
     </div>
   )
