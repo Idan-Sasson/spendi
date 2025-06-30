@@ -44,9 +44,13 @@ export default function Auth({ setIsOpen }) {
         console.log('Invalid email');
         setError("Please enter a valid email.");
       }
+      else if (err.code === 'auth/missing-password' || err.code === 'auth/missing-email') {
+        console.log('Missing section');
+        setError('Please fill all required sections');
+      }
       else if (err.code === 'auth/invalid-credential') {
         console.log('Incorrect mail');
-        setError('Incorrect email or password v');
+        setError('Incorrect email or password');
       }
       else {
         console.log("Login failed", err.message);
@@ -102,7 +106,11 @@ export default function Auth({ setIsOpen }) {
     <div className='auth-wrapper'>
       <div className='auth-logged-in'>
         {isLoggedIn &&
-          <button onClick={handlelogOut}>Log out</button>
+          <div>
+            <button onClick={handlelogOut}>Log out</button>
+            <div>{auth?.currentUser?.email}</div>
+          </div>
+
         }
       </div>
 
@@ -119,8 +127,11 @@ export default function Auth({ setIsOpen }) {
               </div>
               <div className='auth-input-container'>
                 <div className='auth-inputs-title'> Password </div>
-                <input className='auth-input-holder' placeholder='Enter your password' onChange={(e) => setPassword(e.target.value)} />
+                <input className='auth-input-holder' type='password' placeholder='Enter your password' onChange={(e) => setPassword(e.target.value)} />
+                <div className='auth-error'>{error ? `*${error}` : ''}</div>
+
               </div>
+
               <div className='auth-buttons-container'>
                 <div className='auth-button sign-in' onClick={handleSignIn}>Login</div>
                 <div className='auth-button sign-up' onClick={handleSignUp}>Sign up</div>
@@ -131,7 +142,6 @@ export default function Auth({ setIsOpen }) {
         }
       </div>
 
-      {<div>{auth?.currentUser?.email}</div>}
     </div>
   )
 }

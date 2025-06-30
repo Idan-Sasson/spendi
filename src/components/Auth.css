@@ -26,6 +26,14 @@
     align-items: center;
 }
 
+.auth-error {
+    /* position: absolute; */
+    color: red;
+    margin-left: 10px;
+    font-size: 13px;
+    align-self: flex-start;
+}
+
 .auth-input-container {
     display: flex;
     width: 80%;

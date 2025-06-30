@@ -21,14 +21,13 @@ export default function AuthModal({setIsOpen}) {
         <div className='settings-title'>{isLoggedIn ? 'Account' : 'Login'}</div>
       </div>
         <div className='settings-modal-body-wrapper'>
-          
-          Testos
+
           <div className='auth-container'>
             <Auth setIsOpen={setIsOpen}/>
 
           </div>
         </div>
-        <button onClick={() => setIsOpen(false)}>Close</button>
+        {/* <button onClick={() => setIsOpen(false)}>Close</button> */}
     </div>
   )
 }
