@@ -47,14 +47,17 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
     let newName = ''
     if (name === '') newName = ogName.current;
     else newName = name;
-    const updatedFields = { name: newName, price: price, date: saveDate, category: category, convertedPrice: price/rate, note: note, rate: rate, country: selectedCountry, currency: countries[selectedCountry] }
+    let newPrice = price;
+    if (isNaN(price)) newPrice = 0;
+    console.log(newPrice);
+    const updatedFields = { name: newName, price: 5, date: saveDate, category: category, convertedPrice: price/rate, note: note, rate: rate, country: selectedCountry, currency: countries[selectedCountry] }
     updateExpense(updatedFields);
     updateFirebaseExpense(updatedFields, expense.id)
   }
 
   const updateExpense = (updatedField) => {
     const updatedExpenses = expenses.map(exp => {
-      if (exp.expenseId ===expense.expenseId) {
+      if (exp.expenseId === expense.expenseId) {
         return { ...exp, ...updatedField };
       }
       return exp;
@@ -73,18 +76,17 @@ useEffect(() => {
   const handlePriceChange = (e) => {
     const isValidNumber = str => /^-?\d*\.?\d*$/.test(str); // Can contain -
     const newPrice = e.target.value;
-    const pfPrice = parseFloat(newPrice); // ParsedFloat
+    const pfPrice = parseFloat(e.target.value); // ParsedFloat
     if (!isValidNumber(e.target.value)) return;
     // const newPrice = parseFloat(e.target.value);
     if (newPrice === '-') {
       setPrice("-");
-
     }
     else if (isNaN(pfPrice)) {
       setPrice("");
     }
     else {
-    setPrice(pfPrice);
+    setPrice(e.target.value);
   }};
 
   const updateCat = (newCat) => {

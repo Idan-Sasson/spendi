@@ -109,6 +109,8 @@ export default function Auth({ setIsOpen }) {
           <div>
             <button onClick={handlelogOut}>Log out</button>
             <div>{auth?.currentUser?.email}</div>
+            <div onClick={() => setIsOpen(false)}>back </div>
+
           </div>
 
         }
