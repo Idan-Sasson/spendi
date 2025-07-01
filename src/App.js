@@ -11,12 +11,35 @@ import Tests from './components/tests';
 import Search from './components/Search';
 import Settings from './components/Settings';
 import Auth from './components/Auth'
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { auth } from './config/firebase';
+import { useLocalStorage } from './components/useLocalStorage';
 
-const isOpen = false;
 function App() {
   const { syncExpenses } = useSyncExpenses();
+  const hasMount = useRef(false);
+  const [ipCountry, setIpCountry] = useLocalStorage("ipCountry", '')
+  useEffect(() => {
+    if (!hasMount.current) {  // useEffect runs twice in StrictMode
+      hasMount.current = true
+      return
+    };
+    // const res = fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
+    const fetchCountry = async () => {  // Fetch country by ip
+      try {
+        const res = await fetch(`http://ip-api.com/json/`);
+        const data = await res.json();
+        let ipCountry = data["country"]
+        if (ipCountry) setIpCountry(ipCountry);
+        else setIpCountry('');
+      } catch (err) {
+        console.error(err);
+        setIpCountry('');
+      }
+    }
+    fetchCountry();
+  }, [])
+
   useEffect(() => {
     const user = auth.currentUser
     if (user?.uid) {

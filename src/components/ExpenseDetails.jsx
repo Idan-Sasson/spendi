@@ -21,7 +21,7 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [name, setName] = useState(expense.name);
   const [price, setPrice] = useState(expense.price);
   const [selectedDate, setSelectedDate] = useState(new Date(expense.date).toISOString().split('T')[0]);
-  const [saveDate, setSaveDate] = useState(expense.date);
+  // const [saveDate, setSaveDate] = useState(expense.date);
   const [rate, setRate] = useState(expense.rate);
   const [category, setCategory] = useState(expense.category);
   const [selectedCountry, setSelectedCountry] = useState(expense.country);
@@ -37,20 +37,19 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   }
   const [categoryColor, setCategoryColor] = useState(getColor(expense.category));
 
-
   useEffect(() => {
     if (note) setIsNoteOpen(true)
   }, []);
 
   const handleSave = () => {
+    // setIsOpen(false)
     handleClose();
     let newName = ''
     if (name === '') newName = ogName.current;
     else newName = name;
-    let newPrice = price;
+    let newPrice = Number(price);
     if (isNaN(price)) newPrice = 0;
-    console.log(newPrice);
-    const updatedFields = { name: newName, price: 5, date: saveDate, category: category, convertedPrice: price/rate, note: note, rate: rate, country: selectedCountry, currency: countries[selectedCountry] }
+    const updatedFields = { name: newName, price: newPrice, date: new Date(selectedDate).getTime(), category: category, convertedPrice: newPrice/rate, note: note, rate: rate, country: selectedCountry, currency: countries[selectedCountry] }
     updateExpense(updatedFields);
     updateFirebaseExpense(updatedFields, expense.id)
   }
@@ -75,8 +74,8 @@ useEffect(() => {
 
   const handlePriceChange = (e) => {
     const isValidNumber = str => /^-?\d*\.?\d*$/.test(str); // Can contain -
-    const newPrice = e.target.value;
-    const pfPrice = parseFloat(e.target.value); // ParsedFloat
+    const newPrice = Number(e.target.value);
+    const pfPrice = parseFloat(newPrice); // ParsedFloat
     if (!isValidNumber(e.target.value)) return;
     // const newPrice = parseFloat(e.target.value);
     if (newPrice === '-') {
@@ -86,7 +85,7 @@ useEffect(() => {
       setPrice("");
     }
     else {
-    setPrice(e.target.value);
+    setPrice(newPrice);
   }};
 
   const updateCat = (newCat) => {
@@ -113,7 +112,7 @@ useEffect(() => {
   const handleDateChange = (e) => {
     const newDate = e.target.value;
     setSelectedDate(newDate);  // Shows the new date in the input
-    setSaveDate(new Date(newDate).getTime());
+    // setSaveDate(new Date(newDate).getTime());
   };
 
   useEffect(() => {
@@ -229,7 +228,7 @@ useEffect(() => {
           <input className="date-input-invisible" type="date" value={selectedDate} onChange={handleDateChange}  />
 
         <div className='ed-date-input-container'>
-          <input className="date-input" type="date" value={selectedDate} onChange={handleDateChange}  />
+          <input className="date-input" type="date" value={selectedDate} onChange={handleDateChange}/>
         </div>
         <img src={getIconSrc("Calendar", getColor(category))} className="ed-calendar-icon"/>
 

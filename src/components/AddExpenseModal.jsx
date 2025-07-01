@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import './AddExpenseModal.css'
 import CategoryModal from "./CategoryModal";
 import { categories, icons, AppOptions } from './constants';
@@ -9,6 +9,7 @@ import { useLocalStorage } from "./useLocalStorage";
 import { setIconColor, parseRgbaString } from "./HelperFunctions";
 import { useAddExpense } from "./firebaseHooks/useAddExpense";
 import { useGetUserInfo } from "./firebaseHooks/useGetUserInfo";
+import { UNSAFE_useFogOFWarDiscovery } from "react-router-dom";
 
 
 export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
@@ -29,6 +30,12 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [isNoteFocused, setIsNoteFocused] = useState(false);
   const [calendarIcon, setCalendarIcon] = useState(icons["Calendar"]);
   const { addExpense } = useAddExpense(expenses, setExpenses);
+  const hasMount = useRef(false);
+  const [ipCountry, setIpCountry] = useLocalStorage('ipCountry', '')
+
+  useEffect(() => {
+    if (Object.hasOwn(countries, ipCountry)) setCountry(ipCountry);
+  }, [])
 
   const handleModalSubmit = async () => {
     if (modalExpense.trim() === "" || modalPrice.trim() === "") return; // Blank input check
@@ -101,11 +108,11 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const handleAnimationEnd = () => {
     if (isClosing) {
       setIsOpen(false);
-      // if (isAdd) window.location.reload();  // Arabic solution
     }
   };
 
   const handlePriceChange = (e) => {
+    // console.log(typeof())
     const isValidNumber = str => /^-?\d*\.?\d*$/.test(str);
     if (!isValidNumber(e.target.value)) return;
     setModalPrice(e.target.value)
