@@ -30,6 +30,7 @@ const Home = () => {
     };
 
     const getColor = (category) => {
+        if (!convertCategories()[category]) return;  // In case of changing categories names
         return savedCategories[category] || convertCategories()[category].color
     }
 

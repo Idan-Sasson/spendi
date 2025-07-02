@@ -29,7 +29,7 @@ export default function Settings() {
     <div>
       {isCatColorOpen && <CategoryColors setIsOpen={setIsCatColorOpen} />}
       {isCurrenciesOpen && <CurrencySettings setIsOpen={setIsCurrenciesOpen} />}
-      {isAuthOpen && <AuthModal setIsOpen={setIsAuthOpen} />}
+      {isAuthOpen && <AuthModal setIsOpen={setIsAuthOpen} email={email} />}
       <div className='settings-topborder'>
         <div className='settings-title'>Settings</div>
       </div>

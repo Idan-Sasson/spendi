@@ -32,6 +32,7 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [isNoteFocused, setIsNoteFocused] = useState(false);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+
   const getColor = (category) => {
     return savedCategories[category] || convertCategories()[category].color
   }
@@ -42,16 +43,8 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   }, []);
 
   const handleSave = () => {
-    // setIsOpen(false)
     handleClose();
-    let newName = ''
-    if (name === '') newName = ogName.current;
-    else newName = name;
-    let newPrice = Number(price);
-    if (isNaN(price)) newPrice = 0;
-    const updatedFields = { name: newName, price: newPrice, date: new Date(selectedDate).getTime(), category: category, convertedPrice: newPrice/rate, note: note, rate: rate, country: selectedCountry, currency: countries[selectedCountry] }
-    updateExpense(updatedFields);
-    updateFirebaseExpense(updatedFields, expense.id)
+
   }
 
   const updateExpense = (updatedField) => {
@@ -99,6 +92,14 @@ useEffect(() => {
   const handleAnimationEnd = () => {
     if (isClosing) {
       setIsOpen(false);
+          let newName = ''
+    if (name === '') newName = ogName.current;
+    else newName = name;
+    let newPrice = Number(price);
+    if (isNaN(price)) newPrice = 0;
+    const updatedFields = { name: newName, price: newPrice, date: new Date(selectedDate).getTime(), category: category, convertedPrice: newPrice/rate, note: note, rate: rate, country: selectedCountry, currency: countries[selectedCountry] }
+    updateExpense(updatedFields);
+    updateFirebaseExpense(updatedFields, expense.id);
     }
   }
 

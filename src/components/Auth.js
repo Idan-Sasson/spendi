@@ -109,7 +109,7 @@ export default function Auth({ setIsOpen }) {
           <div>
             <button onClick={handlelogOut}>Log out</button>
             <div>{auth?.currentUser?.email}</div>
-            <div onClick={() => setIsOpen(false)}>back </div>
+            <div onClick={() => setIsOpen()}>back </div>
 
           </div>
 
@@ -138,7 +138,7 @@ export default function Auth({ setIsOpen }) {
                 <div className='auth-button sign-in' onClick={handleSignIn}>Login</div>
                 <div className='auth-button sign-up' onClick={handleSignUp}>Sign up</div>
               </div>
-              <div className='auth-guest-text' onClick={() => setIsOpen(false)}> Continue as a guest </div>
+              <div className='auth-guest-text' onClick={() => setIsOpen()}> Continue as a guest </div>
             </div>
           </div>
         }
