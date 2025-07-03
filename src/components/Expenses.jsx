@@ -15,6 +15,12 @@ const Expenses = () => {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const baseCurrency = useBaseCurrency();
   const curSymbol = getSymbol(baseCurrency);
+  const [isEmpty, setIsEmpty] = useState(false);
+
+  useEffect(() => {
+    if (expenses.length === 0) setIsEmpty(true);
+    else setIsEmpty(false);
+  }, [expenses])
 
   useEffect(() => {
     document.body.style.overflow = isDetailOpen ? "hidden" : "";
@@ -72,6 +78,13 @@ const Expenses = () => {
 
   return (
     <div className="expenses-body">
+      {isEmpty && 
+        <div className="empty-expenses-container">
+          <span>Looks kinda empty, try adding a new expense by clicking on that red</span>
+          <span className="text-plus"> +</span>
+          <span> on the bottom.</span>
+        </div>
+      }
       <AddButton  expenses={expenses} setExpenses={setExpenses}/>
       <ul className="expense-list">
         {/* Go over each date group */}

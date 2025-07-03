@@ -66,7 +66,7 @@ useEffect(() => {
 
 
   const handlePriceChange = (e) => {
-    const isValidNumber = str => /^-?\d*\.?\d*$/.test(str); // Can contain -
+    const isValidNumber = str => /^-?\d*\.?\d*$/.test(str);
     const newPrice = Number(e.target.value);
     const pfPrice = parseFloat(newPrice); // ParsedFloat
     if (!isValidNumber(e.target.value)) return;
@@ -78,7 +78,7 @@ useEffect(() => {
       setPrice("");
     }
     else {
-    setPrice(newPrice);
+    setPrice(e.target.value);
   }};
 
   const updateCat = (newCat) => {

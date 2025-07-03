@@ -10,6 +10,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import "./Auth.css"
 import { icons } from './constants';
 import { useDeleteUser } from './firebaseHooks/useDeleteUser';
+import CustomNotification from './customs/CustomNotification';
 
 export default function Auth({ setIsOpen, setIsLoggedInModal }) {
   // const firebaseExpenses = useGetAllExpenses();
@@ -21,6 +22,8 @@ export default function Auth({ setIsOpen, setIsLoggedInModal }) {
   const { syncExpenses } = useSyncExpenses();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isDeleteVer, setIsDeleteVer] = useState(false);
+  const [isNotification, setIsNotification] = useState(false);
 
   useEffect(() => {
     if (auth?.currentUser?.email && authInfo["isAuth"]) {
@@ -44,6 +47,8 @@ export default function Auth({ setIsOpen, setIsLoggedInModal }) {
       const firebaseExpenses = await getAllExpenses(authData["userID"]);
       setLocalExpenses(firebaseExpenses);
       console.log(firebaseExpenses);
+      setEmail('');
+      setPassword('');
     } catch (err) {
       if (err.code === 'auth/invalid-email') {
         console.log('Invalid email');
@@ -89,6 +94,8 @@ export default function Auth({ setIsOpen, setIsLoggedInModal }) {
       };
       setAuthInfo(authData);
       await syncExpenses(authData["userID"]);
+      setEmail('');
+      setPassword('');
     } catch (err) {
       if (err.code === 'auth/invalid-email') {
         console.log('Invalid email');
@@ -118,6 +125,8 @@ export default function Auth({ setIsOpen, setIsLoggedInModal }) {
   }
 
   const deleteAccount = async () => {
+    setIsNotification(true);
+    setIsDeleteVer(false);
     await deleteUserAccount(authInfo['userID']);
     await handlelogOut();
   }
@@ -128,20 +137,34 @@ export default function Auth({ setIsOpen, setIsLoggedInModal }) {
       <div className='auth-logged-in'>
         {isLoggedIn &&
           <div className='settings-body'>
-            <div className='settings-category-container'>   
-              <div className='settings-category-title'>Test</div>
+            <div className='settings-category-container'>
+              <div className='settings-category-title'></div>
               <div className='settings-item-container'>
-                <div className='settings-item'>
-                  <span>Categories Colors</span>
-                  <img src={icons["Arrow"]} className='arrow'></img>
+                <div className='settings-item' onClick={handlelogOut}>
+                  <span>Log out</span>
+                  {/* <img src={icons["Arrow"]} className='arrow'></img> */}
                 </div>
-                <div className='settings-item last-item' onClick={deleteAccount}>
+                <div className='settings-item last-item' onClick={() => setIsDeleteVer(true)}>
                   <span className='delete'>Delete account</span>
                 </div>
+
+                {isDeleteVer &&
+                  <div className='delete-verify-overlay'>
+                    <div className='delete-verify-container'>
+                      <div>Are you sure you want to delete the user?</div>
+                      <div>This action cannot be undone.</div>
+                      <div>All your expenses will be removed</div>
+                      <div className='delete-verify-buttons'>
+                        <div className='delete-verify-button accept' onClick={deleteAccount}>Yes</div>
+                        <div className='delete-verify-button refuse' onClick={() => setIsDeleteVer(false)}>No</div>
+                      </div>
+                    </div>
+                  </div>
+                }
               </div>
             </div>
-            <button onClick={handlelogOut}>Log out</button>
-            <div>{auth?.currentUser?.email}</div>
+            {/* <button onClick={handlelogOut}>Log out</button> */}
+            {/* <div>{auth?.currentUser?.email}</div> */}
             <div onClick={() => setIsOpen()}>back </div>
           </div>
 
@@ -175,6 +198,10 @@ export default function Auth({ setIsOpen, setIsLoggedInModal }) {
             </div>
           </div>
         }
+        {isNotification &&
+          <CustomNotification duration={4000} setIsOpen={setIsNotification} className='settings-notification'>
+            <div className='delete-notification'>Deleted account</div>
+          </CustomNotification>}
       </div>
 
     </div>

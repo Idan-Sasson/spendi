@@ -18,6 +18,13 @@ export default function Search() {
   const [search, setSearch] = useState('');
   const baseCurrency = useBaseCurrency();
   const curSymbol = getSymbol(baseCurrency);
+  const [isEmpty, setIsEmpty] = useState(false);
+  
+  useEffect(() => {
+	if (expenses.length === 0) setIsEmpty(true);
+	else setIsEmpty(false);
+  }, [expenses])
+
   let { category } = useParams();
 
 	useEffect(() => {
@@ -79,6 +86,13 @@ export default function Search() {
   
 	return (
 		<div className="s-overlay">
+			{isEmpty && 
+        	<div className="empty-expenses-container">
+        	  <span>Looks kinda empty, try adding a new expense by clicking on that red</span>
+        	  <span className="text-plus"> +</span>
+        	  <span> on the bottom.</span>
+        	</div>
+      		}
 			<AddButton  expenses={expenses} setExpenses={setExpenses}/>
 			<div className="s-options-header">
 				{/* <div className="s-dropdown">Select</div> */}

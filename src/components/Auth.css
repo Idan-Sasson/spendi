@@ -13,6 +13,54 @@
     text-shadow: 1px 1px 5px rgb(221, 221, 221);
 }
 
+.delete-verify-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    backdrop-filter: blur(3px);
+    /* background-color: white; */
+}
+
+.delete-notification {
+    color: rgb(236, 0, 0);
+}
+
+.delete-verify-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 30px;
+    border: 1px solid rgb(202, 202, 202);
+    border-radius: 15px;
+    white-space: nowrap;
+    max-width: 98vw;
+    box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.096);
+}
+
+.delete-verify-buttons {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 55px;
+    font-size: 20px;
+}
+
+.delete-verify-button {
+    padding: 5px 15px;
+}
+
+.delete-verify-button.accept {
+    background-color: rgb(255, 0, 0);
+    border-radius: 10px;
+    color: white;
+    box-shadow: 4px 4px 5px rgba(255, 0, 0, 0.13);
+
+}
+
 .auth-logout-wrapper {
     position: fixed;
     /* background-color: rgba(0, 0, 255, 0.099); */

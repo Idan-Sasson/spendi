@@ -9,7 +9,7 @@ export default function AuthModal({setIsOpen, setEmail}) {
   const [authInfo, setAuthInfo] = useLocalStorage("auth", {})
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [_, forceUpdate] = useState(0);
+  // const [_, forceUpdate] = useState(0);
   
   useEffect(() => {
     if (auth?.currentUser?.email && authInfo["isAuth"]) {
@@ -24,7 +24,6 @@ export default function AuthModal({setIsOpen, setEmail}) {
 
   const handleAnimationEnd = () => {
     if (isClosing){
-      forceUpdate(n => n+1)
       setIsOpen(false);
     }
   }
