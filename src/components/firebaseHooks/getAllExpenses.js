@@ -3,7 +3,6 @@ import { db } from "../../config/firebase";
 
 export const getAllExpenses = async (userID) => {
     if (!userID) return;
-    console.log(userID);
 
     const expensesRef = collection(db, "expenses");
     const q = query(expensesRef, where("userID", "==", userID));

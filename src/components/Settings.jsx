@@ -11,6 +11,7 @@ import AuthModal from './SettingsModals/AuthModal';
 
 export default function Settings() {
   const { email } = useGetUserInfo();
+  const [currentEmail, setCurrentEmail] = useState(email);
   const [isCatColorOpen, setIsCatColorOpen] = useState(false);
   const [isCurrenciesOpen, setIsCurrenciesOpen] = useState(false);
   const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
@@ -22,14 +23,13 @@ export default function Settings() {
   const handleClearCache = () => {
     setCachedIcons([]);
     setIsNotification(true);
-    console.log("C");
   }
 
   return (
     <div>
       {isCatColorOpen && <CategoryColors setIsOpen={setIsCatColorOpen} />}
       {isCurrenciesOpen && <CurrencySettings setIsOpen={setIsCurrenciesOpen} />}
-      {isAuthOpen && <AuthModal setIsOpen={setIsAuthOpen} email={email} />}
+      {isAuthOpen && <AuthModal setIsOpen={setIsAuthOpen} setEmail={setCurrentEmail} />}
       <div className='settings-topborder'>
         <div className='settings-title'>Settings</div>
       </div>
@@ -40,7 +40,7 @@ export default function Settings() {
           <div className='settings-category-title'>Account</div>
           <div className='settings-item-container'>
             <div className='settings-item last-item' onClick={() => setIsAuthOpen(true)}>
-              <span>{email || 'Not signed in'}</span>
+              <span>{currentEmail || 'Not signed in'}</span>
               <img src={arrowPath} className='arrow'></img>
             </div>
           </div>

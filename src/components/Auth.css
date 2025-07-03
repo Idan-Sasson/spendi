@@ -1,12 +1,26 @@
 .auth-wrapper {
     position: fixed;
     /* background-color: rgba(0, 0, 255, 0.099); */
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    user-select: none;
+}
+
+.delete {
+    color: red;
+    text-shadow: 1px 1px 5px rgb(221, 221, 221);
+}
+
+.auth-logout-wrapper {
+    position: fixed;
+    /* background-color: rgba(0, 0, 255, 0.099); */
     width: 100%;
     top: 30%;
     left: 50%;
     transform: translate(-50%, -30%);
-    user-select: none;
-
+    /* user-select: none; */
 }
 
 .auth-login-title {

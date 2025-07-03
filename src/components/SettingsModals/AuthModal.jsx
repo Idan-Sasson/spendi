@@ -5,7 +5,7 @@ import Auth from '../Auth'
 import { auth } from '../../config/firebase';
 import { useLocalStorage } from '../useLocalStorage';
 
-export default function AuthModal({setIsOpen, email}) {
+export default function AuthModal({setIsOpen, setEmail}) {
   const [authInfo, setAuthInfo] = useLocalStorage("auth", {})
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -18,9 +18,8 @@ export default function AuthModal({setIsOpen, email}) {
   }, [])
 
   const handleClose = () => {
-    // setIsOpen(false);
     setIsClosing(true);
-    email = auth?.currentUser?.email
+    setEmail(auth?.currentUser?.email)
   }
 
   const handleAnimationEnd = () => {
@@ -40,7 +39,7 @@ export default function AuthModal({setIsOpen, email}) {
         <div className={`settings-modal-body-wrapper`}>
 
           <div className='auth-container'>
-            <Auth setIsOpen={handleClose}/>
+            <Auth setIsOpen={handleClose} setIsLoggedInModal={setIsLoggedIn}/>
 
           </div>
         </div>

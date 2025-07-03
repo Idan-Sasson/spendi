@@ -8,9 +8,12 @@ import { useSyncExpenses } from './firebaseHooks/useSyncExpenses';
 import { getAllExpenses } from './firebaseHooks/getAllExpenses';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import "./Auth.css"
+import { icons } from './constants';
+import { useDeleteUser } from './firebaseHooks/useDeleteUser';
 
-export default function Auth({ setIsOpen }) {
+export default function Auth({ setIsOpen, setIsLoggedInModal }) {
   // const firebaseExpenses = useGetAllExpenses();
+  const { deleteUserAccount } = useDeleteUser();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authInfo, setAuthInfo] = useLocalStorage("auth", {})
   const [localExpenses, setLocalExpenses] = useLocalStorage("expenses", []);
@@ -22,6 +25,7 @@ export default function Auth({ setIsOpen }) {
   useEffect(() => {
     if (auth?.currentUser?.email && authInfo["isAuth"]) {
       setIsLoggedIn(true);
+      setIsLoggedInModal(true);
     }
   }, [])
 
@@ -29,6 +33,7 @@ export default function Auth({ setIsOpen }) {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       setIsLoggedIn(true);
+      setIsLoggedInModal(true);
       const authData = {
         userID: result.user.uid,
         email: result.user.email,
@@ -52,6 +57,10 @@ export default function Auth({ setIsOpen }) {
         console.log('Incorrect mail');
         setError('Incorrect email or password');
       }
+      else if (err.code === 'auth/too-many-requests') {
+        console.log('Too many requests');
+        setError('Too many requests, try again later yazain');
+      }
       else {
         console.log("Login failed", err.message);
         setError("Something went wrong, try again later");
@@ -62,6 +71,7 @@ export default function Auth({ setIsOpen }) {
   const handlelogOut = async () => {
     await signOut(auth);
     setIsLoggedIn(false);
+    setIsLoggedInModal(false);
     setLocalExpenses([])
     setAuthInfo({});
 
@@ -71,6 +81,7 @@ export default function Auth({ setIsOpen }) {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       setIsLoggedIn(true);
+      setIsLoggedInModal(true);
       const authData = {
         userID: result.user.uid,
         email: result.user.email,
@@ -95,6 +106,10 @@ export default function Auth({ setIsOpen }) {
         console.log("Email already in use")
         setError("Email already in use")
       }
+      else if (err.code === 'auth/too-many-requests') {
+        console.log('Too many requests');
+        setError('Too many requests, try again later yazain');
+      }
       else {
         console.log("Sign up failed", err.message);
         setError("Something went wrong, try again later");
@@ -102,15 +117,32 @@ export default function Auth({ setIsOpen }) {
     }
   }
 
+  const deleteAccount = async () => {
+    await deleteUserAccount(authInfo['userID']);
+    await handlelogOut();
+  }
+
+
   return (
     <div className='auth-wrapper'>
       <div className='auth-logged-in'>
         {isLoggedIn &&
-          <div>
+          <div className='settings-body'>
+            <div className='settings-category-container'>   
+              <div className='settings-category-title'>Test</div>
+              <div className='settings-item-container'>
+                <div className='settings-item'>
+                  <span>Categories Colors</span>
+                  <img src={icons["Arrow"]} className='arrow'></img>
+                </div>
+                <div className='settings-item last-item' onClick={deleteAccount}>
+                  <span className='delete'>Delete account</span>
+                </div>
+              </div>
+            </div>
             <button onClick={handlelogOut}>Log out</button>
             <div>{auth?.currentUser?.email}</div>
             <div onClick={() => setIsOpen()}>back </div>
-
           </div>
 
         }
@@ -118,20 +150,21 @@ export default function Auth({ setIsOpen }) {
 
       <div className='auth-logged-out'>
         {!isLoggedIn &&
-          <div>
+          <div className='auth-logout-wrapper'>
             <div className='auth-login-title'>
               {/* <div>Login</div> */}
             </div>
+
             <div className='auth-inputs-container'>
               <div className='auth-input-container'>
                 <div className='auth-inputs-title'> Email </div>
                 <input className='auth-input-holder' placeholder='Enter your email' onChange={(e) => setEmail(e.target.value)} />
               </div>
+
               <div className='auth-input-container'>
                 <div className='auth-inputs-title'> Password </div>
                 <input className='auth-input-holder' type='password' placeholder='Enter your password' onChange={(e) => setPassword(e.target.value)} />
                 <div className='auth-error'>{error ? `*${error}` : ''}</div>
-
               </div>
 
               <div className='auth-buttons-container'>
