@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "./static/css/main.99392f07.css",
-    "main.js": "./static/js/main.cf068ad5.js",
+    "main.css": "./static/css/main.cfc88717.css",
+    "main.js": "./static/js/main.572a83bc.js",
     "static/media/Spendi-banner.png": "./static/media/Spendi-banner.2f781d5c40249ad4f409.png",
     "service-worker.js": "./service-worker.js",
     "static/media/expenses.png": "./static/media/expenses.75e90cca0dfdedd38439.png",
@@ -14,11 +14,11 @@
     "static/media/groceries.png": "./static/media/groceries.6440715f167253aa3751.png",
     "static/media/car.png": "./static/media/car.a0bf3867577713932707.png",
     "index.html": "./index.html",
-    "main.99392f07.css.map": "./static/css/main.99392f07.css.map",
-    "main.cf068ad5.js.map": "./static/js/main.cf068ad5.js.map"
+    "main.cfc88717.css.map": "./static/css/main.cfc88717.css.map",
+    "main.572a83bc.js.map": "./static/js/main.572a83bc.js.map"
   },
   "entrypoints": [
-    "static/css/main.99392f07.css",
-    "static/js/main.cf068ad5.js"
+    "static/css/main.cfc88717.css",
+    "static/js/main.572a83bc.js"
   ]
 }
