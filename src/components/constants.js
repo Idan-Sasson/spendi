@@ -19,7 +19,7 @@ import search from "../assets/icons/search.png"
 import expenses from "../assets/icons/expenses.png"
 import settings from "../assets/icons/settings.png"
 import arrow from "../assets/icons/arrow.png"
-
+import Delete from "../assets/icons/delete.png"
 
 export const categories = [  // https://codepen.io/sosuke/pen/Pjoqqp
   { name: "General", color: "rgba(32, 212, 140, 1)", isExpense: true },
@@ -69,4 +69,5 @@ export const icons = {
   Expenses: expenses,
   Settings: settings,
   Arrow: arrow,
+  Delete: Delete,
 }

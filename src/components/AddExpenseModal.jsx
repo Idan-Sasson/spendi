@@ -9,7 +9,7 @@ import { useLocalStorage } from "./useLocalStorage";
 import { setIconColor, parseRgbaString } from "./HelperFunctions";
 import { useAddExpense } from "./firebaseHooks/useAddExpense";
 import { useGetUserInfo } from "./firebaseHooks/useGetUserInfo";
-import { UNSAFE_useFogOFWarDiscovery } from "react-router-dom";
+import Calculator from "./customs/Calculator";
 
 
 export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
@@ -31,7 +31,10 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [calendarIcon, setCalendarIcon] = useState(icons["Calendar"]);
   const { addExpense } = useAddExpense(expenses, setExpenses);
   const hasMount = useRef(false);
-  const [ipCountry, setIpCountry] = useLocalStorage('ipCountry', '')
+  const [ipCountry, setIpCountry] = useLocalStorage('ipCountry', '');
+  const [isCalcOpen, setIsCalcOpen] = useState(false);
+  const [calcDisplay, setCalcDisplay] = useState('');
+  // const []
 
   useEffect(() => {
     if (Object.hasOwn(countries, ipCountry)) setCountry(ipCountry);
@@ -102,6 +105,10 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   }, [country])
 
   const handleClose = () => {
+    // if (isCalcOpen) {
+    //   setIsCalcOpen(false);
+    //   return;
+    // }
     setIsClosing(true);
   };
 
@@ -133,7 +140,9 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
 
 
   return (
-    <div className={'modal-overlay'} onClick={handleClose}>
+    <div>
+          {isCalcOpen && <Calculator calc={calcDisplay} setCalc={setCalcDisplay} setResult={setModalPrice} setIsCalcOpen={setIsCalcOpen}/>}
+    <div className={`modal-overlay ${isClosing ? 'blur-out' : ''}`} onClick={handleClose}>
 
       <div className={`modal-container ${isClosing ? 'fade-out' : ''}`} onClick={(e) => e.stopPropagation()} onAnimationEnd={handleAnimationEnd} style={{boxShadow: `0 0 32px 0 ${setAlpha(categoryColor, 0.2)}`}}>
 
@@ -152,11 +161,16 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
               {countries[country] !== AppOptions.baseCurrency && 
               <div className="aem-convert-rate">{rate ? `${(1/rate).toFixed(2)}${AppOptions.baseCurrency.toUpperCase()}` : '0'}</div>}
             </div>
+            
+            <div>
+              <div className="calc-display-result">{calcDisplay}</div>
             <input className="new-price-input"
-              // type='number'
               value={modalPrice}
-              onChange={handlePriceChange}
+              onClick={() => setIsCalcOpen(true)}
+              readOnly={true}
+              // onChange={handlePriceChange}
               placeholder="0.00" />
+            </div>
           </div>
           <div>
             <div className='open-cat-container' onClick={() => setIsCatOpen(true)} style={{backgroundColor: setAlpha(categoryColor, 0.5)}}>
@@ -187,6 +201,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
           <img src={icons["Plus"]} className={`add-button ${isClosing ? 'spin' : ''}`} onClick={handleModalSubmit}/>
           <button className="close-button" onClick={handleClose}>X</button>
       </div>
+    </div>
     </div>
   );
 }

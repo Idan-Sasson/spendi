@@ -105,9 +105,9 @@ useEffect(() => {
 
   const handleRemove = () => {
     handleClose();
-    const updated = expenses.filter((item) => item.expenseId !== expense.expenseId); 
-    setExpenses(updated); // Deletes from 
     if (expense.id) deleteExpense(expense.id) // Removes from firestore
+    const updated = expenses.filter((item) => item.expenseId !== expense.expenseId);
+    setExpenses(updated); // Deletes from local storage
   }
 
   const handleDateChange = (e) => {

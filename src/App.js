@@ -58,7 +58,6 @@ function App() {
   return (
     <HashRouter>
       <Navbar />
-      {/* <AddButton /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/expenses" element={<Expenses />} />

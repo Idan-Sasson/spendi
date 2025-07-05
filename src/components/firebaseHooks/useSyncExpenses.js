@@ -1,5 +1,6 @@
 import { useAddExpense } from "./useAddExpense"
 import { useLocalStorage } from "../useLocalStorage";
+import { getAllExpenses } from "./getAllExpenses";
 
 export const useSyncExpenses = () => {  // Adds all the expenses from localStorage that don't have an id (means they are not on firebase) to firebase
     const { addExpense } = useAddExpense();
@@ -18,8 +19,9 @@ export const useSyncExpenses = () => {  // Adds all the expenses from localStora
                 }
             }
 
-            setExpenses(updated);
-            return updated
+            const fbExpenses = await getAllExpenses(userID);
+            setExpenses(fbExpenses);
+            return fbExpenses;  // Return the updated expenses from firebase
         } catch (err) {
             console.error("Sync error", err)
         }

@@ -7,6 +7,7 @@ import CurrencySettings from './SettingsModals/CurrencySettings';
 import { useGetUserInfo } from './firebaseHooks/useGetUserInfo';
 import Auth from './Auth';
 import AuthModal from './SettingsModals/AuthModal';
+import { NavLink } from 'react-router-dom';
 
 
 export default function Settings() {
@@ -67,7 +68,6 @@ export default function Settings() {
           <div className='settings-item-container'>
             <div onClick={handleClearCache} className='settings-item last-item'>
               <span>Clear Cache</span>
-              
             </div>
           </div>
         {isNotification && 
@@ -75,6 +75,20 @@ export default function Settings() {
           <div>Cleared Cache</div>
         </CustomNotification>}
         </div>
+        
+        {/* Tests */}
+        <div className='settings-category-container'>   
+          <div className='settings-category-title'>Tests</div>
+          <div className='settings-item-container'>
+            <NavLink to='/tests' className='settings-item last-item'>
+            {/* <div className='settings-item last-item'> */}
+              <span>Tests</span>
+              <img src={arrowPath} className='arrow'></img>
+            {/* </div> */}
+            </NavLink>
+          </div>
+        </div>
+
         <div>
           {/* {email || 'Not signed in'} */}
         </div>
