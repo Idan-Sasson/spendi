@@ -163,7 +163,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
             </div>
             
             <div>
-              <div className="calc-display-result">{calcDisplay}</div>
+              <div className="calc-display">{calcDisplay}</div>
             <input className="new-price-input"
               value={modalPrice}
               onClick={() => setIsCalcOpen(true)}
