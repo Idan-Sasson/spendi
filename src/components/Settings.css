@@ -12,11 +12,15 @@
     display: flex;
     justify-content: center;
     border-radius: 0 0 35px 35px;
+    /* z-index: 9999; */
     /* align-items: center; */
 }
 
 .settings-title {
-    padding-top: 10px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    /* padding-top: 10px; */
     user-select: none;
 }
 

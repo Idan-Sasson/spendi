@@ -1,16 +1,22 @@
-.auth-modal-overlay {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: white;
-    z-index: 99999;
-}
-
 .auth-container {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+.settings-topborder.auth-topborder {
+    z-index: 99999;
+}
+
+.settings-back-icon {
+    position: absolute;
+    width: 45px;
+    height: 40px;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.settings-back-icon-container {
+    z-index: 999999;
+}

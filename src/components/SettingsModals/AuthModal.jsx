@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { AppOptions } from '../constants'
+import { AppOptions, icons } from '../constants'
 import "./AuthModal.css"
 import Auth from '../Auth'
 import { auth } from '../../config/firebase';
@@ -32,16 +32,17 @@ export default function AuthModal({setIsOpen, setEmail}) {
   return (
     // <div className='auth-modal-overlay' style={{backgroundColor: AppOptions["backgroundColor"]}}>
     <div className={`cc-overlay ${isClosing ? 'slide-out' : ''}`} style={{backgroundColor: AppOptions["backgroundColor"]}} onAnimationEnd={handleAnimationEnd}>
-      <div className='settings-topborder'>
+      <div className='settings-topborder auth-topborder'>
         <div className='settings-title '>{isLoggedIn ? 'Account' : 'Login'}</div>
+        <div className='settings-back-icon-container'>
+        <img src={icons["Back"]} className='settings-back-icon' onClick={handleClose}/>
+        </div>
       </div>
-        <div className={`settings-modal-body-wrapper`}>
 
-          <div className='auth-container'>
             <Auth setIsOpen={handleClose} setIsLoggedInModal={setIsLoggedIn}/>
 
-          </div>
-        </div>
+          {/* </div> */}
+        {/* </div> */}
         {/* <button onClick={() => setIsOpen(false)}>Close</button> */}
     </div>
   )

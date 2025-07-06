@@ -69,5 +69,5 @@ export const icons = {
   Expenses: expenses,
   Settings: settings,
   Arrow: arrow,
-  Delete: Delete,
+  Delete,
 }

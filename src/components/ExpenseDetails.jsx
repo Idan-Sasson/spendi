@@ -8,6 +8,7 @@ import { AppOptions, icons} from './constants';
 import { setIconColor, parseRgbaString, setAlpha, convertCategories } from './HelperFunctions';
 import { useDeleteExpense } from './firebaseHooks/useDeleteExpense';
 import { useUpdateExpense } from './firebaseHooks/useUpdateExpense';
+import Calculator from './customs/Calculator';
 
 export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpenses} ) {
   const { deleteExpense } = useDeleteExpense();
@@ -19,7 +20,7 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [lastCountry, setLastCountry] = useState(expense.country);
   const ogName = useRef(expense.name);
   const [name, setName] = useState(expense.name);
-  const [price, setPrice] = useState(expense.price);
+  const [price, setPrice] = useState(String(expense.price));
   const [selectedDate, setSelectedDate] = useState(new Date(expense.date).toISOString().split('T')[0]);
   // const [saveDate, setSaveDate] = useState(expense.date);
   const [rate, setRate] = useState(expense.rate);
@@ -32,6 +33,10 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [isNoteFocused, setIsNoteFocused] = useState(false);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [isCalcOpen, setIsCalcOpen] = useState(false);
+  const [calcDisplay, setCalcDisplay] = useState('');
+  const [toDisplay, setToDisplay] = useState(false);
+  const [toDelete, setToDelete] = useState(false);
 
   const getColor = (category) => {
     return savedCategories[category] || convertCategories()[category].color
@@ -91,6 +96,14 @@ useEffect(() => {
 
   const handleAnimationEnd = () => {
     if (isClosing) {
+    if (toDelete) {
+          if (expense.id) deleteExpense(expense.id) // Removes from firestore
+      const updated = expenses.filter((item) => item.expenseId !== expense.expenseId);
+      setExpenses(updated); // Deletes from local storage
+      setIsOpen(false);
+      return
+    }
+    
       setIsOpen(false);
           let newName = ''
     if (name === '') newName = ogName.current;
@@ -105,9 +118,7 @@ useEffect(() => {
 
   const handleRemove = () => {
     handleClose();
-    if (expense.id) deleteExpense(expense.id) // Removes from firestore
-    const updated = expenses.filter((item) => item.expenseId !== expense.expenseId);
-    setExpenses(updated); // Deletes from local storage
+    setToDelete(true);
   }
 
   const handleDateChange = (e) => {
@@ -183,6 +194,13 @@ useEffect(() => {
     return icons[iconName]
   }
 
+    useEffect(() => {
+    if (!isCalcOpen) {
+      setCalcDisplay(price);
+      setToDisplay(false);
+    }
+  }, [isCalcOpen])
+
   return (
     <div className={`expenses-container ${isClosing ? 'slide-out' : ''}`} onAnimationEnd={handleAnimationEnd} style={{backgroundColor: AppOptions["backgroundColor"]}}>
       <img src={getIconSrc("Back", getColor(category))} className={`back-icon ${isClosing ? 'back-slide-out' : ''}`} onClick={handleSave}/>
@@ -213,7 +231,11 @@ useEffect(() => {
         </div>}
 
       <div className="price-container">
-        <input className="price-input" value={price} onChange={handlePriceChange} placeholder={expense.price} />
+        <div className='ed-calc-display-container' onClick={() => setIsCalcOpen(true)}>
+        <input className='ed-calc-input' readOnly={true} value={calcDisplay || ''} placeholder={expense.price} style={{fontSize: toDisplay ? '15px' : '20px'}}/>
+        <div className={`ed-calc-display ${toDisplay ? '' : 'hide'}`}>{price ? `= ${price}` : ''}</div>
+        {/* <input className="price-input" value={price} onChange={handlePriceChange} placeholder={expense.price} /> */}
+        </div>
         <div onClick={() => setIsCountryOpen(true)} className='currency-container' style={{backgroundColor: setAlpha(categoryColor, 0.25),
            border: `1px solid ${setAlpha(categoryColor, 0.5)}`}}>
           <div className='currency'>{countries[selectedCountry].toUpperCase()}</div>
@@ -236,6 +258,8 @@ useEffect(() => {
       </div>
       <div>
         {isCatOpen && <CategoryModal setIsOpen={setIsCatOpen} setCategory={setCategory} onClose={updateCat}/>}
+        {isCalcOpen && <Calculator calc={calcDisplay} setCalc={setCalcDisplay} setResult={setPrice} setIsCalcOpen={setIsCalcOpen} setToDisplay={setToDisplay}/>}
+        
       </div>
     </div>
   );

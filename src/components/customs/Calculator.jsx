@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react'
 import "./Calculator.css"
 import { icons } from '../constants';
 
-export default function Calculator({ calc, setCalc, setResult, setIsCalcOpen, display=false}) {
+export default function Calculator({ calc, setCalc, setResult, setIsCalcOpen, setToDisplay=false, display=false}) {
   const [operations, setOperations] = useState([])
   const [isOperation, setIsOperation] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const operationSymbols = ['+', '/', '*', '-']
   
   useEffect(() => {  // For the display
-    if (!operationSymbols.some(op => calc.includes(op))) {
+    if (!operationSymbols.some(op => calc.includes(op))) {  ////// HERE HERE 
       setIsOperation(false);
       setOperations([]);
     }
@@ -17,6 +17,10 @@ export default function Calculator({ calc, setCalc, setResult, setIsCalcOpen, di
     setResult(calculate());  // Always return result
   }, [calc])
   
+  useEffect(() => {
+    if(setToDisplay) setToDisplay(isOperation ? true : false)
+  }, [isOperation])
+
   const calculate = () => {
     let toCalc = calc
 

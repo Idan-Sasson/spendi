@@ -34,14 +34,14 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [ipCountry, setIpCountry] = useLocalStorage('ipCountry', '');
   const [isCalcOpen, setIsCalcOpen] = useState(false);
   const [calcDisplay, setCalcDisplay] = useState('');
-  // const []
+  const [toDisplay, setToDisplay] = useState(false);
 
   useEffect(() => {
     if (Object.hasOwn(countries, ipCountry)) setCountry(ipCountry);
   }, [])
 
   const handleModalSubmit = async () => {
-    if (modalExpense.trim() === "" || modalPrice.trim() === "") return; // Blank input check
+    if (String(modalExpense).trim() === "" || String(modalPrice).trim() === "") return; // Blank input check
     handleClose();
 
    const tmpRate = rate || 1;
@@ -134,17 +134,23 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   useEffect(() => {
     // setCategoryFilter(categories.find(cat => cat.name === category).filter);
     setIconColor(icons["Calendar"], parseRgbaString(categoryColor)).then(setCalendarIcon)
-
   }, [category])
 
+  useEffect(() => {
+    if (!isCalcOpen) {
+      setCalcDisplay(modalPrice);
+      setToDisplay(false);
+    }
+  }, [isCalcOpen])
 
 
   return (
     <div>
-          {isCalcOpen && <Calculator calc={calcDisplay} setCalc={setCalcDisplay} setResult={setModalPrice} setIsCalcOpen={setIsCalcOpen}/>}
+          {isCalcOpen && <Calculator calc={calcDisplay} setCalc={setCalcDisplay} setResult={setModalPrice} setIsCalcOpen={setIsCalcOpen} setToDisplay={setToDisplay}/>}
     <div className={`modal-overlay ${isClosing ? 'blur-out' : ''}`} onClick={handleClose}>
 
       <div className={`modal-container ${isClosing ? 'fade-out' : ''}`} onClick={(e) => e.stopPropagation()} onAnimationEnd={handleAnimationEnd} style={{boxShadow: `0 0 32px 0 ${setAlpha(categoryColor, 0.2)}`}}>
+          <div className="aem-name-container" />
 
         <div className='modal-bg-image' style={{ backgroundImage: `url(${icons[category]})` }} />
         
@@ -155,6 +161,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
             dir='rtl'
           />
 
+          <div className="price-container-container">
           <div className="price-container">
             <div className="aem-currency-container" style={{backgroundColor: setAlpha(categoryColor, 0.5), borderColor: categoryColor}} onClick={() => setIsCountryOpen(true)}>
               <div className="aem-base-currency">{countries[country].toUpperCase()}</div>
@@ -162,15 +169,15 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
               <div className="aem-convert-rate">{rate ? `${(1/rate).toFixed(2)}${AppOptions.baseCurrency.toUpperCase()}` : '0'}</div>}
             </div>
             
-            <div>
-              <div className="calc-display">{calcDisplay}</div>
-            <input className="new-price-input"
-              value={modalPrice}
-              onClick={() => setIsCalcOpen(true)}
-              readOnly={true}
-              // onChange={handlePriceChange}
-              placeholder="0.00" />
+            <div className="aem-prices-container" onClick={() => setIsCalcOpen(true)}>
+              {/* <div className="aem-calc-display">{calcDisplay || 'a'}</div> */}
+              <input  className="aem-price-input"
+                readOnly={true}
+                value={calcDisplay || ''}
+                placeholder="0.00"/>
+              <div className={`aem-calc-display ${toDisplay ? '' : 'hide'}`}>{modalPrice ? `= ${modalPrice}` : ''}</div>
             </div>
+          </div>
           </div>
           <div>
             <div className='open-cat-container' onClick={() => setIsCatOpen(true)} style={{backgroundColor: setAlpha(categoryColor, 0.5)}}>

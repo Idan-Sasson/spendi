@@ -153,7 +153,7 @@ export default function Auth({ setIsOpen, setIsLoggedInModal }) {
                     <div className='delete-verify-container'>
                       <div>Are you sure you want to delete the user?</div>
                       <div>This action cannot be undone.</div>
-                      <div>All your expenses will be removed</div>
+                      <div>All your expenses will be removed.</div>
                       <div className='delete-verify-buttons'>
                         <div className='delete-verify-button accept' onClick={deleteAccount}>Yes</div>
                         <div className='delete-verify-button refuse' onClick={() => setIsDeleteVer(false)}>No</div>
@@ -165,7 +165,7 @@ export default function Auth({ setIsOpen, setIsLoggedInModal }) {
             </div>
             {/* <button onClick={handlelogOut}>Log out</button> */}
             {/* <div>{auth?.currentUser?.email}</div> */}
-            <div onClick={() => setIsOpen()}>back </div>
+            {/* <div onClick={() => setIsOpen()}>back</div> */}
           </div>
 
         }

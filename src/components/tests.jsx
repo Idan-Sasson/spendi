@@ -10,15 +10,34 @@ import { useGetAllExpenses } from "./firebaseHooks/useGetAllExpenses";
 import { useAddExpense } from "./firebaseHooks/useAddExpense";
 import { getAllExpenses } from "./firebaseHooks/getAllExpenses";
 import Calculator from "./customs/Calculator";
+import { useGetUserInfo } from "./firebaseHooks/useGetUserInfo";
+import { useDeleteExpense } from "./firebaseHooks/useDeleteExpense";
 
 export default function Tests() {
-    const [calc, setCalc] = useState('');
-    const [result, setResult] = useState('');
+    // const { userID } = useGetUserInfo();
+    // const { deleteExpense } = useDeleteExpense();
+    // useEffect(() => {
+    //     const getExpenses
+    //     const expenses = await getAllExpenses(userID)
+    //     console.log(expenses);
+    // })
+    
+    // const [calc, setCalc] = useState('');
+    // const [result, setResult] = useState('');
     // console.log(getAllExpenses("pnwF52jchcbmI8TbWxeR88BpN742"))
     // useEffect(() => {
     //     const t = async () => {
-    //     const ex = await getAllExpenses("pnwF52jchcbmI8TbWxeR88BpN742")
-    //     console.log(ex);
+    //     const expenses = await getAllExpenses(userID)
+    //     expenses.map(expense => {
+    //         // console.log(!expense.expenseId);
+    //         if (!expense.expenseId) {
+    //             deleteExpense(expense.id);
+    //             // console.log(expense.expenseId);
+    //             console.log(expense.name);
+    //             console.log(expense.expenseId);
+    //         }
+    //     })
+    //     // console.log(ex);
     //     }
     //     t();
     // }, [])
@@ -96,11 +115,11 @@ export default function Tests() {
     // console.log(getSymbol("ils"));
 
     return (
-        <div>TEST {calc}
-        <div>{result}</div>
+        <div>TEST
+        <div></div>
             {/* <img src={coloredSrc} alt="Back icon" /> */}
             {/* <button onClick={handleSubmit}>Add expense</button> */}
-            <Calculator calc={calc} setCalc={setCalc} setResult={setResult} display={true}/>
+            {/* <Calculator calc={calc} setCalc={setCalc} setResult={setResult} display={true}/> */}
         </div>
     );
 }

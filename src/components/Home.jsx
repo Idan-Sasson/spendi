@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import banner from "../assets/Spendi-banner.png"
 import { setIconColor, parseRgbaString, convertCategories, useBaseCurrency, getSymbol } from "./HelperFunctions";
 
-
 const Home = () => {
     const navigate = useNavigate();
     const [savedCategories, setSavedCategories] = useLocalStorage("savedCategories", []);

@@ -143,6 +143,25 @@ input:focus {
   /* border-bottom: 1px solid rgba(0, 0, 0, 0.431); */
 }
 
+.ed-calc-input {
+  margin-right: 0;
+  /* font-size: 20px; */
+  text-align: right;
+  color: black;
+  border: none;
+  background: none;
+}
+
+.ed-calc-display {
+  width: 100%;
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.ed-calc-display.hide {
+  display: none;
+}
+
 .price-input {
   margin-right: 0;
   font-size: 30px;
