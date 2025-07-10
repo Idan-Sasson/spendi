@@ -10,6 +10,7 @@ import { setIconColor, parseRgbaString } from "./HelperFunctions";
 import { useAddExpense } from "./firebaseHooks/useAddExpense";
 import { useGetUserInfo } from "./firebaseHooks/useGetUserInfo";
 import Calculator from "./customs/Calculator";
+import CustomSelect from "./customs/CustomSelect";
 
 
 export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
@@ -35,6 +36,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [isCalcOpen, setIsCalcOpen] = useState(false);
   const [calcDisplay, setCalcDisplay] = useState('');
   const [toDisplay, setToDisplay] = useState(false);
+  
 
   useEffect(() => {
     if (Object.hasOwn(countries, ipCountry)) setCountry(ipCountry);
@@ -143,6 +145,9 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
     }
   }, [isCalcOpen])
 
+  useEffect(() => {
+    if (!modalPrice) setModalPrice('');
+  }, [modalPrice])
 
   return (
     <div>
@@ -150,7 +155,6 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
     <div className={`modal-overlay ${isClosing ? 'blur-out' : ''}`} onClick={handleClose}>
 
       <div className={`modal-container ${isClosing ? 'fade-out' : ''}`} onClick={(e) => e.stopPropagation()} onAnimationEnd={handleAnimationEnd} style={{boxShadow: `0 0 32px 0 ${setAlpha(categoryColor, 0.2)}`}}>
-          <div className="aem-name-container" />
 
         <div className='modal-bg-image' style={{ backgroundImage: `url(${icons[category]})` }} />
         
@@ -186,6 +190,16 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
 
             <div className="aem-country-wrapper">
               <span className="aem-country-select" onClick={() => setIsCountryOpen(true)} style={{backgroundColor: setAlpha(categoryColor, 0.5), borderColor: categoryColor}}>{country}</span>
+              <div>
+              {/* <CustomSelect onSelect={setCountry} optionTitle={country} className="aem-cs-country"
+                style={{boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)', paddingBottom: '1px'}}>
+                {Object.keys(countries).map((country) => (
+                  <div key={country} data-value={country} className="s-option-container">
+                    <div key={country}>{country}</div>
+                  </div>
+                ))}
+              </CustomSelect> */}
+              </div>
             </div>
           </div>
 

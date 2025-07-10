@@ -58,19 +58,6 @@
     z-index: 0;
 }
 
-.aem-name-container {
-    position: fixed;
-    background: linear-gradient(to bottom, rgba(32, 212, 140, 0.153), rgba(32, 212, 140, 0));
-    /* background-color: rgba(236, 177, 101, 0.473); */
-    width: 100%;
-    top: 0;
-    left: 0;
-    height: 30%;
-    border-radius: 10px;
-    z-index: 999;
-    box-sizing: border-box;
-}
-
 .new-expense-input {
     width: auto;
     margin: 10px 6px;

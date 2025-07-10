@@ -3,15 +3,16 @@ import "./CustomSelect.css"
 import React from "react";
 import { icons } from "../constants";
 
-export default function CustomSelect({ children, onSelect, optionTitle, style}) {
-// export default function CustomSelect({ children, options, optionTitle, setOption }) {
+export default function CustomSelect({ children, onSelect, optionTitle, style, className=''}) {
   /*
   optionTitle - Option shown on top of the select dropdown
   style - Style for the title
   */
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
-    const optionsRef = useRef(null);
+    // const optionsRef = useRef(null);
+    const containerRef = useRef(null);
+    const [dropdownHeight, setDropdownHeight] = useState('auto');
     const [width, setWidth] = useState(0);
     const [longest, setLongest] = useState('')
     
@@ -44,6 +45,18 @@ const clonedChildren = React.Children.toArray(children).map((child, index, arr) 
         return () => document.removeEventListener("mousedown", handleOutsideClick)
     }, [])
 
+    useEffect(() => {
+      const updateDropdownHeight = () => {
+        if (!containerRef.current) return;
+        const rect = containerRef.current.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - rect.bottom - 10;  // 10px padding
+        setDropdownHeight(`${Math.max(spaceBelow, 100)}px`); // fallback to at least 100px
+      };
+      updateDropdownHeight();
+      window.addEventListener('resize', updateDropdownHeight);
+      return () => window.removeEventListener('resize', updateDropdownHeight);
+    }, [])
+
     const getLongestDataValue = (children) => {
       return React.Children.toArray(children).reduce((longest, child) => {
         const val = child.props['data-value'] ?? '';
@@ -57,7 +70,7 @@ const clonedChildren = React.Children.toArray(children).map((child, index, arr) 
 
     return (
     <>
-      <div className="cs-overlay">
+      <div className={`cs-overlay ${className}`} ref={containerRef}>
         <div onClick={handleToggle} className="select-title" style={style}>
           <div className="select-tabs">
             <span className="cs-title">{optionTitle}</span>
@@ -65,7 +78,7 @@ const clonedChildren = React.Children.toArray(children).map((child, index, arr) 
           </div>
           <span className="cs-invisible">..{longest} ^..</span>
           </div>
-        <div className={`dropdown-container ${isOpen ? 'dropdown-open' : ''}`} ref={optionsRef}>
+        <div className={`dropdown-container ${isOpen ? 'dropdown-open' : ''}`} style={{maxHeight: dropdownHeight}}>
 
           <div className="cs-children">
             {clonedChildren}

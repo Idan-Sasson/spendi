@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 import './Home.css';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, plugins} from 'chart.js';
@@ -8,6 +8,7 @@ import AddButton from './AddButton';
 import { useNavigate } from 'react-router-dom';
 import banner from "../assets/Spendi-banner.png"
 import { setIconColor, parseRgbaString, convertCategories, useBaseCurrency, getSymbol } from "./HelperFunctions";
+import CustomSelect from './customs/CustomSelect';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -17,15 +18,90 @@ const Home = () => {
     const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
     const baseCurrency = useBaseCurrency();
     const currencySymbol = getSymbol(baseCurrency);
+    const [graphExpenses, setGraphExpenses] = useState(expenses) // last 30
+    const [pieExpenses, setPieExpenses] = useState(expenses);
+    const [showGraph, setShowGraph] = useState(30)  // Shows the last X dates entries (dates that had entry) in the bar graph
+    const [selectFrame, setSelectFrame] = useState('All');
+    const boxContainerRef = useRef(null);
 
-    
-    const dayAvg = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const firstOfMonth = new Date(year, month, 1);
+    const FirstMTs = firstOfMonth.getTime();
+
+    useEffect(() => {
+        let filteredExpenses
+        switch (selectFrame) {
+            case 'All': 
+                filteredExpenses = expenses;
+                break;
+            case 'Last month (30 days)':
+                filteredExpenses = getExpensesFrame(expenses, new Date().getTime() - 2592000000, new Date().getTime());
+                break;
+            case "Month to date":
+                filteredExpenses = getExpensesFrame(expenses, FirstMTs, new Date().getTime());
+                break;            
+            default:
+                filteredExpenses = expenses;
+                break;
+            }
+            setGraphExpenses(filteredExpenses);
+            setPieExpenses(filteredExpenses);
+    }, [selectFrame])
+
+    useEffect(() => {  // Invisible scrolling
+      const c = boxContainerRef.current;
+      if (!c) return;
+      const oneWidth = c.scrollWidth / 3;
+      c.scrollLeft = oneWidth;
+      let ticking = false;
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          if (c.scrollLeft < oneWidth * 0.5) c.scrollLeft += oneWidth;
+          else if (c.scrollLeft > oneWidth * 1.5) c.scrollLeft -= oneWidth;
+          ticking = false;
+        });
+      }
+      c.addEventListener('scroll', onScroll, { passive: true });
+      return () => c.removeEventListener('scroll', onScroll);
+    }, []);
+
+    const getExpensesFrame = (expensesArray, t1, t2) => {
+         return expensesArray.filter((expense) => {
+            return expense.date > t1 && expense.date < t2
+        })
+    }
+
+    const getTotal = (expensesArray=expenses) => {
+        return expensesArray.reduce((sum, item) => sum + (item.convertedPrice || 0), 0);
+    }
+
+    const rangeAvg = (t1, t2) => {
         if (expenses.length === 0) return 0;
-        expenses.sort((a, b) => a.date - b.date);
-        const firstDay = new Date(expenses[0].date).setHours(0, 0, 0, 0);
-        const lastDay = new Date(expenses[expenses.length - 1].date).setHours(0, 0, 0, 0);
+        const filteredExpenses = expenses.filter((expense) => {
+            return expense.date > t1 && expense.date < t2
+        })
+        return dayAvg(filteredExpenses);
+    }
+
+    const totalRange = (t1, t2) => {  // Sum of the expenses between 2 ranges (d1, d2 - timestamps)
+        if (expenses.length === 0) return 0;
+        const filteredExpenses = expenses.filter((expense) => {
+            return expense.date > t1 && expense.date < t2
+        });
+        return getTotal(filteredExpenses).toFixed(2);
+    }
+    
+    const dayAvg = (expensesArray=expenses) => {
+        if (expensesArray.length === 0) return 0;
+        expensesArray.sort((a, b) => a.date - b.date);
+        const firstDay = new Date(expensesArray[0].date).setHours(0, 0, 0, 0);
+        const lastDay = new Date(expensesArray[expensesArray.length - 1].date).setHours(0, 0, 0, 0);
         const days = (lastDay - firstDay) / (1000 * 60 * 60 * 24) + 1;
-        return (total / days).toFixed(2);
+        return (getTotal(expensesArray) / days).toFixed(2);
     };
 
     const getColor = (category) => {
@@ -67,13 +143,25 @@ const Home = () => {
         return icons[category]
     }
 
-    // Graph
-    ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, ArcElement);
+    const boxesData = [
+        {title: 'Total', value: currencySymbol + total},
+        {title: "Daily Average", value: currencySymbol + dayAvg()},
+        {title: "MTD Total", value: currencySymbol + totalRange(FirstMTs, new Date().getTime())},
+        {title: "MTD Daily Average", value: currencySymbol + rangeAvg(FirstMTs, new Date().getTime())}
+    ]
 
-    // const data{
+    const boxes = [...boxesData, ...boxesData, ...boxesData];
+
+
+
+    ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, ArcElement);
+    // Bar graph
+
     const labels = [];
     const sums = [];
-    const groupedExpenses = expenses.reduce((result, item) => {
+
+    // Grouped
+    const graphGrouped = graphExpenses.reduce((result, item) => {
         const isoDate = new Date(item.date).toISOString().split("T")[0];
         if (!result[isoDate]) {  // If this date doesn't exist in our groups yet, create an empty list
             result[isoDate] = [];
@@ -82,14 +170,29 @@ const Home = () => {
         result[isoDate].push(item);
         return result;
     }, {});
-    Object.entries(groupedExpenses).sort((a, b) => new Date(a[0]) - new Date(b[0])).map(([isoDate, items]) => {
+    
+    const sortedDatesDesc = Object.keys(graphGrouped)
+    .sort((a, b) => new Date(b) - new Date(a));
+    const filteredGraphDates = sortedDatesDesc.slice(0, showGraph);
+
+    const filteredGrouped = filteredGraphDates.reduce((obj, date) => {
+        obj[date] = graphGrouped[date];
+        return obj;
+    }, {})
+    // console.log(filteredGrouped);
+    // console.log(filteredGraphDates);
+    // console.log(sortedDatesDesc.slice(0, 3))
+
+    Object.entries(filteredGrouped).sort((a, b) => new Date(a[0]) - new Date(b[0])).map(([isoDate, items]) => {
         const sum = items.reduce((sum, item) => sum + item.convertedPrice, 0);
         labels.push(isoDate);
         sums.push(sum);
     });
 
+
+    // Pie chart
     const catSums = {}
-    const groupedCats = expenses.reduce((result, item) => {
+    const groupedCats = pieExpenses.reduce((result, item) => {
         const cat = item.category
         if (!result[cat]) {
             result[cat] = [];
@@ -163,7 +266,7 @@ const Home = () => {
                 position: 'top',
                 display: false
             },
-        title: { display: true, text: 'Daily Expenses' },
+        title: { display: true, text: `Daily Expenses (${Math.min(showGraph, sortedDatesDesc.length)} nodes)` },
             tooltip: {
                 backgroundColor: 'rgba(118, 115, 110, 0.9)',
                 bodyFont: { weight: "bold" },
@@ -204,18 +307,29 @@ const Home = () => {
     return (
         <div className="home">
         <AddButton  expenses={expenses} setExpenses={setExpenses}/>
-            {/* <h1 className="spendi">Spendi</h1> */}
             <img className='home-banner' src={banner} />
-            <div className="box-container">
-                <div className="box">
-                    <span className='title'>Total</span>
-                    <span className="number">{currencySymbol}{total.toFixed(2)}</span>
-                </div>
-                <div className="box">
-                    <span className='title'>Daily Average</span>
-                    <span className='number'>{currencySymbol}{dayAvg()}</span>
-                </div>
+            
+            {/* Boxes */}
+            <div className="box-container" ref={boxContainerRef}>
+                {boxes.map(({ title, value }, index) => (
+                    <div className="box" key={index}>
+                        <span className='title'>{title}</span>
+                        <span className='number'>{value}</span>
+                    </div>
+                ))}
             </div>
+
+            {/* Selection  */}
+            <div className='select-container'>
+            <CustomSelect onSelect={setSelectFrame} optionTitle={selectFrame} className='range-frame-select'>
+                <div data-value='All' className='select-frame-tab'>All</div>
+                <div data-value='Last month (30 days)' className='select-frame-tab'>Last month (30 days)</div>
+                <div data-value='Month to date' className='select-frame-tab'>Month to date</div>
+            </CustomSelect>
+            <div className='invisible'>aaa</div>
+            </div>
+
+            {/* Graphs */}
             <div className="chart-wrapper">
                 <div className='chart-container'>
                     <Bar options={chartOptions} data={chartData} />
@@ -235,10 +349,8 @@ const Home = () => {
                             <span className='cat-sum'>{sum.toFixed(2)} {currencySymbol}</span>
                         </div>
                     ))}
-                {/* </div> */}
                 </div>
             </div>
-            {/* <button className='reset' onClick={() => setCachedIcons([])}>Clear Cache</button> */}
         </div>
     );
 };

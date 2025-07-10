@@ -8,31 +8,41 @@
 
 .box-container {
   display: flex;
-  gap: 10px;
+  gap: 15px;
   /* optional spacing between boxes */
   flex-wrap: nowrap;
   /* optional: makes them wrap on small screens */
   overflow-x: scroll;
   /* allows horizontal scrolling if needed */
   -webkit-overflow-scrolling: touch;
-  padding: 6px 0;
+  padding: 6px 15px 6px 15px;
   /* justify-content: center; */
+  scroll-snap-type: x mandatory;
+  /* enables snap scrolling */
+  scroll-snap-stop: always;
+  -webkit-overflow-scrolling: touch;
+
+}
+
+.box-container::-webkit-scrollbar {
+  display: none;
 }
 
 .box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   flex: 0 0 auto;
   border: 1px solid #ccc;
-  padding: 6px 16px;
-  /* padding: 16px; */
+  padding: 6px 10px;
   border-radius: 10px;
   background-color: rgb(249, 249, 249);
-  width: 130px;
+  width: 34vw;
   height: 60px;
-  /* padding: 10px 0; */
-  margin: 0 10px;
+  margin: 0 0px;
   box-shadow: 0.5px 2px 4px rgba(0, 0, 0, 0.2);
-  /* box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); */
   text-align: left;
+  scroll-snap-align: start;
 }
 
 .title {
@@ -41,11 +51,10 @@
   font-size: 12px;
   margin-bottom: 10px;
   color: #333;
-  display: block;
 }
 
 .number {
-  font-size: 26px;
+  font-size: 24px;
   font-family: "inter";
   display: block;
   font-weight: 500;
@@ -64,11 +73,17 @@
   border-radius: 10px;
 }
 
-.spendi {
-  text-align: center;
-  font-size: 36px;
-  font-weight: 500;
-  color: rgb(23, 66, 14);
+.select-container {
+  display: flex;
+}
+
+.range-frame-select {
+  margin-left: 15px;
+  padding-top: 15px;
+}
+
+.select-frame-tab {
+  white-space: nowrap;
 }
 
 .reset {

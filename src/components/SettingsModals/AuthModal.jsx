@@ -38,12 +38,7 @@ export default function AuthModal({setIsOpen, setEmail}) {
         <img src={icons["Back"]} className='settings-back-icon' onClick={handleClose}/>
         </div>
       </div>
-
-            <Auth setIsOpen={handleClose} setIsLoggedInModal={setIsLoggedIn}/>
-
-          {/* </div> */}
-        {/* </div> */}
-        {/* <button onClick={() => setIsOpen(false)}>Close</button> */}
+      <Auth setIsOpen={handleClose} setIsLoggedInModal={setIsLoggedIn}/>
     </div>
   )
 }
