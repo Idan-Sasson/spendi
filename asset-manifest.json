@@ -1,24 +1,25 @@
 {
   "files": {
-    "main.css": "./static/css/main.8bf4ecce.css",
-    "main.js": "./static/js/main.1c2d8210.js",
+    "main.css": "./static/css/main.4e6a7c6f.css",
+    "main.js": "./static/js/main.fd23b545.js",
     "static/media/Spendi-banner.png": "./static/media/Spendi-banner.2f781d5c40249ad4f409.png",
     "service-worker.js": "./service-worker.js",
     "static/media/expenses.png": "./static/media/expenses.75e90cca0dfdedd38439.png",
     "static/media/settings.png": "./static/media/settings.fd9cb79a2028b66f67eb.png",
     "static/media/fees.png": "./static/media/fees.b25aa52495896586c938.png",
     "static/media/entertainment.png": "./static/media/entertainment.c1d7fc13bc9561792099.png",
+    "static/media/Health.png": "./static/media/Health.d725d390010f1a9e270e.png",
     "static/media/shopping.png": "./static/media/shopping.9c816c6b923ef947a58e.png",
     "static/media/food.png": "./static/media/food.ca482020a991f1ade248.png",
     "static/media/calendar.png": "./static/media/calendar.4b59ba29906c2f748e64.png",
     "static/media/groceries.png": "./static/media/groceries.6440715f167253aa3751.png",
     "static/media/car.png": "./static/media/car.a0bf3867577713932707.png",
     "index.html": "./index.html",
-    "main.8bf4ecce.css.map": "./static/css/main.8bf4ecce.css.map",
-    "main.1c2d8210.js.map": "./static/js/main.1c2d8210.js.map"
+    "main.4e6a7c6f.css.map": "./static/css/main.4e6a7c6f.css.map",
+    "main.fd23b545.js.map": "./static/js/main.fd23b545.js.map"
   },
   "entrypoints": [
-    "static/css/main.8bf4ecce.css",
-    "static/js/main.1c2d8210.js"
+    "static/css/main.4e6a7c6f.css",
+    "static/js/main.fd23b545.js"
   ]
 }
