@@ -18,6 +18,11 @@ const Expenses = () => {
   const [isEmpty, setIsEmpty] = useState(false);
 
   useEffect(() => {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    meta.setAttribute('content', "rgb(239, 240, 239)")
+  }, [isDetailOpen])
+
+  useEffect(() => {
     if (expenses.length === 0) setIsEmpty(true);
     else setIsEmpty(false);
   }, [expenses])
@@ -107,7 +112,7 @@ const Expenses = () => {
                       onClick={() => {setOpenDetailId(item.expenseId); setIsDetailOpen(true)}}
                     >
                       <div>
-                        <span className="item-price">{curSymbol}{Number(item.convertedPrice).toFixed(2)} </span>
+                        <span className="item-price" style={{color: item.exclude ? 'rgb(255, 68, 68)' : ''}}>{item.exclude && '('}{curSymbol}{Number(item.convertedPrice).toFixed(2)}{item.exclude && ')'}</span>
                         {item.currency !== baseCurrency &&
                           <span className="real-currency">({item.price.toFixed(2)} {item.currency.toUpperCase()})</span>}
                       </div>

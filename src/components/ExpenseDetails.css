@@ -209,6 +209,7 @@ input:focus {
   background: none;
   color: black;
   width: 100%;
+  height: 28px;
   user-select: none;
 }
 
@@ -236,9 +237,25 @@ input:focus {
 }
 
 .date-container {
-  margin: 20px 0;
+  padding: 20px 0 10px 0;
   display: flex;
   justify-content: flex-end;
+}
+
+.checkbox-container {
+  padding: 10px 0 10px 0;
+  display: flex;
+  justify-content: right;
+  align-items: flex-end;
+}
+
+.exclude-checkbox {
+  margin: 0 12px 0 10px;
+  transform: scale(1.4);
+}
+
+.ed-exclude-metrics-text {
+  margin-left: 5px;
 }
 
 .back-icon {

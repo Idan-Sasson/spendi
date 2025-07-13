@@ -21,6 +21,11 @@ export default function Search() {
   const [isEmpty, setIsEmpty] = useState(false);
   
   useEffect(() => {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    meta.setAttribute('content', "rgb(239, 240, 239)")
+  }, [isDetailOpen])
+
+  useEffect(() => {
 	if (expenses.length === 0) setIsEmpty(true);
 	else setIsEmpty(false);
   }, [expenses])
@@ -122,7 +127,7 @@ export default function Search() {
 					{items.map((item) => (
 						<div className='item-header' key={item.expenseId} onClick={() => {setIsDetailOpen(true); setOpenDetailId(item.expenseId)}}>
 							<div className="s-price-container">
-								<div className="">{curSymbol}{item.convertedPrice.toFixed(2)}</div>
+                        	<span className="item-price" style={{color: item.exclude ? 'rgb(255, 68, 68)' : ''}}>{item.exclude && '('}{curSymbol}{Number(item.convertedPrice).toFixed(2)}{item.exclude && ')'}</span>
 								{ item.currency !== baseCurrency &&
 								<span className="real-currency">({item.price.toFixed(2)} {item.currency.toUpperCase()})</span>
 								}

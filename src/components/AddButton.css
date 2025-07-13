@@ -5,7 +5,7 @@
     bottom: 10%;
     transform: translate(0, -10%);
     right: 0;
-    background-color: rgba(97, 95, 95, 0.14);
+    background-color: rgba(255, 255, 255, 0.14);
     box-shadow: 0 4px 30px rgba(76, 0, 255, 0.163);
     border: 1px solid rgba(97, 95, 95, 0.15);
     backdrop-filter: blur(1px);
@@ -27,23 +27,3 @@
     aspect-ratio: 1;
     filter: invert(42%) sepia(62%) saturate(422%) hue-rotate(311deg) brightness(97%) contrast(94%);
 }
-
-/* .open-modal {
-    position: fixed;
-    bottom: 10%;
-    transform: translate(0, -10%);
-    border: none;
-    font-size: 35px;
-    font-weight: 200;
-    position: flex;
-    color: rgb(195, 98, 98);
-    background-color: rgba(192, 192, 192, 0.398);
-    border-radius: 50%;
-    padding: 0;
-    margin: 8px 0 8px 8px;
-    height: 40px;
-    width: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-} */

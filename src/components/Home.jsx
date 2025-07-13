@@ -3,7 +3,7 @@ import { useLocalStorage } from './useLocalStorage';
 import './Home.css';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, plugins} from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
-import { AppOptions, categories, icons } from './constants';
+import { categories, icons } from './constants';
 import AddButton from './AddButton';
 import { useNavigate } from 'react-router-dom';
 import banner from "../assets/Spendi-banner.png"
@@ -14,7 +14,6 @@ const Home = () => {
     const navigate = useNavigate();
     const [savedCategories, setSavedCategories] = useLocalStorage("savedCategories", []);
     const [expenses, setExpenses] = useLocalStorage("expenses", []);
-    const total = expenses.reduce((sum, item) => sum + (item.convertedPrice || 0), 0);
     const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
     const baseCurrency = useBaseCurrency();
     const currencySymbol = getSymbol(baseCurrency);
@@ -23,6 +22,9 @@ const Home = () => {
     const [showGraph, setShowGraph] = useState(30)  // Shows the last X dates entries (dates that had entry) in the bar graph
     const [selectFrame, setSelectFrame] = useState('All');
     const boxContainerRef = useRef(null);
+    const [filteredExpenses, setFilteredExpenses] = useState(expenses.filter(expense => {
+            return expense.exclude == undefined || !expense.exclude
+        }));
 
     const today = new Date();
     const year = today.getFullYear();
@@ -30,25 +32,37 @@ const Home = () => {
     const firstOfMonth = new Date(year, month, 1);
     const FirstMTs = firstOfMonth.getTime();
 
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    meta.setAttribute('content', "rgb(239, 240, 239)")
+  }, [])
+
     useEffect(() => {
-        let filteredExpenses
+        setFilteredExpenses(expenses.filter(expense => {
+            return expense.exclude == undefined || !expense.exclude
+        }))
+
+    }, [expenses]);
+
+    useEffect(() => {
+        let tmpExpenses
         switch (selectFrame) {
             case 'All': 
-                filteredExpenses = expenses;
+                tmpExpenses = filteredExpenses;
                 break;
             case 'Last month (30 days)':
-                filteredExpenses = getExpensesFrame(expenses, new Date().getTime() - 2592000000, new Date().getTime());
+                tmpExpenses = getExpensesFrame(filteredExpenses, new Date().getTime() - 2592000000, new Date().getTime());
                 break;
             case "Month to date":
-                filteredExpenses = getExpensesFrame(expenses, FirstMTs, new Date().getTime());
+                tmpExpenses = getExpensesFrame(filteredExpenses, FirstMTs, new Date().getTime());
                 break;            
             default:
-                filteredExpenses = expenses;
+                tmpExpenses = filteredExpenses;
                 break;
             }
-            setGraphExpenses(filteredExpenses);
-            setPieExpenses(filteredExpenses);
-    }, [selectFrame])
+            setGraphExpenses(tmpExpenses);
+            setPieExpenses(tmpExpenses);
+    }, [selectFrame, filteredExpenses])
 
     useEffect(() => {  // Invisible scrolling
       const c = boxContainerRef.current;
@@ -75,27 +89,27 @@ const Home = () => {
         })
     }
 
-    const getTotal = (expensesArray=expenses) => {
+    const getTotal = (expensesArray=filteredExpenses) => {
         return expensesArray.reduce((sum, item) => sum + (item.convertedPrice || 0), 0);
     }
 
     const rangeAvg = (t1, t2) => {
-        if (expenses.length === 0) return 0;
-        const filteredExpenses = expenses.filter((expense) => {
+        if (filteredExpenses.length === 0) return 0;
+        const tmpExpenses = filteredExpenses.filter((expense) => {
             return expense.date > t1 && expense.date < t2
         })
-        return dayAvg(filteredExpenses);
+        return dayAvg(tmpExpenses);
     }
 
     const totalRange = (t1, t2) => {  // Sum of the expenses between 2 ranges (d1, d2 - timestamps)
-        if (expenses.length === 0) return 0;
-        const filteredExpenses = expenses.filter((expense) => {
+        if (filteredExpenses.length === 0) return 0;
+        const tmpExpenses = filteredExpenses.filter((expense) => {
             return expense.date > t1 && expense.date < t2
         });
-        return getTotal(filteredExpenses).toFixed(2);
+        return getTotal(tmpExpenses).toFixed(2);
     }
     
-    const dayAvg = (expensesArray=expenses) => {
+    const dayAvg = (expensesArray=filteredExpenses) => {
         if (expensesArray.length === 0) return 0;
         expensesArray.sort((a, b) => a.date - b.date);
         const firstDay = new Date(expensesArray[0].date).setHours(0, 0, 0, 0);
@@ -144,7 +158,7 @@ const Home = () => {
     }
 
     const boxesData = [
-        {title: 'Total', value: currencySymbol + total},
+        {title: 'Total', value: currencySymbol + getTotal(filteredExpenses).toFixed(2)},
         {title: "Daily Average", value: currencySymbol + dayAvg()},
         {title: "MTD Total", value: currencySymbol + totalRange(FirstMTs, new Date().getTime())},
         {title: "MTD Daily Average", value: currencySymbol + rangeAvg(FirstMTs, new Date().getTime())}
@@ -244,7 +258,7 @@ const Home = () => {
                 displayColors: false,
                 callbacks: {
                     label: function(context) {
-                        return `${((context.parsed / total) * 100).toFixed(0)}%`
+                        return `${((context.parsed / getTotal(filteredExpenses)) * 100).toFixed(0)}%`
                     }
                 }
             }
@@ -306,7 +320,7 @@ const Home = () => {
 
     return (
         <div className="home">
-        <AddButton  expenses={expenses} setExpenses={setExpenses}/>
+        <AddButton  expenses={filteredExpenses} setExpenses={setExpenses}/>
             <img className='home-banner' src={banner} />
             
             {/* Boxes */}

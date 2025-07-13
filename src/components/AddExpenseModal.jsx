@@ -36,6 +36,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [isCalcOpen, setIsCalcOpen] = useState(false);
   const [calcDisplay, setCalcDisplay] = useState('');
   const [toDisplay, setToDisplay] = useState(false);
+  const [exclude, setExclude] = useState(false);
   
 
   useEffect(() => {
@@ -60,6 +61,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
     rate: tmpRate,
     note, 
     expenseId: new Date().getTime(),
+    exclude,
     userID,
   };
 
@@ -107,10 +109,6 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   }, [country])
 
   const handleClose = () => {
-    // if (isCalcOpen) {
-    //   setIsCalcOpen(false);
-    //   return;
-    // }
     setIsClosing(true);
   };
 
@@ -119,13 +117,6 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
       setIsOpen(false);
     }
   };
-
-  const handlePriceChange = (e) => {
-    // console.log(typeof())
-    const isValidNumber = str => /^-?\d*\.?\d*$/.test(str);
-    if (!isValidNumber(e.target.value)) return;
-    setModalPrice(e.target.value)
-  }
 
   const getColor = (category) => {
       return savedCategories[category] || convertCategories()[category].color
@@ -148,6 +139,10 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   useEffect(() => {
     if (!modalPrice) setModalPrice('');
   }, [modalPrice])
+
+  const handleToggle = (setChange) => {
+    setChange(t => !t);
+  }
 
   return (
     <div>
@@ -213,13 +208,17 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
             style={{boxShadow: isNoteFocused ? `0 0 10px ${setAlpha(categoryColor, 0.4)}` : 'none',
             borderColor: isNoteFocused ? categoryColor : undefined}}
             />
+          <div onClick={() => handleToggle(setExclude)}>
+          <input className='aem-exclude-checkbox' type='checkbox' checked={exclude} style={{accentColor: categoryColor}}/>
+            <span className="exclude-metrics-text"> Exclude from metrics</span>
+          </div>
 
           <div>
             {isCatOpen && <CategoryModal setIsOpen={setIsCatOpen} setCategory={setCategory}/>}
           {isCountryOpen && <CountryModal setIsOpen={setIsCountryOpen} selectedCountry={country} setSelectedCountry={setCountry} categoryColor={categoryColor} wrapperPosition={{top: '45%', right: '15%', height: '40vh', transformOrigin: 'top left'}} isPortal={true}/>}
           </div>
 
-          <img src={icons["Plus"]} className={`add-button ${isClosing ? 'spin' : ''}`} onClick={handleModalSubmit}/>
+          <img src={icons["Plus"]} className={`add-button ${isClosing ? 'spin' : ''}`} onClick={handleModalSubmit} style={{backgroundColor: categoryColor}}/>
           <button className="close-button" onClick={handleClose}>X</button>
       </div>
     </div>

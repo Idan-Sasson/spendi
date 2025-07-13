@@ -17,11 +17,9 @@
   -webkit-overflow-scrolling: touch;
   padding: 6px 15px 6px 15px;
   /* justify-content: center; */
-  scroll-snap-type: x mandatory;
+  /* scroll-snap-type: x mandatory; */
   /* enables snap scrolling */
-  scroll-snap-stop: always;
-  -webkit-overflow-scrolling: touch;
-
+  /* scroll-snap-stop: always; */
 }
 
 .box-container::-webkit-scrollbar {
@@ -42,7 +40,7 @@
   margin: 0 0px;
   box-shadow: 0.5px 2px 4px rgba(0, 0, 0, 0.2);
   text-align: left;
-  scroll-snap-align: start;
+  /* scroll-snap-align: start; */
 }
 
 .title {

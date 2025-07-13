@@ -37,11 +37,19 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [calcDisplay, setCalcDisplay] = useState('');
   const [toDisplay, setToDisplay] = useState(false);
   const [toDelete, setToDelete] = useState(false);
+  const [exclude, setExclude] = useState(expense.exclude)
 
   const getColor = (category) => {
     return savedCategories[category] || convertCategories()[category].color
   }
   const [categoryColor, setCategoryColor] = useState(getColor(expense.category));
+
+  useEffect(() => {
+    if (categoryColor) {
+      const meta = document.querySelector('meta[name="theme-color"]');
+      meta.setAttribute('content', categoryColor)
+    }
+  }, [categoryColor])
 
   useEffect(() => {
     if (note) setIsNoteOpen(true)
@@ -94,6 +102,10 @@ useEffect(() => {
     setIsClosing(true);
   }
 
+  const handleToggle = (setChange) => {
+    setChange(t => !t);
+  }
+
   const handleAnimationEnd = () => {
     if (isClosing) {
     if (toDelete) {
@@ -103,14 +115,14 @@ useEffect(() => {
       setIsOpen(false);
       return
     }
-    
+
       setIsOpen(false);
           let newName = ''
     if (name === '') newName = ogName.current;
     else newName = name;
     let newPrice = Number(price);
     if (isNaN(price)) newPrice = 0;
-    const updatedFields = { name: newName, price: newPrice, date: new Date(selectedDate).getTime(), category: category, convertedPrice: newPrice/rate, note: note, rate: rate, country: selectedCountry, currency: countries[selectedCountry] }
+    const updatedFields = { name: newName, price: newPrice, date: new Date(selectedDate).getTime(), category: category, convertedPrice: newPrice/rate, note: note, rate: rate, country: selectedCountry, currency: countries[selectedCountry], exclude: exclude || false }
     updateExpense(updatedFields);
     updateFirebaseExpense(updatedFields, expense.id);
     }
@@ -254,8 +266,14 @@ useEffect(() => {
           <input className="date-input" type="date" value={selectedDate} onChange={handleDateChange}/>
         </div>
         <img src={getIconSrc("Calendar", getColor(category))} className="ed-calendar-icon"/>
-
       </div>
+
+      {/* Exclude */}
+      <div className='checkbox-container' onClick={() => handleToggle(setExclude)}>
+        <span className="ed-exclude-metrics-text">Exclude from metrics</span>
+        <input className='exclude-checkbox' type='checkbox' checked={exclude} style={{accentColor: categoryColor}}/>
+      </div>
+
       <div>
         {isCatOpen && <CategoryModal setIsOpen={setIsCatOpen} setCategory={setCategory} onClose={updateCat}/>}
         {isCalcOpen && <Calculator calc={calcDisplay} setCalc={setCalcDisplay} setResult={setPrice} setIsCalcOpen={setIsCalcOpen} setToDisplay={setToDisplay}/>}

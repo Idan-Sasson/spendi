@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 import "./Settings.css";
 import CategoryColors from './SettingsModals/CategoryColors';
@@ -25,6 +25,11 @@ export default function Settings() {
     setCachedIcons([]);
     setIsNotification(true);
   }
+
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    meta.setAttribute('content', "rgba(189, 189, 189, 1)")
+  }, [])
 
   return (
     <div>

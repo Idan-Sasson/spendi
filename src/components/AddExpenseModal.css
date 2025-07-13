@@ -212,10 +212,17 @@
 
 }
 
+.aem-exclude-checkbox {
+    transform: scale(1.2);
+}
+
+.exclude-metrics-text {
+    font-size: 16px;
+}
+
 .add-button {
     display: block;
     margin: 10px auto 0 auto;
-    background: rgb(255, 132, 55);
     border-radius: 50%;
     width: 30px;
     aspect-ratio: 1;
