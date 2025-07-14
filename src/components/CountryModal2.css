@@ -1,0 +1,21 @@
+.countries-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+}
+
+.country-modal-selection-dropdown {
+    position: absolute;
+    z-index: 1000;
+}
+
+.countries-dropdown-container {
+    position: relative;
+    max-height: 60vh;
+    overflow-y: auto;
+    background-color: white;
+    z-index: 1001;
+}

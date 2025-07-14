@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import banner from "../assets/Spendi-banner.png"
 import { setIconColor, parseRgbaString, convertCategories, useBaseCurrency, getSymbol } from "./HelperFunctions";
 import CustomSelect from './customs/CustomSelect';
+import CountryModal2 from './CountryModal2';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -25,17 +26,17 @@ const Home = () => {
     const [filteredExpenses, setFilteredExpenses] = useState(expenses.filter(expense => {
             return expense.exclude == undefined || !expense.exclude
         }));
-
+    const [isCountryFilterOpen, setIsCountryFilterOpen] = useState(false);
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
     const firstOfMonth = new Date(year, month, 1);
     const FirstMTs = firstOfMonth.getTime();
 
-  useEffect(() => {
-    const meta = document.querySelector('meta[name="theme-color"]');
-    meta.setAttribute('content', "rgb(239, 240, 239)")
-  }, [])
+    useEffect(() => {
+      const meta = document.querySelector('meta[name="theme-color"]');
+      meta.setAttribute('content', "rgb(239, 240, 239)")
+    }, [])
 
     useEffect(() => {
         setFilteredExpenses(expenses.filter(expense => {
@@ -340,7 +341,7 @@ const Home = () => {
                 <div data-value='Last month (30 days)' className='select-frame-tab'>Last month (30 days)</div>
                 <div data-value='Month to date' className='select-frame-tab'>Month to date</div>
             </CustomSelect>
-            <div className='invisible'>aaa</div>
+            <CountryModal2></CountryModal2>
             </div>
 
             {/* Graphs */}

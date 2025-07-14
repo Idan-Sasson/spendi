@@ -42,13 +42,18 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const getColor = (category) => {
     return savedCategories[category] || convertCategories()[category].color
   }
+
   const [categoryColor, setCategoryColor] = useState(getColor(expense.category));
 
   useEffect(() => {
-    if (categoryColor) {
+    // if (categoryColor) {
+    // const timer = setTimeout(() => {
       const meta = document.querySelector('meta[name="theme-color"]');
-      meta.setAttribute('content', categoryColor)
-    }
+      meta.setAttribute('content', categoryColor);
+    // }, 10);
+    // return () => clearTimeout(timer);
+      
+    // }
   }, [categoryColor])
 
   useEffect(() => {
@@ -271,7 +276,7 @@ useEffect(() => {
       {/* Exclude */}
       <div className='checkbox-container' onClick={() => handleToggle(setExclude)}>
         <span className="ed-exclude-metrics-text">Exclude from metrics</span>
-        <input className='exclude-checkbox' type='checkbox' checked={exclude} style={{accentColor: categoryColor}}/>
+        <input className='exclude-checkbox' type='checkbox' checked={exclude} style={{accentColor: categoryColor}} readOnly={true}/>
       </div>
 
       <div>

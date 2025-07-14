@@ -71,8 +71,11 @@ export default function Settings() {
         <div className='settings-category-container'>
           <div className='settings-category-title'>Data</div>
           <div className='settings-item-container'>
-            <div onClick={handleClearCache} className='settings-item last-item'>
+            <div onClick={handleClearCache} className='settings-item'>
               <span>Clear Cache</span>
+            </div>
+            <div className='settings-item last-item'>
+              <span>Version 1.06</span>
             </div>
           </div>
         {isNotification && 
@@ -86,16 +89,13 @@ export default function Settings() {
           <div className='settings-category-title'>Tests</div>
           <div className='settings-item-container'>
             <NavLink to='/tests' className='settings-item last-item'>
-            {/* <div className='settings-item last-item'> */}
               <span>Tests</span>
               <img src={arrowPath} className='arrow'></img>
-            {/* </div> */}
             </NavLink>
           </div>
         </div>
 
         <div>
-          {/* {email || 'Not signed in'} */}
         </div>
       </div>
     </div>

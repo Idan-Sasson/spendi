@@ -73,6 +73,7 @@
 
 .select-container {
   display: flex;
+  align-items: baseline;
 }
 
 .range-frame-select {
