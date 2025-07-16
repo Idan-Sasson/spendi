@@ -11,6 +11,7 @@ import { useAddExpense } from "./firebaseHooks/useAddExpense";
 import { useGetUserInfo } from "./firebaseHooks/useGetUserInfo";
 import Calculator from "./customs/Calculator";
 import CustomSelect from "./customs/CustomSelect";
+import CurrencyModal from "./CurrencyModal";
 
 
 export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
@@ -37,10 +38,16 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [calcDisplay, setCalcDisplay] = useState('');
   const [toDisplay, setToDisplay] = useState(false);
   const [exclude, setExclude] = useState(false);
+  const [currency, setCurrency] = useState("ILS")
+  const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
+
   
 
-  useEffect(() => {
-    if (Object.hasOwn(countries, ipCountry)) setCountry(ipCountry);
+  useEffect(() => {  // On start set country by ipCountry
+    if (Object.hasOwn(countries, ipCountry)) {
+      setCountry(ipCountry);
+      setCurrency(countries[ipCountry])
+    } 
   }, [])
 
   const handleModalSubmit = async () => {
@@ -55,7 +62,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
     price: parseFloat(modalPrice),
     date: selectedDate, // keep this if you're intentionally overriding current time
     category,
-    currency: countries[country],
+    currency,
     convertedPrice: parseFloat(convertedPrice),
     country,
     rate: tmpRate,
@@ -88,25 +95,25 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
         const data = await response.json();
         setRates(data);
         setLastRates(data)
-        setRate(data[AppOptions.baseCurrency][countries[country]]);
+        setRate(data[AppOptions.baseCurrency][currency]);
       }
       catch (error) {
         console.error(error.message);
         // setRates(lastRates);
         console.log("Using last rates");
-        setRate(lastRates[AppOptions.baseCurrency][countries[country]])
+        setRate(lastRates[AppOptions.baseCurrency][currency])
         return
       }
 
     }
-    if (AppOptions.baseCurrency === countries[country]) return;
+    if (AppOptions.baseCurrency === currency) return;
     if (!rates) {
       getRates();
     }
     else {
-      setRate(rates[AppOptions.baseCurrency][countries[country]])
+      setRate(rates[AppOptions.baseCurrency][currency])
     }
-  }, [country])
+  }, [currency])
 
   const handleClose = () => {
     setIsClosing(true);
@@ -161,16 +168,16 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
           />
 
           <div className="price-container-container">
+            {/* <CurrencyModal selectedCurrency={currency} setSelectedCurrency={setCurrency}/> */}
           <div className="price-container">
-            <div className="aem-currency-container" style={{backgroundColor: setAlpha(categoryColor, 0.5), borderColor: categoryColor}} onClick={() => setIsCountryOpen(true)}>
-              <div className="aem-base-currency">{countries[country].toUpperCase()}</div>
-              {countries[country] !== AppOptions.baseCurrency && 
+            <div className="aem-currency-container" style={{backgroundColor: setAlpha(categoryColor, 0.5), borderColor: categoryColor}} onClick={() => setIsCurrencyOpen(true)}>
+              <div className="aem-base-currency">{currency.toUpperCase()}</div>
+              {currency !== AppOptions.baseCurrency && 
               <div className="aem-convert-rate">{rate ? `${(1/rate).toFixed(2)}${AppOptions.baseCurrency.toUpperCase()}` : '0'}</div>}
             </div>
             
             <div className="aem-prices-container" onClick={() => setIsCalcOpen(true)}>
-              {/* <div className="aem-calc-display">{calcDisplay || 'a'}</div> */}
-              <input  className="aem-price-input"
+              <input className="aem-price-input"
                 readOnly={true}
                 value={calcDisplay || ''}
                 placeholder="0.00"/>
@@ -209,13 +216,14 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
             borderColor: isNoteFocused ? categoryColor : undefined}}
             />
           <div onClick={() => handleToggle(setExclude)}>
-          <input className='aem-exclude-checkbox' type='checkbox' checked={exclude} style={{accentColor: categoryColor}}/>
+          <input className='aem-exclude-checkbox' type='checkbox' checked={exclude} style={{accentColor: categoryColor}} readOnly={true}/>
             <span className="exclude-metrics-text"> Exclude from metrics</span>
           </div>
 
           <div>
             {isCatOpen && <CategoryModal setIsOpen={setIsCatOpen} setCategory={setCategory}/>}
-          {isCountryOpen && <CountryModal setIsOpen={setIsCountryOpen} selectedCountry={country} setSelectedCountry={setCountry} categoryColor={categoryColor} wrapperPosition={{top: '45%', right: '15%', height: '40vh', transformOrigin: 'top left'}} isPortal={true}/>}
+          {isCountryOpen && <CountryModal setIsOpen={setIsCountryOpen} selectedCountry={country} setSelectedCountry={setCountry} categoryColor={categoryColor} wrapperPosition={{top: '45%', right: '15%', height: '40vh', transformOrigin: 'top left'}} isPortal={true} type={'country'}/>}
+          {isCurrencyOpen && <CountryModal setIsOpen={setIsCurrencyOpen} selectedCountry={currency} setSelectedCountry={setCurrency} categoryColor={categoryColor} wrapperPosition={{transformOrigin: 'top left'}}  type={'currency'}/>}
           </div>
 
           <img src={icons["Plus"]} className={`add-button ${isClosing ? 'spin' : ''}`} onClick={handleModalSubmit} style={{backgroundColor: categoryColor}}/>

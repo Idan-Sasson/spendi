@@ -109,8 +109,7 @@ const Expenses = () => {
                     <div
                       className="item-header"
                       key={item.expenseId}
-                      onClick={() => {setOpenDetailId(item.expenseId); setIsDetailOpen(true)}}
-                    >
+                      onClick={() => {setOpenDetailId(item.expenseId); setIsDetailOpen(true)}}>
                       <div>
                         <span className="item-price" style={{color: item.exclude ? 'rgb(255, 68, 68)' : ''}}>{item.exclude && '('}{curSymbol}{Number(item.convertedPrice).toFixed(2)}{item.exclude && ')'}</span>
                         {item.currency !== baseCurrency &&

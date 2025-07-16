@@ -1,0 +1,32 @@
+.cur-modal-container {
+    position: absolute;
+    z-index: 1001;
+}
+
+.cur-modal-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.cur-dropdown-container {
+    padding: 5px 20px 5px 5px;
+    margin-top: 8px;
+    position: relative;
+    max-height: 40vh;
+    overflow-y: auto;
+    background-color: white;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    gap: 2px;
+    border: 1px solid black;
+    right: 0;
+}
+
+.currency-title {
+    font-size: 14px;
+}

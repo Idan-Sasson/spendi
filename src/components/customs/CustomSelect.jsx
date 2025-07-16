@@ -25,15 +25,15 @@ export default function CustomSelect({ children, onSelect, optionTitle, style, c
     }
 
       // Clone each child and inject onClick
-const clonedChildren = React.Children.toArray(children).map((child, index, arr) =>
-  React.cloneElement(child, {
-    onClick: handleClick,
-    className: `${child.props.className ?? ''}
-    ${index === arr.length - 1 ? 'last' : ''}
-    ${child.props['data-value'] === optionTitle ? 'selected' : ''}`
-    .trim()
-  })
-);
+  const clonedChildren = React.Children.toArray(children).map((child, index, arr) =>
+    React.cloneElement(child, {
+      onClick: handleClick,
+      className: `${child.props.className ?? ''}
+      ${index === arr.length - 1 ? 'last' : ''}
+      ${child.props['data-value'] === optionTitle ? 'selected' : ''}`
+      .trim()
+    })
+  );
 
     useEffect(() => {  // Exit on click outside of the area
         function handleOutsideClick(event) {

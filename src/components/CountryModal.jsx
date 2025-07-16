@@ -3,7 +3,7 @@ import countries from "./countries.json";
 import './CountryModal.css'
 import ReactDOM from 'react-dom'
 
-export default function CountryModal({setIsOpen, selectedCountry, setSelectedCountry, categoryColor, wrapperPosition, isPortal}) {
+export default function CountryModal({setIsOpen, selectedCountry, setSelectedCountry, categoryColor, wrapperPosition, isPortal, type=undefined}) {  // showOnly - either country or currency
     // const [selectedCountry]
     const selectedRef = useRef(null);
     const [filteredCountries, setFilteredCountries] = useState(Object.keys(countries));
@@ -11,7 +11,13 @@ export default function CountryModal({setIsOpen, selectedCountry, setSelectedCou
     const [search, setSearch] = useState('');
 
     const handleCountryClick = (country) => {
-        setSelectedCountry(country);
+        if (!type || type==="country") {
+          setSelectedCountry(country);
+        }
+        else {
+          setSelectedCountry(countries[country]);
+        }
+
         handleClose();
     }
     

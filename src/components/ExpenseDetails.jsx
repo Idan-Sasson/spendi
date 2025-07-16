@@ -17,7 +17,7 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [lastRates, setLastRates] = useLocalStorage("lastRates" , []);
   const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
   const [savedCategories, setSavedCategories] = useLocalStorage("savedCategories", []);
-  const [lastCountry, setLastCountry] = useState(expense.country);
+  const [lastCurrency, setLastCurrency] = useState(expense.currency);
   const ogName = useRef(expense.name);
   const [name, setName] = useState(expense.name);
   const [price, setPrice] = useState(String(expense.price));
@@ -37,7 +37,9 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [calcDisplay, setCalcDisplay] = useState('');
   const [toDisplay, setToDisplay] = useState(false);
   const [toDelete, setToDelete] = useState(false);
-  const [exclude, setExclude] = useState(expense.exclude)
+  const [exclude, setExclude] = useState(expense.exclude);
+  const [currency, setCurrency] = useState(expense.currency)
+  const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
 
   const getColor = (category) => {
     return savedCategories[category] || convertCategories()[category].color
@@ -127,7 +129,7 @@ useEffect(() => {
     else newName = name;
     let newPrice = Number(price);
     if (isNaN(price)) newPrice = 0;
-    const updatedFields = { name: newName, price: newPrice, date: new Date(selectedDate).getTime(), category: category, convertedPrice: newPrice/rate, note: note, rate: rate, country: selectedCountry, currency: countries[selectedCountry], exclude: exclude || false }
+    const updatedFields = { name: newName, price: newPrice, date: new Date(selectedDate).getTime(), category: category, convertedPrice: newPrice/rate, note: note, rate: rate, country: selectedCountry, currency, exclude: exclude || false }
     updateExpense(updatedFields);
     updateFirebaseExpense(updatedFields, expense.id);
     }
@@ -145,11 +147,11 @@ useEffect(() => {
   };
 
   useEffect(() => {
-    setLastCountry(selectedCountry);
-    if (countries[selectedCountry] === countries[lastCountry]) {  // If it's a different country but same currency
+    setLastCurrency(currency);
+    if (currency === lastCurrency) {  // If it's a different country but same currency
       return;
     }
-    if (countries[selectedCountry] === AppOptions.baseCurrency) { // If the country is the same as baseCurrency
+    if (currency === AppOptions.baseCurrency) { // If the country is the same as baseCurrency
       setRate(1);
       return;
     }
@@ -163,14 +165,14 @@ useEffect(() => {
         const data = await response.json();
         setRates(data);
         setLastRates(data); // Set the new fetched rates to save for next time failure
-        setRate(data[AppOptions.baseCurrency][countries[selectedCountry]]);
-        let newRate = data[AppOptions.baseCurrency][countries[selectedCountry]];
+        setRate(data[AppOptions.baseCurrency][currency]);
+        let newRate = data[AppOptions.baseCurrency][currency];
         setRate(newRate);
       }
       catch (error) {  // For any error with fetching the data, use the last saved rates
         console.error(error.message);
         console.log("Using last rates");
-        setRate(lastRates[AppOptions.baseCurrency][countries[selectedCountry]])
+        setRate(lastRates[AppOptions.baseCurrency][currency])
         return
       }
     }
@@ -179,14 +181,11 @@ useEffect(() => {
       getRates();
     }
     else {
-      let newRate = rates[AppOptions.baseCurrency][countries[selectedCountry]];
+      let newRate = rates[AppOptions.baseCurrency][currency];
       setRate(newRate);
     }
-  }, [selectedCountry])
+  }, [currency])
 
-  const handleCountryChange = (country) => {
-    setSelectedCountry(country);
-  }
 
   useEffect(() => {  // Set new category color when we select a new category
     setCategoryColor(getColor(category));
@@ -253,13 +252,14 @@ useEffect(() => {
         <div className={`ed-calc-display ${toDisplay ? '' : 'hide'}`}>{price ? `= ${price}` : ''}</div>
         {/* <input className="price-input" value={price} onChange={handlePriceChange} placeholder={expense.price} /> */}
         </div>
-        <div onClick={() => setIsCountryOpen(true)} className='currency-container' style={{backgroundColor: setAlpha(categoryColor, 0.25),
+        <div onClick={() => setIsCurrencyOpen(true)} className='currency-container' style={{backgroundColor: setAlpha(categoryColor, 0.25),
            border: `1px solid ${setAlpha(categoryColor, 0.5)}`}}>
-          <div className='currency'>{countries[selectedCountry].toUpperCase()}</div>
-          {AppOptions.baseCurrency != countries[selectedCountry] && 
+          <div className='currency'>{currency.toUpperCase()}</div>
+          {AppOptions.baseCurrency != currency && 
           <div className='rate'>{(1/rate).toFixed(2)}{AppOptions.baseCurrency.toUpperCase()}</div>}
         </div>
-        {isCountryOpen && <CountryModal setIsOpen={setIsCountryOpen} selectedCountry={selectedCountry} setSelectedCountry={(country) => handleCountryChange(country)} categoryColor={categoryColor}/>}
+        {isCountryOpen && <CountryModal setIsOpen={setIsCountryOpen} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} categoryColor={categoryColor}/>}
+        {isCurrencyOpen && <CountryModal setIsOpen={setIsCurrencyOpen} selectedCountry={currency} setSelectedCountry={setCurrency} categoryColor={categoryColor} type='currency'/>}
       </div>
       <div className="ed-country-container" dir='rtl' onClick={() => setIsCountryOpen(true)}>
         <div className="ed-country" style={{backgroundColor: setAlpha(categoryColor, 0.25), borderColor: setAlpha(categoryColor, 0.5)}}>{selectedCountry}</div>

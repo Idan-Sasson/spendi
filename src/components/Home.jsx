@@ -26,6 +26,7 @@ const Home = () => {
     const [filteredExpenses, setFilteredExpenses] = useState(expenses.filter(expense => {
             return expense.exclude == undefined || !expense.exclude
         }));
+    const [selectedCountries, setSelectedCountries] = useState([])
     const [isCountryFilterOpen, setIsCountryFilterOpen] = useState(false);
     const today = new Date();
     const year = today.getFullYear();
@@ -38,11 +39,16 @@ const Home = () => {
       meta.setAttribute('content', "rgb(239, 240, 239)")
     }, [])
 
-    useEffect(() => {
-        setFilteredExpenses(expenses.filter(expense => {
+    const setCurrentFilteredExpenses = () => {
+        const tmpExpenses = expenses.filter(expense => {
             return expense.exclude == undefined || !expense.exclude
-        }))
+        })
+        setFilteredExpenses(tmpExpenses);
+        return tmpExpenses;
+    }
 
+    useEffect(() => {
+        setCurrentFilteredExpenses();
     }, [expenses]);
 
     useEffect(() => {
@@ -83,6 +89,14 @@ const Home = () => {
       c.addEventListener('scroll', onScroll, { passive: true });
       return () => c.removeEventListener('scroll', onScroll);
     }, []);
+
+    useEffect(() => {
+        let filteredCountryExpenses = setCurrentFilteredExpenses();
+        if (selectedCountries.length > 0) {  // No country is selected
+            filteredCountryExpenses = filteredCountryExpenses.filter(expense => selectedCountries.includes(expense.country));
+        }
+        setFilteredExpenses(filteredCountryExpenses);
+    }, [selectedCountries, expenses])
 
     const getExpensesFrame = (expensesArray, t1, t2) => {
          return expensesArray.filter((expense) => {
@@ -194,9 +208,6 @@ const Home = () => {
         obj[date] = graphGrouped[date];
         return obj;
     }, {})
-    // console.log(filteredGrouped);
-    // console.log(filteredGraphDates);
-    // console.log(sortedDatesDesc.slice(0, 3))
 
     Object.entries(filteredGrouped).sort((a, b) => new Date(a[0]) - new Date(b[0])).map(([isoDate, items]) => {
         const sum = items.reduce((sum, item) => sum + item.convertedPrice, 0);
@@ -260,11 +271,7 @@ const Home = () => {
                 callbacks: {
                     label: function(context) {
                         return `${((context.parsed / getTotal(filteredExpenses)) * 100).toFixed(0)}%`
-                    }
-                }
-            }
-        }
-    }
+                    }}}}}
 
     const chartOptions = {
         responsive: true,
@@ -288,17 +295,11 @@ const Home = () => {
                 callbacks: {
                     label: function(context) {
                         return `Daily Expense: ${currencySymbol}` + context.parsed.y.toFixed(2);
-                    }
-               }
-            }
-
-        
-        },
+                    }}}},
         animation: {
             duration: 1200
         }
     };
-
     const backgroundColors = sums.map((value, _) => (value < 0 ? 'rgba(255, 99, 132, 0.5)' : 'rgba(75, 192, 192, 0.5)'));
     const borderColors = sums.map((value, _) => (value < 0 ? 'rgba(255, 99, 132, 0.7)' : 'rgba(75, 192, 192, 0.7)'));
     const chartData = {
@@ -335,13 +336,13 @@ const Home = () => {
             </div>
 
             {/* Selection  */}
-            <div className='select-container'>
+            <div className='filter-containers'>
             <CustomSelect onSelect={setSelectFrame} optionTitle={selectFrame} className='range-frame-select'>
                 <div data-value='All' className='select-frame-tab'>All</div>
                 <div data-value='Last month (30 days)' className='select-frame-tab'>Last month (30 days)</div>
                 <div data-value='Month to date' className='select-frame-tab'>Month to date</div>
             </CustomSelect>
-            <CountryModal2></CountryModal2>
+            <CountryModal2 selectedCountries={selectedCountries} setSelectedCountries={setSelectedCountries} />
             </div>
 
             {/* Graphs */}
