@@ -1,12 +1,10 @@
 import Home from './components/Home';
 import Navbar from './components/Navbar';
-// import ExpenseDetails from './components/ExpenseDetails';
+// npx http-server build -S -C localhost.pem -K localhost-key.pem -p 3000
 import './App.css';
 import { useSyncExpenses } from './components/firebaseHooks/useSyncExpenses';
 import { HashRouter, Routes, Route } from 'react-router-dom';
-// import AddButton from './components/AddButton';
 import Expenses from './components/Expenses';
-import Income from './components/Income';
 import Tests from './components/tests';
 import Search from './components/Search';
 import Settings from './components/Settings';
@@ -61,7 +59,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/expenses" element={<Expenses />} />
-        <Route path="/income" element={<Income />} />
         <Route path="/search/:category" element={<Search />} />
         <Route path="/tests" element={<Tests />} />
         <Route path="/settings" element={<Settings />} />
