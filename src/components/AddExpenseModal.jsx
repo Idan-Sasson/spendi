@@ -38,7 +38,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [calcDisplay, setCalcDisplay] = useState('');
   const [toDisplay, setToDisplay] = useState(false);
   const [exclude, setExclude] = useState(false);
-  const [currency, setCurrency] = useState("ILS")
+  const [currency, setCurrency] = useState("ils")
   const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
 
   
@@ -164,15 +164,13 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
             value={modalExpense}
             onChange={(e) => setModalExpense(e.target.value)}
             placeholder="Expense"
-            dir='rtl'
-          />
-
+            dir='rtl'/>
           <div className="price-container-container">
             {/* <CurrencyModal selectedCurrency={currency} setSelectedCurrency={setCurrency}/> */}
           <div className="price-container">
             <div className="aem-currency-container" style={{backgroundColor: setAlpha(categoryColor, 0.5), borderColor: categoryColor}} onClick={() => setIsCurrencyOpen(true)}>
               <div className="aem-base-currency">{currency.toUpperCase()}</div>
-              {currency !== AppOptions.baseCurrency && 
+              {currency.toLowerCase() !== AppOptions.baseCurrency.toLowerCase() && 
               <div className="aem-convert-rate">{rate ? `${(1/rate).toFixed(2)}${AppOptions.baseCurrency.toUpperCase()}` : '0'}</div>}
             </div>
             

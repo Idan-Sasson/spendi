@@ -75,7 +75,7 @@ export default function Settings() {
               <span>Clear Cache</span>
             </div>
             <div className='settings-item last-item'>
-              <span>Version 1.06</span>
+              <span>Version 1.12</span>
             </div>
           </div>
         {isNotification && 

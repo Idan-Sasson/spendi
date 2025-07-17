@@ -17,17 +17,19 @@ function App() {
   const { syncExpenses } = useSyncExpenses();
   const hasMount = useRef(false);
   const [ipCountry, setIpCountry] = useLocalStorage("ipCountry", '')
+
   useEffect(() => {
-    if (!hasMount.current) {  // useEffect runs twice in StrictMode
-      hasMount.current = true
-      return
-    };
+    // if (!hasMount.current) {  // useEffect runs twice in StrictMode
+    //   hasMount.current = true
+    //   return
+    // };
     // const res = fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
     const fetchCountry = async () => {  // Fetch country by ip
       try {
-        const res = await fetch(`http://ip-api.com/json/`);
+        // const res = await fetch(`http://ip-api.com/json/`);
+        const res = await fetch(`https://ipapi.co/json`);
         const data = await res.json();
-        let ipCountry = data["country"]
+        let ipCountry = data["country_name"]
         if (ipCountry) setIpCountry(ipCountry);
         else setIpCountry('');
       } catch (err) {
