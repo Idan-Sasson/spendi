@@ -127,6 +127,18 @@
   /* left: 50 */
 }
 
+.month-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: blue; */
+  background-color: rgba(142, 142, 142, 0.2);
+  border-radius: 15px;
+  box-shadow: 0 0px 15px rgba(0, 0, 0, 0.119);
+  margin: 20px 20px;
+  height: 300px;
+  user-select: none;
+}
 
 
 .categories-total {

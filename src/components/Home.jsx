@@ -5,11 +5,12 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import { Bar, Pie } from 'react-chartjs-2';
 import { categories, icons } from './constants';
 import AddButton from './AddButton';
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
 import banner from "../assets/Spendi-banner.png"
 import { setIconColor, parseRgbaString, convertCategories, useBaseCurrency, getSymbol } from "./HelperFunctions";
 import CustomSelect from './customs/CustomSelect';
 import CountryModal2 from './CountryModal2';
+import { toLineHeight } from 'chart.js/helpers';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -71,24 +72,24 @@ const Home = () => {
             setPieExpenses(tmpExpenses);
     }, [selectFrame, filteredExpenses])
 
-    useEffect(() => {  // Invisible scrolling
-      const c = boxContainerRef.current;
-      if (!c) return;
-      const oneWidth = c.scrollWidth / 3;
-      c.scrollLeft = oneWidth;
-      let ticking = false;
-      function onScroll() {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(() => {
-          if (c.scrollLeft < oneWidth * 0.5) c.scrollLeft += oneWidth;
-          else if (c.scrollLeft > oneWidth * 1.5) c.scrollLeft -= oneWidth;
-          ticking = false;
-        });
-      }
-      c.addEventListener('scroll', onScroll, { passive: true });
-      return () => c.removeEventListener('scroll', onScroll);
-    }, []);
+    // useEffect(() => {  // Invisible scrolling
+    //   const c = boxContainerRef.current;
+    //   if (!c) return;
+    //   const oneWidth = c.scrollWidth / 3;
+    //   c.scrollLeft = oneWidth;
+    //   let ticking = false;
+    //   function onScroll() {
+    //     if (ticking) return;
+    //     ticking = true;
+    //     requestAnimationFrame(() => {
+    //       if (c.scrollLeft < oneWidth * 0.5) c.scrollLeft += oneWidth;
+    //       else if (c.scrollLeft > oneWidth * 1.5) c.scrollLeft -= oneWidth;
+    //       ticking = false;
+    //     });
+    //   }
+    //   c.addEventListener('scroll', onScroll, { passive: true });
+    //   return () => c.removeEventListener('scroll', onScroll);
+    // }, []);
 
     useEffect(() => {
         let filteredCountryExpenses = setCurrentFilteredExpenses();
@@ -178,10 +179,7 @@ const Home = () => {
         {title: "MTD Total", value: currencySymbol + totalRange(FirstMTs, new Date().getTime())},
         {title: "MTD Daily Average", value: currencySymbol + rangeAvg(FirstMTs, new Date().getTime())}
     ]
-
-    const boxes = [...boxesData, ...boxesData, ...boxesData];
-
-
+    // const boxes = [...boxesData, ...boxesData, ...boxesData];
 
     ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, ArcElement);
     // Bar graph
@@ -199,7 +197,7 @@ const Home = () => {
         result[isoDate].push(item);
         return result;
     }, {});
-    
+
     const sortedDatesDesc = Object.keys(graphGrouped)
     .sort((a, b) => new Date(b) - new Date(a));
     const filteredGraphDates = sortedDatesDesc.slice(0, showGraph);
@@ -215,28 +213,46 @@ const Home = () => {
         sums.push(sum);
     });
 
-
     // Pie chart
-    const catSums = {}
-    const groupedCats = pieExpenses.reduce((result, item) => {
-        const cat = item.category
-        if (!result[cat]) {
-            result[cat] = [];
-        }
-        result[cat].push(item)
-        return result;
-    }, {});
-    Object.entries(groupedCats).map(([cat, items]) => {
-        const sum = items.reduce((sum, item) => sum + item.convertedPrice, 0);
-        if (!catSums[cat]) catSums[cat] = sum
-        else catSums[cat] += sum
-    });
+    const getCatsSum = (groupedExpenses) => {
+        const groupedCategory = groupedExpenses.reduce((result, item) => {
+            const cat = item.category
+            if (!result[cat]) {
+                result[cat] = [];
+            }
+            result[cat].push(item);
+            return result
+        }, {});
+
+        const catsSum = {}
+        Object.entries(groupedCategory).map(([cat, items]) => {
+            const sum = items.reduce((sum, item) => sum + item.convertedPrice, 0);
+            if (!catsSum[cat]) catsSum[cat] = sum
+            else catsSum[cat] += sum;
+        });
+        return catsSum;
+    }
+    const pieCatSums = getCatsSum(pieExpenses);
+
+    // const groupedCats = pieExpenses.reduce((result, item) => {
+    //     const cat = item.category
+    //     if (!result[cat]) {
+    //         result[cat] = [];
+    //     }
+    //     result[cat].push(item)
+    //     return result;
+    // }, {});
+    // Object.entries(groupedCats).map(([cat, items]) => {
+    //     const sum = items.reduce((sum, item) => sum + item.convertedPrice, 0);
+    //     if (!catSums[cat]) catSums[cat] = sum
+    //     else catSums[cat] += sum
+    // });
 
     const pieData = {
-        labels: Object.keys(catSums),
+        labels: Object.keys(pieCatSums),
         datasets: [{
-            data: Object.keys(catSums).map(cat => catSums[cat]),
-            backgroundColor: Object.keys(catSums).map(cat => {
+            data: Object.keys(pieCatSums).map(cat => pieCatSums[cat]),
+            backgroundColor: Object.keys(pieCatSums).map(cat => {
                 // const match = categories.find(c => c.name === cat);
                 const catColor = getColor(cat);
                 return catColor || 'rgba(0, 0, 0, 0.85)'
@@ -245,7 +261,6 @@ const Home = () => {
             borderColor: 'rgb(239, 240, 239)'
         }]
     }
-
     const pieOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -253,9 +268,11 @@ const Home = () => {
             legend: {
                 // display: false
                 position: 'right',
-                font: {
-                    size: 18, 
-                    weight: 'bold'
+                labels: {
+                    usePointStyle: true,
+                    font: {
+                        family: 'Helvetica'
+                },
                 }
             },
             tooltip: {
@@ -289,13 +306,13 @@ const Home = () => {
                 display: false
             },
         title: { display: true, text: `Daily Expenses (${Math.min(showGraph, sortedDatesDesc.length)} nodes)` },
-            tooltip: {
-                backgroundColor: 'rgba(118, 115, 110, 0.9)',
-                bodyFont: { weight: "bold" },
-                callbacks: {
-                    label: function(context) {
-                        return `Daily Expense: ${currencySymbol}` + context.parsed.y.toFixed(2);
-                    }}}},
+        tooltip: {
+            backgroundColor: 'rgba(118, 115, 110, 0.9)',
+            bodyFont: { weight: "bold" },
+            callbacks: {
+                label: function(context) {
+                    return `Daily Expense: ${currencySymbol}` + context.parsed.y.toFixed(2);
+                }}}},
         animation: {
             duration: 1200
         }
@@ -320,6 +337,108 @@ const Home = () => {
       navigate(`/search/${encodeURIComponent(category)}`);
     };
 
+    // Bar Month Chart
+    const firstDayYearly = new Date(new Date().getFullYear(), 0, 1).getTime();
+    const lastYearExpenses = getExpensesFrame(graphExpenses, firstDayYearly, new Date().getTime())
+    // console.log(lastYearExpenses);
+    const monthDict = {
+        '1': 'January',
+        '2': 'February',
+        '3': 'March',
+        '4': 'April',
+        '5': 'May',
+        '6': 'June',
+        '7': 'July',
+        '8': 'August',
+        '9': 'September',
+        '10': 'October',
+        '11': 'November',
+        '12': 'December'
+    }
+
+    const releventCats = [];
+
+    const monthFilteredGrouped = lastYearExpenses.reduce((result, item) => {  // All expenses for each month
+        if (!releventCats.includes(item.category)) releventCats.push(item.category);
+        const itemMonth = monthDict[String(new Date(item.date).getMonth() + 1)];
+        if (!result[itemMonth]) result[itemMonth] = [];
+        result[itemMonth].push(item);
+        return result;
+    }, {});
+
+    Object.keys(monthFilteredGrouped).map(month => {  // Category sums for each month
+        monthFilteredGrouped[month] = getCatsSum(monthFilteredGrouped[month]);
+    })
+    const catMonthSum = {}
+    Object.keys(monthFilteredGrouped).map(month => {  // Each month
+        releventCats.map(cat => {  // Fill the last item of each category 0 (then add sum)
+            if (!catMonthSum[cat]) catMonthSum[cat] = []
+            catMonthSum[cat].push(0);
+        })  
+        Object.keys(monthFilteredGrouped[month]).map(cat => {
+            catMonthSum[cat][catMonthSum[cat].length - 1] += (monthFilteredGrouped[month][cat])  // Add cat sum to array 
+        }) 
+    })
+    
+    const getMonthTotal = (month) => {
+        return Object.values(monthFilteredGrouped[month]).reduce((acc, value) => acc + value, 0).toFixed(2);
+    }
+
+    getMonthTotal("July");
+
+    const monthsChartData = {
+        labels: Object.keys(monthFilteredGrouped),
+        datasets: Object.keys(catMonthSum).map(cat => {
+            return {label: cat, data: catMonthSum[cat], stack: "Group A", backgroundColor: getColor(cat), borderRadius: 6,}
+        }),
+    };
+
+    const monthsChartOptions = {
+        maintainAspectRatio: false,
+        aspectRatio: 1,
+        indexAxis: 'y', // flip the axes to horizontal bars
+        scales: {
+        x: {
+            stacked: true,
+            beginAtZero: true,
+        },
+        y: {
+            stacked: true,
+        },
+        },
+        plugins: {
+        legend: {
+            position: 'top',
+            labels: {
+                usePointStyle: true,
+                font: {
+                    family: 'Helvetica'
+            },
+            }
+        },
+        title: {
+            display: true,
+            text: 'Monthly Total',
+        },
+                tooltip: {
+                titleFont: {
+                    size: 16,
+                    // weight: 600
+                },
+                bodyFont: {
+                    size: 12,
+                    // weight: 400
+                },
+                displayColors: false,
+                callbacks: {
+                    label: function(context) {
+                        // console.log(getMonthTotal(context["label"]))
+                        return `${currencySymbol}${getMonthTotal(context["label"])}`
+                    }}}
+
+    },};
+
+
     return (
         <div className="home">
         <AddButton  expenses={filteredExpenses} setExpenses={setExpenses}/>
@@ -327,7 +446,7 @@ const Home = () => {
             
             {/* Boxes */}
             <div className="box-container" ref={boxContainerRef}>
-                {boxes.map(({ title, value }, index) => (
+                {boxesData.map(({ title, value }, index) => (
                     <div className="box" key={index}>
                         <span className='title'>{title}</span>
                         <span className='number'>{value}</span>
@@ -356,7 +475,7 @@ const Home = () => {
                     <Pie options={pieOptions} data={pieData}/>
                 </div>
                 <div className='categories-total'>
-                    {Object.entries(catSums).sort((a, b) => b[1] - a[1]).map(([cat, sum]) => (
+                    {Object.entries(pieCatSums).sort((a, b) => b[1] - a[1]).map(([cat, sum]) => (
                         <div className='category-header' key={cat} onClick={() => handleCategoryClick(cat)}>
                             <div className='icon-title'>
                                 <img src={getIconSrc(cat)} className='cat-icon' />
@@ -366,6 +485,9 @@ const Home = () => {
                         </div>
                     ))}
                 </div>
+            </div>
+            <div className='month-bar-container'>
+                <Bar data={monthsChartData} options={monthsChartOptions} />
             </div>
         </div>
     );

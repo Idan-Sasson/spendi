@@ -8,6 +8,7 @@ import { useGetUserInfo } from './firebaseHooks/useGetUserInfo';
 import Auth from './Auth';
 import AuthModal from './SettingsModals/AuthModal';
 import { NavLink } from 'react-router-dom';
+import certs from "../certs.json"
 
 
 export default function Settings() {
@@ -75,7 +76,8 @@ export default function Settings() {
               <span>Clear Cache</span>
             </div>
             <div className='settings-item last-item'>
-              <span>Version 1.12</span>
+              <span>Version</span>
+              <span className='version-number'>{certs["build_version"]}</span>
             </div>
           </div>
         {isNotification && 

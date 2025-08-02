@@ -48,14 +48,14 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [categoryColor, setCategoryColor] = useState(getColor(expense.category));
 
   useEffect(() => {
-    // if (categoryColor) {
-    // const timer = setTimeout(() => {
+    if (categoryColor) {
+    const timer = setTimeout(() => {
       const meta = document.querySelector('meta[name="theme-color"]');
       meta.setAttribute('content', categoryColor);
-    // }, 10);
-    // return () => clearTimeout(timer);
+    }, 10);
+    return () => clearTimeout(timer);
       
-    // }
+    }
   }, [categoryColor])
 
   useEffect(() => {

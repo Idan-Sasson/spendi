@@ -62,7 +62,10 @@ export default function Calculator({ calc, setCalc, setResult, setIsCalcOpen, se
     // if (num != '.' && calc.at(-1) === 0)
     let parts = (calc).split(/([+\-*/])/);
     let newNumber = parts.at(-1);
-    if (newNumber.startsWith('0') && num != '.') {
+    if (newNumber.startsWith('0.') && num !== '.') {
+      setCalc(n => n + num)
+    }
+    else if (newNumber.startsWith('0') && num != '.') {  // Change 0 to a different number (so a number won't start with 0)
       newNumber = num;
       parts[parts.length - 1] = newNumber;
       setCalc(parts.join(''));
@@ -96,24 +99,57 @@ export default function Calculator({ calc, setCalc, setResult, setIsCalcOpen, se
           </div>
         }
         <div className='calc-keys'>
-          <button className='calc-btn' onClick={() => appendNumber('7')}>7</button>
-          <button className='calc-btn' onClick={() => appendNumber('8')}>8</button>
-          <button className='calc-btn' onClick={() => appendNumber('9')}>9</button>
-          <button className='calc-btn op' onClick={() => appendOperation('/')}>÷</button>
-          <button className='calc-btn' onClick={() => appendNumber('4')}>4</button> 
-          <button className='calc-btn' onClick={() => appendNumber('5')}>5</button>
-          <button className='calc-btn' onClick={() => appendNumber('6')}>6</button>
-          <button className='calc-btn op' onClick={() => appendOperation('*')}>x</button>
-          <button className='calc-btn' onClick={() => appendNumber('1')}>1</button>
-          <button className='calc-btn' onClick={() => appendNumber('2')}>2</button>
-          <button className='calc-btn' onClick={() => appendNumber('3')}>3</button>
-          <button className='calc-btn op' onClick={() => appendOperation('-')}>—</button>
-          <button className='calc-btn' onClick={() => appendNumber('.')}>.</button>
-          <button className='calc-btn' onClick={() => appendNumber('0')}>0</button>
-          <button className='calc-btn calc-icon-container' onClick={deleteNum}>
+          <div className='calc-btn-wrapper' onClick={() => appendNumber('1')}>
+            <button className='calc-btn'>1</button>
+          </div>
+          <div className='calc-btn-wrapper' onClick={() => appendNumber('2')}>
+            <button className='calc-btn'>2</button>
+          </div>
+          <div className='calc-btn-wrapper' onClick={() => appendNumber('3')}>
+            <button className='calc-btn'>3</button>
+          </div>
+          <div className='calc-btn-wrapper' onClick={() => appendOperation('/')}>
+            <button className='calc-btn op'>÷</button>
+          </div>
+          <div className='calc-btn-wrapper' onClick={() => appendNumber('4')}>
+            <button className='calc-btn'>4</button> 
+          </div>
+          <div className='calc-btn-wrapper' onClick={() => appendNumber('5')}>
+            <button className='calc-btn'>5</button>
+          </div>
+          <div className='calc-btn-wrapper' onClick={() => appendNumber('6')}>
+            <button className='calc-btn'>6</button>
+          </div>
+          <div className='calc-btn-wrapper' onClick={() => appendOperation('*')}>
+            <button className='calc-btn op'>x</button>
+          </div>
+          <div className='calc-btn-wrapper' onClick={() => appendNumber('7')}>
+            <button className='calc-btn'>7</button>
+          </div>
+          <div className='calc-btn-wrapper' onClick={() => appendNumber('8')}>
+            <button className='calc-btn'>8</button>
+          </div>
+          <div className='calc-btn-wrapper' onClick={() => appendNumber('9')}>
+            <button className='calc-btn'>9</button>
+          </div>
+
+          <div className='calc-btn-wrapper' onClick={() => appendOperation('-')}>
+            <button className='calc-btn op'>—</button>
+          </div>
+          <div className='calc-btn-wrapper' onClick={() => appendNumber('.')}>
+            <button className='calc-btn'>.</button>
+          </div>
+          <div className='calc-btn-wrapper' onClick={() => appendNumber('0')}>
+            <button className='calc-btn'>0</button>
+          </div>
+          <div className='calc-btn-wrapper' onClick={deleteNum}>
+            <button className='calc-btn calc-icon-container'>
             <img className='calc-btn-icon' src={icons["Delete"]}/>
-          </button>
-          <button className='calc-btn op' onClick={() => appendOperation('+')}>+</button>
+            </button>
+          </div>
+          <div className='calc-btn-wrapper' onClick={() => appendOperation('+')}>
+            <button className='calc-btn op'>+</button>
+          </div>
         </div>
       </div>
     </div>

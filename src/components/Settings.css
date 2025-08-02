@@ -64,6 +64,8 @@
     transform: rotate(180deg);
 }
 
-/* .notification-overlay.settings-notification {
-    background-color: blue;
-} */
+.version-number {
+    color: rgb(128, 128, 128);
+    padding-right: 7px;
+
+}
