@@ -384,8 +384,6 @@ const Home = () => {
         return Object.values(monthFilteredGrouped[month]).reduce((acc, value) => acc + value, 0).toFixed(2);
     }
 
-    getMonthTotal("July");
-
     const monthsChartData = {
         labels: Object.keys(monthFilteredGrouped),
         datasets: Object.keys(catMonthSum).map(cat => {

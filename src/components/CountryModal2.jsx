@@ -3,7 +3,7 @@ import "./CountryModal2.css"
 import allCountries from "./countries.json"
 import { count } from 'firebase/firestore';
 
-export default function CountryModal2({selectedCountries, setSelectedCountries, categoryColor=null, }) {
+export default function CountryModal2({selectedCountries, setSelectedCountries, categoryColor=null, className=null}) {
   const [isSelectionOpen, setIsSelectionOpen] = useState(false);
   const [search, setSearch] = useState('');
   const countries = Object.keys(allCountries);
@@ -50,7 +50,7 @@ export default function CountryModal2({selectedCountries, setSelectedCountries, 
 
   return (
     <div>
-      <div className={`cm-title ${isSelectedAll() ? 'cm-title-selected' : ''}`} onClick={() => setIsSelectionOpen(true)}>Filter Countries</div>
+      <div className={`cm-title ${isSelectedAll() ? 'cm-title-selected' : ''} ${className}`} onClick={() => setIsSelectionOpen(true)}>Filter Countries</div>
       {isSelectionOpen && 
 
       <div className='country-modal-selection-dropdown'>

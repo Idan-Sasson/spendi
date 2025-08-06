@@ -73,13 +73,14 @@
 
 .dropdown-container.dropdown-open {
     opacity: 1;
+    /* right: 0; */
     left: 50%;
-
     transform: translateX(-50%) scale(1);
-
     visibility: visible;
     pointer-events: auto;
     margin-top: 7px;
+    /* position: fixed; */
+
 }
 
 .selected {

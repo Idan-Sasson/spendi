@@ -3,28 +3,37 @@ import "./CustomSelect.css"
 import React from "react";
 import { icons } from "../constants";
 
-export default function CustomSelect({ children, onSelect, optionTitle, style, className=''}) {
+export default function CustomSelect({ children, onSelect, optionTitle, style, onOpen=null, onClose=null ,className=''}) {
   /*
   optionTitle - Option shown on top of the select dropdown
   style - Style for the title
   */
-    const [isOpen, setIsOpen] = useState(false);
-    const dropdownRef = useRef(null);
-    // const optionsRef = useRef(null);
-    const containerRef = useRef(null);
-    const [dropdownHeight, setDropdownHeight] = useState('auto');
-    const [width, setWidth] = useState(0);
-    const [longest, setLongest] = useState('')
-    
-    const handleToggle = () => setIsOpen(status => !status);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  // const optionsRef = useRef(null);
+  const containerRef = useRef(null);
+  const [dropdownHeight, setDropdownHeight] = useState('auto');
+  const [longest, setLongest] = useState('')
+  
+  const handleToggle = () => {
+    if (onOpen) {
+      if (!isOpen) {  // should be false before we open
+        onOpen();
+      }}
+    if (onClose) {
+      if (isOpen) {
+        onClose();
+      }}
+    setIsOpen(status => !status)
+  };
 
-    const handleClick = (e) => {
-      const value = e.currentTarget.dataset.value;
-      onSelect?.(value);
-      setIsOpen(false);
-    }
+  const handleClick = (e) => {
+    const value = e.currentTarget.dataset.value;
+    onSelect?.(value);
+    handleToggle();
+  }
 
-      // Clone each child and inject onClick
+  // Clone each child and inject onClick
   const clonedChildren = React.Children.toArray(children).map((child, index, arr) =>
     React.cloneElement(child, {
       onClick: handleClick,
@@ -35,29 +44,29 @@ export default function CustomSelect({ children, onSelect, optionTitle, style, c
     })
   );
 
-    useEffect(() => {  // Exit on click outside of the area
-        function handleOutsideClick(event) {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsOpen(false);
-            }
-        }
-        document.addEventListener("mousedown", handleOutsideClick);
-        return () => document.removeEventListener("mousedown", handleOutsideClick)
-    }, [])
+  useEffect(() => {  // Exit on click outside of the area
+      function handleOutsideClick(event) {
+          if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+              handleToggle();
+          }
+      }
+      document.addEventListener("mousedown", handleOutsideClick);
+      return () => document.removeEventListener("mousedown", handleOutsideClick)
+  }, [])
 
-    useEffect(() => {
-      const updateDropdownHeight = () => {
-        if (!containerRef.current) return;
-        const rect = containerRef.current.getBoundingClientRect();
-        const spaceBelow = window.innerHeight - rect.bottom - 10;  // 10px padding
-        setDropdownHeight(`${Math.max(spaceBelow, 100)}px`); // fallback to at least 100px
-      };
-      updateDropdownHeight();
-      window.addEventListener('resize', updateDropdownHeight);
-      return () => window.removeEventListener('resize', updateDropdownHeight);
-    }, [])
+  useEffect(() => {
+    const updateDropdownHeight = () => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom - 10;  // 10px padding
+      setDropdownHeight(`${Math.max(spaceBelow, 100)}px`); // fallback to at least 100px
+    };
+    updateDropdownHeight();
+    window.addEventListener('resize', updateDropdownHeight);
+    return () => window.removeEventListener('resize', updateDropdownHeight);
+  }, [])
 
-    const getLongestDataValue = (children) => {
+  const getLongestDataValue = (children) => {
       return React.Children.toArray(children).reduce((longest, child) => {
         const val = child.props['data-value'] ?? '';
         return val.length > longest.length ? val : longest;
@@ -85,7 +94,7 @@ export default function CustomSelect({ children, onSelect, optionTitle, style, c
           </div>
         </div>
       </div>
-      {isOpen && (<div className="fullscreen-overlay" onClick={(e) => {setIsOpen(false); e.stopPropagation()}}>
+      {isOpen && (<div className="fullscreen-overlay" onClick={(e) => {handleToggle(); e.stopPropagation()}}>
       </div>)}
       </>
     );

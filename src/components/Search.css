@@ -14,14 +14,37 @@
 
 .s-options-header {
 	display: flex;
-	padding: 15px 0 15px 0;
-	justify-content: space-around;
+	padding: 15px 0 15px 10px;
+	flex-wrap: nowrap;
+	gap: 15px;
+	text-wrap: nowrap;
+	/* justify-content: space-around; */
+	/* overflow-x: visible; */
+	overflow-y: hidden;
+	/* width: 200vw; */
+}
+
+.s-options-header::-webkit-scrollbar {
+	display: none;
+}
+
+.s-options-header::-webkit-scrollbar {
+	height: 6px;
+}
+
+.s-options-header::-webkit-scrollbar-thumb {
+	background: #ccc;
+	border-radius: 10px;
 }
 
 .search-input {
 	border-radius: 10px;
 	margin-left: 10px;
 	border: 1px solid;
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.search-filter-countries {
 	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
 }
 
