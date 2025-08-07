@@ -54,7 +54,6 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
       meta.setAttribute('content', categoryColor);
     }, 10);
     return () => clearTimeout(timer);
-      
     }
   }, [categoryColor])
 

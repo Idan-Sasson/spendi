@@ -12,6 +12,7 @@ import { useGetUserInfo } from "./firebaseHooks/useGetUserInfo";
 import Calculator from "./customs/Calculator";
 import CustomSelect from "./customs/CustomSelect";
 import CurrencyModal from "./CurrencyModal";
+import SecondaryCategory from "./SecondaryCategory";
 
 
 export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
@@ -40,9 +41,9 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [exclude, setExclude] = useState(false);
   const [currency, setCurrency] = useState("ils")
   const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
+  const [secondaryCat, setSecondaryCat] = useState("")
 
   
-
   useEffect(() => {  // On start set country by ipCountry
     if (Object.hasOwn(countries, ipCountry)) {
       setCountry(ipCountry);
@@ -190,16 +191,6 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
 
             <div className="aem-country-wrapper">
               <span className="aem-country-select" onClick={() => setIsCountryOpen(true)} style={{backgroundColor: setAlpha(categoryColor, 0.5), borderColor: categoryColor}}>{country}</span>
-              <div>
-              {/* <CustomSelect onSelect={setCountry} optionTitle={country} className="aem-cs-country"
-                style={{boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)', paddingBottom: '1px'}}>
-                {Object.keys(countries).map((country) => (
-                  <div key={country} data-value={country} className="s-option-container">
-                    <div key={country}>{country}</div>
-                  </div>
-                ))}
-              </CustomSelect> */}
-              </div>
             </div>
           </div>
 
@@ -216,6 +207,9 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
           <div onClick={() => handleToggle(setExclude)}>
           <input className='aem-exclude-checkbox' type='checkbox' checked={exclude} style={{accentColor: categoryColor}} readOnly={true}/>
             <span className="exclude-metrics-text"> Exclude from metrics</span>
+          </div>
+          <div>
+            <SecondaryCategory />
           </div>
 
           <div>
