@@ -13,15 +13,15 @@ export default function SecondaryCategory() {
   const [hasCategories, setHasCategories] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [catName, setCatName] = useState('');
-  const [options, setOptions] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('');
+  const [options, setOptions] = useState([]);
+  const [selectOption, setSelectOption] = useState('');
 
   useEffect(() => {
-    if (selectedOption.value == 'Create new category') setIsCreateOpen(true);
-    else console.log(selectedOption.value);
-  }, [selectedOption])
+    if (!selectOption) return
+    if (selectOption.value == 'Create new category') setIsCreateOpen(true);
+  }, [selectOption])
 
-  useEffect(() => {  
+  useEffect(() => {
     if (secondaryCats.length > 0) {
       const mappedCategories = secondaryCats.map(cat => {
         return {value: cat, label: cat}})
@@ -31,17 +31,21 @@ export default function SecondaryCategory() {
       ]);
     }
   }, [secondaryCats])
+
   useEffect(() => {
     if (secondaryCats.length > 0) setHasCategories(true);
   }, [secondaryCats])
 
   const createSecondaryCat = () => {
     if (secondaryCats.includes(catName.trim())) return;  // Category already exists
-    const updatedCats = [...secondaryCats, catName];
+    const updatedCats = [...secondaryCats, catName.trim()];
     setSecondaryCats(updatedCats);  // Append to localStorage 
+    setSelectOption({value: catName.trim(), label: catName.trim()})
     setIsCreateOpen(false);
   }
   
+  // console.log(selectOption);
+
   return (
     <div>
       { !hasCategories &&
@@ -60,7 +64,7 @@ export default function SecondaryCategory() {
       { hasCategories && options &&
         <div>
           Testos
-          <Select options={options} placeholder='Choose a category' onChange={setSelectedOption}/>
+          <Select options={options} placeholder='Choose a category' onChange={setSelectOption} value={selectOption} isClearable/>
         </div>
       }
     </div>
