@@ -115,3 +115,12 @@ export function useBaseCurrency() {
 export function getSymbol(currency) {
   return currenciesSymbols[currency];
 }
+
+export function useAllSecondaryCats() {  // NEEDS TESTING
+  const [expenses, setExpenses] = useLocalStorage("expenses", []);
+  return expenses.reduce((categories, expense) => {
+    if (expense.secondaryCat && !categories.includes(expense.secondaryCat))
+      categories.push(expense.secondaryCat);
+    return categories
+  }, [])
+}

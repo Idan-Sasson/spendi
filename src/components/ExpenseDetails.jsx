@@ -9,6 +9,7 @@ import { setIconColor, parseRgbaString, setAlpha, convertCategories } from './He
 import { useDeleteExpense } from './firebaseHooks/useDeleteExpense';
 import { useUpdateExpense } from './firebaseHooks/useUpdateExpense';
 import Calculator from './customs/Calculator';
+import SecondaryCategory from './SecondaryCategory';
 
 export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpenses} ) {
   const { deleteExpense } = useDeleteExpense();
@@ -40,6 +41,8 @@ export default function ExpenseDetails( {setIsOpen, expenseId, expenses, setExpe
   const [exclude, setExclude] = useState(expense.exclude);
   const [currency, setCurrency] = useState(expense.currency)
   const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
+  const [secondaryCat, setSecondaryCat]= useState(expense.secondaryCat)
+
 
   const getColor = (category) => {
     return savedCategories[category] || convertCategories()[category].color
@@ -128,7 +131,7 @@ useEffect(() => {
     else newName = name;
     let newPrice = Number(price);
     if (isNaN(price)) newPrice = 0;
-    const updatedFields = { name: newName, price: newPrice, date: new Date(selectedDate).getTime(), category: category, convertedPrice: newPrice/rate, note: note, rate: rate, country: selectedCountry, currency, exclude: exclude || false }
+    const updatedFields = { name: newName, price: newPrice, date: new Date(selectedDate).getTime(), category: category, convertedPrice: newPrice/rate, note: note, rate: rate, country: selectedCountry, currency, exclude: exclude || false, secondaryCat }
     updateExpense(updatedFields);
     updateFirebaseExpense(updatedFields, expense.id);
     }
@@ -184,7 +187,6 @@ useEffect(() => {
       setRate(newRate);
     }
   }, [currency])
-
 
   useEffect(() => {  // Set new category color when we select a new category
     setCategoryColor(getColor(category));
@@ -276,6 +278,10 @@ useEffect(() => {
       <div className='checkbox-container' onClick={() => handleToggle(setExclude)}>
         <span className="ed-exclude-metrics-text">Exclude from metrics</span>
         <input className='exclude-checkbox' type='checkbox' checked={exclude} style={{accentColor: categoryColor}} readOnly={true}/>
+      </div>
+      
+      <div>
+        <SecondaryCategory setStrCat={setSecondaryCat} expense={expense}/>
       </div>
 
       <div>

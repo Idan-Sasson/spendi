@@ -17,3 +17,16 @@
     transform: translate(-50%, -50%);
 
 }
+
+.sec-cat-selector-create-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    justify-content: end;
+    padding: 5px 5px;
+}
+
+.sec-cat-plus-icn {
+    width: 25px;
+    height: 25px;
+}

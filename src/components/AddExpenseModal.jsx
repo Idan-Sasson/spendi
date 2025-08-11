@@ -10,8 +10,6 @@ import { setIconColor, parseRgbaString } from "./HelperFunctions";
 import { useAddExpense } from "./firebaseHooks/useAddExpense";
 import { useGetUserInfo } from "./firebaseHooks/useGetUserInfo";
 import Calculator from "./customs/Calculator";
-import CustomSelect from "./customs/CustomSelect";
-import CurrencyModal from "./CurrencyModal";
 import SecondaryCategory from "./SecondaryCategory";
 
 
@@ -32,8 +30,8 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isNoteFocused, setIsNoteFocused] = useState(false);
   const [calendarIcon, setCalendarIcon] = useState(icons["Calendar"]);
+  const [plusIcon, setPlusIcon] = useState(icons["Plus"]);
   const { addExpense } = useAddExpense(expenses, setExpenses);
-  const hasMount = useRef(false);
   const [ipCountry, setIpCountry] = useLocalStorage('ipCountry', '');
   const [isCalcOpen, setIsCalcOpen] = useState(false);
   const [calcDisplay, setCalcDisplay] = useState('');
@@ -71,6 +69,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
     expenseId: new Date().getTime(),
     exclude,
     userID,
+    secondaryCat,
   };
 
   // Update localStorage
@@ -134,7 +133,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
 
   useEffect(() => {
     // setCategoryFilter(categories.find(cat => cat.name === category).filter);
-    setIconColor(icons["Calendar"], parseRgbaString(categoryColor)).then(setCalendarIcon)
+    setIconColor(icons["Calendar"], parseRgbaString(categoryColor)).then(setCalendarIcon);
   }, [category])
 
   useEffect(() => {
@@ -209,7 +208,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
             <span className="exclude-metrics-text"> Exclude from metrics</span>
           </div>
           <div>
-            <SecondaryCategory />
+            <SecondaryCategory setStrCat={setSecondaryCat}/>
           </div>
 
           <div>
