@@ -90,7 +90,7 @@ const Expenses = () => {
           <span> on the bottom.</span>
         </div>
       }
-      <AddButton  expenses={expenses} setExpenses={setExpenses}/>
+      <AddButton expenses={expenses} setExpenses={setExpenses}/>
       <ul className="expense-list">
         {/* Go over each date group */}
         {Object.entries(groupedExpenses)

@@ -77,6 +77,19 @@
   align-items: baseline;
   justify-content: space-evenly;
   gap: 15px;
+  padding: 0 15px;
+  text-wrap: nowrap;
+  /* text-wrap: ; */
+  /* overflow-x: visible; */
+  overflow-y: hidden;
+}
+
+.filter-containers::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-containers::-webkit-scrollbar {
+  height: 6px;
 }
 
 .range-frame-select {

@@ -1,5 +1,6 @@
 .s-overlay {
-	padding-bottom: 180px;
+	padding-bottom: 330px;
+	overflow: hidden;
 }
 
 .s-option-container {
@@ -32,10 +33,10 @@
 	height: 6px;
 }
 
-.s-options-header::-webkit-scrollbar-thumb {
+/* .s-options-header::-webkit-scrollbar-thumb {
 	background: #ccc;
 	border-radius: 10px;
-}
+} */
 
 .search-input {
 	border-radius: 10px;

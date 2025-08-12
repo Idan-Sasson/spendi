@@ -7,10 +7,10 @@ import { categories, icons } from './constants';
 import AddButton from './AddButton';
 import { data, useNavigate } from 'react-router-dom';
 import banner from "../assets/Spendi-banner.png"
-import { setIconColor, parseRgbaString, convertCategories, useBaseCurrency, getSymbol } from "./HelperFunctions";
+import { setIconColor, parseRgbaString, convertCategories, useBaseCurrency, getSymbol, useAllSecondaryCats } from "./HelperFunctions";
 import CustomSelect from './customs/CustomSelect';
 import CountryModal2 from './CountryModal2';
-import { toLineHeight } from 'chart.js/helpers';
+import CustomSelect2 from './CustomSelect2';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -28,12 +28,15 @@ const Home = () => {
             return expense.exclude == undefined || !expense.exclude
         }));
     const [selectedCountries, setSelectedCountries] = useState([])
-    const [isCountryFilterOpen, setIsCountryFilterOpen] = useState(false);
+    const allSecCats = useAllSecondaryCats();
+    const [selectedSecCat, setSelectedSecCat] = useState([])
+    // const [isCountryFilterOpen, setIsCountryFilterOpen] = useState(false);
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
     const firstOfMonth = new Date(year, month, 1);
     const FirstMTs = firstOfMonth.getTime();
+    const selectRef = useRef(null)
 
     useEffect(() => {
       const meta = document.querySelector('meta[name="theme-color"]');
@@ -71,6 +74,15 @@ const Home = () => {
             setGraphExpenses(tmpExpenses);
             setPieExpenses(tmpExpenses);
     }, [selectFrame, filteredExpenses])
+
+    const onOpen = () => {
+        selectRef.current.style.overflowY = 'visible';
+    }
+
+    const onClose = () => {
+        selectRef.current.style.overflowY = 'hidden';
+        selectRef.current.scrollLeft = 0;
+    }
 
     // useEffect(() => {  // Invisible scrolling
     //   const c = boxContainerRef.current;
@@ -436,7 +448,6 @@ const Home = () => {
 
     },};
 
-
     return (
         <div className="home">
         <AddButton  expenses={filteredExpenses} setExpenses={setExpenses}/>
@@ -453,13 +464,14 @@ const Home = () => {
             </div>
 
             {/* Selection  */}
-            <div className='filter-containers'>
-            <CustomSelect onSelect={setSelectFrame} optionTitle={selectFrame} className='range-frame-select'>
+            <div className='filter-containers' ref={selectRef}>
+            <CustomSelect onSelect={setSelectFrame} optionTitle={selectFrame} onOpen={onOpen} onClose={onClose} className='range-frame-select'>
                 <div data-value='All' className='select-frame-tab'>All</div>
                 <div data-value='Last month (30 days)' className='select-frame-tab'>Last month (30 days)</div>
                 <div data-value='Month to date' className='select-frame-tab'>Month to date</div>
             </CustomSelect>
             <CountryModal2 selectedCountries={selectedCountries} setSelectedCountries={setSelectedCountries} />
+            <CustomSelect2 items={allSecCats} selected={selectedSecCat} setSelected={setSelectedSecCat} />
             </div>
 
             {/* Graphs */}

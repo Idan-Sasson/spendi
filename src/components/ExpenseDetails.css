@@ -260,6 +260,10 @@ input:focus {
   margin-left: 5px;
 }
 
+.ed-sec-cat-container {
+  padding: 10px;
+}
+
 .back-icon {
   position: fixed;
   top: 0;

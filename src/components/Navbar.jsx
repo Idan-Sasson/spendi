@@ -37,23 +37,22 @@ return (
   <NavLink to="/">
   {({ isActive }) => (
     <div className='navbar-icon-container'>
-      {/* <img src={icons["Home"]} className='navbar-icon'/> */}
       <img src={(isActive ? getIconSrc("Home", 'rgba(198, 98, 98, 1)') : getIconSrc("Home", 'rgba(255, 255, 255, 1)'))} className='navbar-icon'/>
     </div>
     )}
   </NavLink>
 
-  <NavLink to="/expenses">
+  {/* <NavLink to="/expenses">
     {({ isActive }) => (
     <div className='navbar-icon-container'>
       <img src={(isActive ? getIconSrc("Expenses", 'rgba(198, 98, 98, 1)') : getIconSrc("Expenses", 'rgba(255, 255, 255, 1)'))} className='navbar-icon'/>
     </div>
     )}
-  </NavLink>
+  </NavLink> */}
 
   <NavLink to="/search/all">
     <div className='navbar-icon-container'>
-      <img src={(isSearchActive ? getIconSrc("Search", 'rgba(198, 98, 98, 1)') : getIconSrc("Search", 'rgba(255, 255, 255, 1)'))} className='navbar-icon'/>
+      <img src={(isSearchActive ? getIconSrc("Expenses", 'rgba(198, 98, 98, 1)') : getIconSrc("Expenses", 'rgba(255, 255, 255, 1)'))} className='navbar-icon'/>
     </div>
   </NavLink>
 

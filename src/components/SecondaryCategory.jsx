@@ -5,7 +5,7 @@ import Select from 'react-select';
 import { useAllSecondaryCats } from "./HelperFunctions";
 import { icons } from "./constants";
 
-export default function SecondaryCategory({ setStrCat, expense }) {
+export default function SecondaryCategory({ setStrCat, expense, classPrefix}) {
   // TODO
   // Create new category button
   // If there's 1 or more categories change create new category button to select and have "Create new category" and all the other categories.
@@ -26,7 +26,10 @@ export default function SecondaryCategory({ setStrCat, expense }) {
   // }, [])
 
   useEffect(() => {
-    if (!selectOption) return
+    if (!selectOption) {  // If Empty
+      setStrCat(null);
+      return;
+    }
     setStrCat(selectOption.value)
   }, [selectOption])
 
@@ -58,13 +61,10 @@ export default function SecondaryCategory({ setStrCat, expense }) {
     setIsCreateOpen(false);
   }
 
-
   return (
     <div>
       { !hasCategories &&
-      <div onClick={() => setIsCreateOpen(true)}>
-        Add a secondary category
-      </div>
+      <div onClick={() => setIsCreateOpen(true)}>Add a secondary category</div>
       }
       { isCreateOpen && 
         <div className="create-sec-cat-overlay" onClick={() => {setIsCreateOpen(false)}}>
@@ -76,7 +76,7 @@ export default function SecondaryCategory({ setStrCat, expense }) {
       }
       { hasCategories && options &&
         <div className="sec-cat-selector-create-container">            
-          <Select options={options} placeholder='Choose a category' onChange={setSelectOption} value={selectOption} isClearable/>
+          <Select options={options} placeholder='Choose a category' onChange={setSelectOption} value={selectOption} classNamePrefix={classPrefix} isClearable/>
           <img src={icons["Plus"]} onClick={() => setIsCreateOpen(true)} className="sec-cat-plus-icn"/>
         </div>
       }

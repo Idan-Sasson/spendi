@@ -280,7 +280,7 @@ useEffect(() => {
         <input className='exclude-checkbox' type='checkbox' checked={exclude} style={{accentColor: categoryColor}} readOnly={true}/>
       </div>
       
-      <div>
+      <div dir='rtl' className='ed-sec-cat-container'>
         <SecondaryCategory setStrCat={setSecondaryCat} expense={expense}/>
       </div>
 

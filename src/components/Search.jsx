@@ -3,11 +3,12 @@ import './Search.css'
 import { useLocalStorage } from "./useLocalStorage";
 import { useParams } from "react-router-dom";
 import { AppOptions, categories, icons } from "./constants";
-import { setIconColor, parseRgbaString, convertCategories, useBaseCurrency, getSymbol } from "./HelperFunctions";
+import { setIconColor, parseRgbaString, convertCategories, useBaseCurrency, getSymbol, useAllSecondaryCats } from "./HelperFunctions";
 import AddButton from "./AddButton";
 import ExpenseDetails from "./ExpenseDetails";
 import CustomSelect from "./customs/CustomSelect";
 import CountryModal2 from "./CountryModal2";
+import CustomSelect2 from "./CustomSelect2";
 
 export default function Search() {
   const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
@@ -23,7 +24,8 @@ export default function Search() {
   const [selectedCountries, setSelectedCountries] = useState([])
   const [filteredExpenses, setFilteredExpenses] = useState(expenses);
   const selectRef = useRef(null);
-
+  const [selectedSecCat, setSelectedSecCat] = useState([])
+  const allSecCats = useAllSecondaryCats();
 
   useEffect(() => {
     const meta = document.querySelector('meta[name="theme-color"]');
@@ -46,15 +48,16 @@ export default function Search() {
 		}
 	}, []);
 
-  const getColor = (category) => {
+  const getColor = (category) => {  // Gets color as rgb either from localStorage or from hard-coded
 	  return savedCategories[category] || convertCategories()[category].color
   }
-  useEffect(() => {
+
+  useEffect(() => {  // Category Filter
 	  setFilteredExpenses((selectedCategory.toLowerCase() === "all" ? expenses : expenses.filter(item => item.category === selectedCategory))  // Filter categories
 	  .filter(item => search === '' || item.name.toLowerCase().includes(search.toLowerCase()))  // Filter search
-	  .filter(item => selectedCountries.length === 0 || selectedCountries.includes(item.country)));  // Filter countries
-
-  }, [selectedCategory, selectedCountries, search])
+	  .filter(item => selectedCountries.length === 0 || selectedCountries.includes(item.country))  // Filter countries
+	  .filter(item => selectedSecCat.length === 0 || selectedSecCat.includes(item.secondaryCat)));  // Filter second category
+  }, [selectedCategory, selectedCountries, search, expenses, selectedSecCat])
 
 	const groupedExpenses = filteredExpenses.sort((a, b) => new Date(b.date) - new Date(a.date)).reduce((result, item) => {
 		const isoDate = new Date(item.date).toISOString().split('T')[0];
@@ -65,7 +68,7 @@ export default function Search() {
 		return result;
 	}, {});
 
-  useEffect(() => {
+  useEffect(() => {  // Colors icons
     const isAllColored = () => {
     return categories.map(cat => {
       const cacheKey = `${cat.name}-${getColor(cat.name)}`;
@@ -117,7 +120,7 @@ export default function Search() {
         	  <span> on the bottom.</span>
         	</div>
       		}
-			<AddButton  expenses={expenses} setExpenses={setExpenses}/>
+			<AddButton expenses={expenses} setExpenses={setExpenses}/>
 			<div className="s-options-header" ref={selectRef}>
 				<CustomSelect onSelect={val => setSelectedCategory(val)} optionTitle={selectedCategory} style={{boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)', paddingBottom: '1px'}} onClose={onClose} onOpen={onOpen} className="s-cat-dropdown-container">
           <div data-value="All" className="s-option-container">
@@ -133,6 +136,7 @@ export default function Search() {
 				</CustomSelect>
 				<input className='search-input' onChange={(e) => setSearch(e.target.value)} placeholder="Search"/>
 				<CountryModal2 selectedCountries={selectedCountries} setSelectedCountries={setSelectedCountries} className={"search-filter-countries"}/>
+				<CustomSelect2 items={allSecCats} selected={selectedSecCat} setSelected={setSelectedSecCat} className={"search-filter-countries"}/>
 			</div>
 
 			{Object.entries(groupedExpenses).map(([isoDate, items]) => (

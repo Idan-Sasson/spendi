@@ -208,7 +208,7 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
             <span className="exclude-metrics-text"> Exclude from metrics</span>
           </div>
           <div>
-            <SecondaryCategory setStrCat={setSecondaryCat}/>
+            <SecondaryCategory setStrCat={setSecondaryCat} classPrefix="aem-sec-selector" />
           </div>
 
           <div>
