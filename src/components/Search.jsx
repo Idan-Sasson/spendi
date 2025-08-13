@@ -52,6 +52,11 @@ export default function Search() {
 	  return savedCategories[category] || convertCategories()[category].color
   }
 
+  const getGroupedLength = (grouped) => {  // Get the length of the grouped object
+	return Object.values(grouped) // get all arrays (values)
+  	.reduce((sum, arr) => sum + arr.length, 0); // sum up their lengths
+  }
+
   useEffect(() => {  // Category Filter
 	  setFilteredExpenses((selectedCategory.toLowerCase() === "all" ? expenses : expenses.filter(item => item.category === selectedCategory))  // Filter categories
 	  .filter(item => search === '' || item.name.toLowerCase().includes(search.toLowerCase()))  // Filter search
@@ -102,17 +107,15 @@ export default function Search() {
   
   const onOpen = () => {
     selectRef.current.style.overflowY = 'visible';
-    // selectRef.current.style.overflowX = 'visible';
   }
 
   const onClose = () => {
     selectRef.current.style.overflowY = 'hidden';
     selectRef.current.scrollLeft = 0;
-    // selectRef.current.style.overflowX = 'visible';
   }
 
 	return (
-		<div className="s-overlay">
+		<div className={`s-overlay ${getGroupedLength(groupedExpenses) > 15 ? '' : 'add-padding'}`}>
 			{isEmpty && 
         	<div className="empty-expenses-container">
         	  <span>Looks kinda empty, try adding a new expense by clicking on that red</span>
@@ -143,26 +146,27 @@ export default function Search() {
 				<div key={isoDate}>
 					<div className="date-header">
 						<span className="total">
-							{curSymbol}{items.reduce((sum, item) => sum + item.convertedPrice, 0).toFixed(2)}{" "}
+							{curSymbol}{items.reduce((sum, expense) => sum + expense.convertedPrice, 0).toFixed(2)}{" "}
 						</span>
 						<span>{isoDate}</span>
 					</div>
-					{items.map((item) => (
-						<div className='item-header' key={item.expenseId} onClick={() => {setIsDetailOpen(true); setOpenDetailId(item.expenseId)}}>
+					{items.map((expense) => (
+						<div className='item-header' key={expense.expenseId} onClick={() => {setIsDetailOpen(true); setOpenDetailId(expense.expenseId)}}>
 							<div className="s-price-container">
-                        	<span className="item-price" style={{color: item.exclude ? 'rgb(255, 68, 68)' : ''}}>{item.exclude && '('}{curSymbol}{Number(item.convertedPrice).toFixed(2)}{item.exclude && ')'}</span>
-								{ item.currency !== baseCurrency &&
-								<span className="real-currency">({item.price.toFixed(2)} {item.currency.toUpperCase()})</span>
+                        	<span className="item-price" style={{color: expense.exclude ? 'rgb(255, 68, 68)' : ''}}>{expense.exclude && '('}{curSymbol}{Number(expense.convertedPrice).toFixed(2)}{expense.exclude && ')'}</span>
+								{ expense.currency !== baseCurrency &&
+								<span className="real-currency">({expense.price.toFixed(2)} {expense.currency.toUpperCase()})</span>
 								}
 							</div>
 							<div className="item-actions">
-								<span>{item.name}</span>
-								{/* <img className='item-icon' src={coloredIcons[item.category]}/> */}
-								<img className='item-icon' src={getIconSrc(item.category)}/>
-								{item.note && <div className="is-note"/>}
-
+								<div className="expense-name-container">
+									<div className="expense-name-text">{expense.name}</div>
+									{expense.secondaryCat && <div className="s-sec-cat-text">({expense.secondaryCat})</div>}
+								</div>
+								<img className='item-icon' src={getIconSrc(expense.category)}/>
+								{expense.note && <div className="is-note"/>}
 							</div>
-								{isDetailOpen && openDetailId === item.expenseId && <ExpenseDetails setIsOpen={setIsDetailOpen} expenseId={openDetailId} expenses={expenses} setExpenses={setExpenses}/>}
+								{isDetailOpen && openDetailId === expense.expenseId && <ExpenseDetails setIsOpen={setIsDetailOpen} expenseId={openDetailId} expenses={expenses} setExpenses={setExpenses}/>}
 
 						</div>
 					))}

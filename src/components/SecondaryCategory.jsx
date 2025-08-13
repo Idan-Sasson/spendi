@@ -16,8 +16,8 @@ export default function SecondaryCategory({ setStrCat, expense, classPrefix}) {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [catName, setCatName] = useState('');
   const [options, setOptions] = useState([]);
-  // const [selectOption, setSelectOption] = useState('');
-  const [selectOption, setSelectOption] = useState(expense ? {value: expense.secondaryCat, label: expense.secondaryCat} : '');
+  // const [selectOption, setSelectOption] = useState(null);
+  const [selectOption, setSelectOption] = useState(expense?.secondaryCat ? {value: expense.secondaryCat, label: expense.secondaryCat} : null);
 
   // const allSecCats = useAllSecondaryCats();
 
@@ -64,7 +64,7 @@ export default function SecondaryCategory({ setStrCat, expense, classPrefix}) {
   return (
     <div>
       { !hasCategories &&
-      <div onClick={() => setIsCreateOpen(true)}>Add a secondary category</div>
+      <div onClick={() => setIsCreateOpen(true)} className="sec-cat-text">Click here to add a secondary category</div>
       }
       { isCreateOpen && 
         <div className="create-sec-cat-overlay" onClick={() => {setIsCreateOpen(false)}}>
@@ -76,7 +76,7 @@ export default function SecondaryCategory({ setStrCat, expense, classPrefix}) {
       }
       { hasCategories && options &&
         <div className="sec-cat-selector-create-container">            
-          <Select options={options} placeholder='Choose a category' onChange={setSelectOption} value={selectOption} classNamePrefix={classPrefix} isClearable/>
+          <Select options={options} placeholder='Secondary Category (optional)' onChange={setSelectOption} value={selectOption} classNamePrefix={classPrefix} isClearable/>
           <img src={icons["Plus"]} onClick={() => setIsCreateOpen(true)} className="sec-cat-plus-icn"/>
         </div>
       }

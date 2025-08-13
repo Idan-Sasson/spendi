@@ -1,6 +1,10 @@
 .s-overlay {
-	padding-bottom: 330px;
+	padding-bottom: 160px;
 	overflow: hidden;
+}
+
+.s-overlay.add-padding {
+	padding-bottom: 340px;
 }
 
 .s-option-container {
@@ -33,14 +37,8 @@
 	height: 6px;
 }
 
-/* .s-options-header::-webkit-scrollbar-thumb {
-	background: #ccc;
-	border-radius: 10px;
-} */
-
 .search-input {
 	border-radius: 10px;
-	margin-left: 10px;
 	border: 1px solid;
 	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
 }
@@ -67,6 +65,139 @@
 	padding-left: 10px;
 }
 
+.expense-name-text {
+	font-size: 16px;
+}
+
+.s-sec-cat-text {
+	font-size: 12px;
+    color: rgb(103, 103, 103);
+	padding-left: 2px;
+}
+
+.expenses-body {
+    padding-bottom: 180px;
+    /* Leaves space for the navbar at bottom */
+    /* max-height: 100vh; */
+    /* overflow-y: auto; */
+}
+
+.empty-expenses-container {
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -45%);
+    min-width: 80vw;
+    font-size: 20px;
+}
+
+.text-plus {
+    color: rgb(195, 98, 98);
+    font-weight: 600;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    font-size: 18px;
+}
+
+.item-icon {
+    width: 18px;
+    aspect-ratio: 1;
+    padding-left: 10px;
+    user-select: none;
+    /* filter: hue-rotate(180deg); */
+}
+
+.date-header {
+    font-size: 12px;
+    border-radius: 13px;
+    margin: 8px 0 8px 0;
+    font-weight: 500;
+    padding: 8px 12px;
+    color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px -4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.date-header.first {
+    margin: 0px;
+    margin-bottom: 8px;
+    border-radius: 0 0 13px 13px;
+
+}
+
+.expense-list {
+    padding-left: 0px;
+    margin: 0px;
+}
+
+.expenses {
+    padding-left: 10px;
+    font-size: 16px;
+    text-align: right;
+}
+
+.item-header {
+    display: flex;
+    padding-bottom: 5px;
+    justify-content: space-between;
+    align-items: center;
+    /* border-bottom: 1px solid rgb(226, 226, 226); */
+}
+
 .item-header.last {
 	border-bottom: none;
+}
+
+.is-note {
+    right: 4.5px;
+    position: absolute;
+    width: 8px;
+    aspect-ratio: 1;
+    background-color: rgb(255, 149, 0);
+    border-radius: 50%;
+}
+
+.item-name {
+    white-space: nowrap;
+}
+
+.item-price {
+    white-space: nowrap;
+	font-size: 16px;
+}
+
+.real-currency {
+    padding-left: 2px;
+    font-size: 12px;
+    color: rgb(103, 103, 103);
+}
+
+.item-actions {
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+}
+
+.expense-name-container {
+	display: flex;
+	align-items: baseline;
+}
+
+.remove {
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    color: rgb(255, 255, 255);
+    padding: 2px 8px;
+    text-decoration: none;
+    display: flex;
+    font-size: 14px;
+    margin-left: 2px;
+    cursor: pointer;
 }

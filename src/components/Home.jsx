@@ -24,9 +24,10 @@ const Home = () => {
     const [showGraph, setShowGraph] = useState(30)  // Shows the last X dates entries (dates that had entry) in the bar graph
     const [selectFrame, setSelectFrame] = useState('All');
     const boxContainerRef = useRef(null);
-    const [filteredExpenses, setFilteredExpenses] = useState(expenses.filter(expense => {
+    const [excludedExpenses, setExcludedExpenses] = useState(expenses.filter(expense => {
             return expense.exclude == undefined || !expense.exclude
         }));
+    const [filteredExpenses, setFilteredExpenses] = useState(excludedExpenses);
     const [selectedCountries, setSelectedCountries] = useState([])
     const allSecCats = useAllSecondaryCats();
     const [selectedSecCat, setSelectedSecCat] = useState([])
@@ -43,37 +44,38 @@ const Home = () => {
       meta.setAttribute('content', "rgb(239, 240, 239)")
     }, [])
 
-    const setCurrentFilteredExpenses = () => {
+    const setCurrentExcludedExpenses = () => {  // All expenses that are not excluded
         const tmpExpenses = expenses.filter(expense => {
             return expense.exclude == undefined || !expense.exclude
         })
-        setFilteredExpenses(tmpExpenses);
+        setExcludedExpenses(tmpExpenses);
         return tmpExpenses;
     }
 
     useEffect(() => {
-        setCurrentFilteredExpenses();
+        setCurrentExcludedExpenses();
     }, [expenses]);
 
     useEffect(() => {
         let tmpExpenses
         switch (selectFrame) {
             case 'All': 
-                tmpExpenses = filteredExpenses;
+                tmpExpenses = excludedExpenses;
                 break;
-            case 'Last month (30 days)':
-                tmpExpenses = getExpensesFrame(filteredExpenses, new Date().getTime() - 2592000000, new Date().getTime());
+            case 'Last 30 days':
+                tmpExpenses = getExpensesFrame(excludedExpenses, new Date().getTime() - 2592000000, new Date().getTime());
                 break;
             case "Month to date":
-                tmpExpenses = getExpensesFrame(filteredExpenses, FirstMTs, new Date().getTime());
+                tmpExpenses = getExpensesFrame(excludedExpenses, FirstMTs, new Date().getTime());
                 break;            
             default:
-                tmpExpenses = filteredExpenses;
+                tmpExpenses = excludedExpenses;
                 break;
             }
             setGraphExpenses(tmpExpenses);
             setPieExpenses(tmpExpenses);
-    }, [selectFrame, filteredExpenses])
+            setFilteredExpenses(tmpExpenses);
+    }, [selectFrame, excludedExpenses])
 
     const onOpen = () => {
         selectRef.current.style.overflowY = 'visible';
@@ -104,12 +106,15 @@ const Home = () => {
     // }, []);
 
     useEffect(() => {
-        let filteredCountryExpenses = setCurrentFilteredExpenses();
+        let tmpExpenses = setCurrentExcludedExpenses();
         if (selectedCountries.length > 0) {  // No country is selected
-            filteredCountryExpenses = filteredCountryExpenses.filter(expense => selectedCountries.includes(expense.country));
+            tmpExpenses = tmpExpenses.filter(expense => selectedCountries.includes(expense.country));
         }
-        setFilteredExpenses(filteredCountryExpenses);
-    }, [selectedCountries, expenses])
+        if (selectedSecCat.length > 0) {
+            tmpExpenses = tmpExpenses.filter(expense => selectedSecCat.includes(expense.secondaryCat));
+        }
+        setExcludedExpenses(tmpExpenses);
+    }, [selectedCountries, expenses, selectedSecCat])
 
     const getExpensesFrame = (expensesArray, t1, t2) => {
          return expensesArray.filter((expense) => {
@@ -450,55 +455,64 @@ const Home = () => {
 
     return (
         <div className="home">
-        <AddButton  expenses={filteredExpenses} setExpenses={setExpenses}/>
-            <img className='home-banner' src={banner} />
-            
-            {/* Boxes */}
-            <div className="box-container" ref={boxContainerRef}>
-                {boxesData.map(({ title, value }, index) => (
-                    <div className="box" key={index}>
-                        <span className='title'>{title}</span>
-                        <span className='number'>{value}</span>
-                    </div>
-                ))}
-            </div>
-
-            {/* Selection  */}
-            <div className='filter-containers' ref={selectRef}>
-            <CustomSelect onSelect={setSelectFrame} optionTitle={selectFrame} onOpen={onOpen} onClose={onClose} className='range-frame-select'>
-                <div data-value='All' className='select-frame-tab'>All</div>
-                <div data-value='Last month (30 days)' className='select-frame-tab'>Last month (30 days)</div>
-                <div data-value='Month to date' className='select-frame-tab'>Month to date</div>
-            </CustomSelect>
-            <CountryModal2 selectedCountries={selectedCountries} setSelectedCountries={setSelectedCountries} />
-            <CustomSelect2 items={allSecCats} selected={selectedSecCat} setSelected={setSelectedSecCat} />
-            </div>
-
-            {/* Graphs */}
-            <div className="chart-wrapper">
-                <div className='chart-container'>
-                    <Bar options={chartOptions} data={chartData} />
-                </div>
-            </div>
-            <div className='pie-wrapper'>
-                <div className='pie-container'>
-                    <Pie options={pieOptions} data={pieData}/>
-                </div>
-                <div className='categories-total'>
-                    {Object.entries(pieCatSums).sort((a, b) => b[1] - a[1]).map(([cat, sum]) => (
-                        <div className='category-header' key={cat} onClick={() => handleCategoryClick(cat)}>
-                            <div className='icon-title'>
-                                <img src={getIconSrc(cat)} className='cat-icon' />
-                                <span className='cat-title'>{cat}</span>
-                            </div>
-                            <span className='cat-sum'>{sum.toFixed(2)} {currencySymbol}</span>
+        <AddButton  expenses={expenses} setExpenses={setExpenses}/>
+            <img className='home-banner' src={banner} />            { expenses.length > 0 &&
+            <div>
+                {/* Boxes */}
+                <div className="box-container" ref={boxContainerRef}>
+                    {boxesData.map(({ title, value }, index) => (
+                        <div className="box" key={index}>
+                            <span className='title'>{title}</span>
+                            <span className='number'>{value}</span>
                         </div>
                     ))}
                 </div>
+
+                {/* Selection  */}
+                <div className='filter-containers' ref={selectRef}>
+                <CustomSelect onSelect={setSelectFrame} optionTitle={selectFrame} onOpen={onOpen} onClose={onClose} className='range-frame-select'>
+                    <div data-value='All' className='select-frame-tab'>All</div>
+                    <div data-value='Last 30 days' className='select-frame-tab'>Last 30 days</div>
+                    <div data-value='Month to date' className='select-frame-tab'>Month to date</div>
+                </CustomSelect>
+                <CountryModal2 selectedCountries={selectedCountries} setSelectedCountries={setSelectedCountries} />
+                <CustomSelect2 items={allSecCats} selected={selectedSecCat} setSelected={setSelectedSecCat} />
+                </div>
+
+                {/* Graphs */}
+                <div className="chart-wrapper">
+                    <div className='chart-container'>
+                        <Bar options={chartOptions} data={chartData} />
+                    </div>
+                </div>
+                <div className='pie-wrapper'>
+                    <div className='pie-container'>
+                        <Pie options={pieOptions} data={pieData}/>
+                    </div>
+                    <div className='categories-total'>
+                        {Object.entries(pieCatSums).sort((a, b) => b[1] - a[1]).map(([cat, sum]) => (
+                            <div className='category-header' key={cat} onClick={() => handleCategoryClick(cat)}>
+                                <div className='icon-title'>
+                                    <img src={getIconSrc(cat)} className='cat-icon' />
+                                    <span className='cat-title'>{cat}</span>
+                                </div>
+                                <span className='cat-sum'>{sum.toFixed(2)} {currencySymbol}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className='month-bar-container'>
+                    <Bar data={monthsChartData} options={monthsChartOptions} />
+                </div>
             </div>
-            <div className='month-bar-container'>
-                <Bar data={monthsChartData} options={monthsChartOptions} />
-            </div>
+            }
+            { expenses.length === 0 &&
+        	<div className="empty-expenses-container">
+        	  <span>Looks kinda empty, try adding a new expense by clicking on that red</span>
+        	  <span className="text-plus"> +</span>
+        	  <span> on the bottom.</span>
+        	</div>
+            }
         </div>
     );
 };

@@ -33,7 +33,7 @@ const Navbar = () => {
   }
 
 return (
-<nav className="new-navbar">
+<nav className="navbar">
   <NavLink to="/">
   {({ isActive }) => (
     <div className='navbar-icon-container'>

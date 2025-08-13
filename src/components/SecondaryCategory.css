@@ -1,3 +1,7 @@
+.sec-cat-text {
+    font-size: 18px;
+}
+
 .create-sec-cat-overlay {
     position: fixed;
     top: 0;
@@ -16,6 +20,22 @@
     left: 50%;
     transform: translate(-50%, -50%);
 
+}
+
+.aem-sec-selector__placeholder {
+    font-size: 16px;
+}
+
+.aem-sec-selector__single-value {
+    font-size: 16px;
+}
+
+.aem-sec-selector__option {
+    font-size: 16px;
+}
+
+.aem-sec-selector__menu-list {
+    font-size: 16px;
 }
 
 .sec-cat-selector-create-container {
