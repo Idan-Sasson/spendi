@@ -24,10 +24,9 @@
     animation: modalGoIn 0.2s ease forwards;
 }
 
-.categories-container {
+/* .categories-container {
     border-radius: 20px 20px 0 0;
     position: fixed;
-    /* flex-direction: column; */
     z-index: 1002;
     top: 7%;
     width: 100%;
@@ -39,36 +38,92 @@
     justify-content: center;
 
     animation: modalGoIn 0.2s ease forwards;
+} */
+
+.categories-outer-container {
+    background: rgba(245, 246, 246, 1);
+    border-radius: 20px 20px 0 0;
+    position: fixed;
+    z-index: 1002;
+    top: 7%;
+    height: 93%;
+    left: 0;
+    right: 0;
+    overflow: none;
+
+    animation: modalGoIn 0.2s ease forwards;
+
+}
+
+.categories-container {
+    /* background: rgb(89, 233, 233); */
+    background: rgba(245, 246, 246, 1);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    height: 80%;
+    padding: 15px;
+    justify-content: center;
+    align-items: start;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    animation: modalGoIn 0.2s ease forwards;
 }
 
 .go-out {
     animation: modalGoOut 0.2s ease forwards;
 }
 
-.category-item {
+/* .category-item {
     width: 25%;
     aspect-ratio: 1;
-    /* height: 20px; */
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* height: auto; */
     padding: 4px;
+} */
+
+.category-item {
+    width: 100%;
+    max-width: 260px;
+    /* prevents giant buttons on ultra-wide screens */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px;
+    position: relative;
 }
 
 .category-button {
-    width: 25vw;
+    width: 100%;
     aspect-ratio: 1;
+    /* keep it a circle */
     backdrop-filter: blur(20px);
     border: 0;
     border-radius: 50%;
     z-index: 2;
 }
 
+/* .category-button {
+    width: 25vw;
+    aspect-ratio: 1;
+    backdrop-filter: blur(20px);
+    border: 0;
+    border-radius: 50%;
+    z-index: 2;
+} */
+
+
 .cat-icons {
-    width: 15vw;
+    width: 60%;
     aspect-ratio: 1;
 }
+
+/* .cat-icons {
+    width: 15vw;
+    aspect-ratio: 1;
+} */
 
 .income {
 
@@ -88,16 +143,13 @@
 
 .back-color {
     position: absolute;
-    width: 10vw;
-    top: 50%;
-    /* position center vertically */
-    left: 50%;
-    /* position center horizontally */
-    transform: translate(-50%, -50%);
-    /* offset by half own size */
+    width: 42%;
     aspect-ratio: 1;
     border-radius: 50%;
     z-index: 1;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 

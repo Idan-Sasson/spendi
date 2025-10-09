@@ -9,7 +9,7 @@ import Tests from './components/tests';
 import Search from './components/Search';
 import Settings from './components/Settings';
 import Auth from './components/Auth'
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { auth } from './config/firebase';
 import { useLocalStorage } from './components/useLocalStorage';
 
@@ -17,16 +17,28 @@ function App() {
   const { syncExpenses } = useSyncExpenses();
   const hasMount = useRef(false);
   const [ipCountry, setIpCountry] = useLocalStorage("ipCountry", '')
+  const [filtersResetLoaded, setFiltersResetLoaded] = useState(false);
+  const didRun = useRef(false);
+
+  // Run before paint to avoid a 1-frame flash
+  useEffect(() => {
+    // if (didRun.current) return; // avoid React 18 StrictMode double-run in dev
+    // didRun.current = true;
+    localStorage.setItem('selectedCountries', JSON.stringify([]));
+    localStorage.setItem('selectedSecCat', JSON.stringify([]));
+    setFiltersResetLoaded(true);
+  }, []);
+
+  // useEffect(() => {  // Reset filters
+  //   console.log("remounts");
+  //   setSelectedCountries([]);
+  //   setSelectedSecCat([]);
+  //   setResetKey(Date.now());
+  // }, [])
 
   useEffect(() => {
-    // if (!hasMount.current) {  // useEffect runs twice in StrictMode
-    //   hasMount.current = true
-    //   return
-    // };
-    // const res = fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
     const fetchCountry = async () => {  // Fetch country by ip
       try {
-        // const res = await fetch(`http://ip-api.com/json/`);
         const res = await fetch(`https://ipapi.co/json`);
         const data = await res.json();
         let ipCountry = data["country_name"]
@@ -40,27 +52,48 @@ function App() {
     fetchCountry();
   }, [])
 
+  // useEffect(() => {  // Disabling ip-looup for testings
+  //   setIpCountry("Greece")
+  // }, [])
+
+  // useEffect(() => {
+  //   const user = auth.currentUser
+  //   if (user?.uid) {
+  //     console.log("Sync1");
+  //     syncExpenses(user.uid)
+  //   } else {
+  //     // Listen for when auth is ready
+  //     const unsubscribe = auth.onAuthStateChanged((user) => {
+  //       if (user?.uid) {
+  //         console.log("Sync2");
+  //         syncExpenses(user.uid);
+  //       }
+  //     })
+  //     return unsubscribe;
+  //   }
+  // }, [])
+
+
+  // Trying different approches to battle against the duplications
   useEffect(() => {
     const user = auth.currentUser
-    if (user?.uid) {
-      syncExpenses(user?.uid)
-    } else {
-      // Listen for when auth is ready
-      const unsubscribe = auth.onAuthStateChanged((user) => {
-        if (user?.uid) {
-          syncExpenses(user.uid);
-        }
-      })
-      return unsubscribe;
-    }
+    // Listen for when auth is ready
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user?.uid) {
+        console.log("Sync2");
+        syncExpenses(user.uid);
+      }
+    })
+    return unsubscribe;
   }, [])
 
   return (
     <HashRouter>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/expenses" element={<Expenses />} />
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={filtersResetLoaded ? <Home /> : null} />
+
         <Route path="/search/:category" element={<Search />} />
         <Route path="/tests" element={<Tests />} />
         <Route path="/settings" element={<Settings />} />

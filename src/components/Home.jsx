@@ -19,18 +19,33 @@ const Home = () => {
     const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
     const baseCurrency = useBaseCurrency();
     const currencySymbol = getSymbol(baseCurrency);
-    const [graphExpenses, setGraphExpenses] = useState(expenses) // last 30
-    const [pieExpenses, setPieExpenses] = useState(expenses);
     const [showGraph, setShowGraph] = useState(30)  // Shows the last X dates entries (dates that had entry) in the bar graph
     const [selectFrame, setSelectFrame] = useState('All');
     const boxContainerRef = useRef(null);
-    const [excludedExpenses, setExcludedExpenses] = useState(expenses.filter(expense => {
-            return expense.exclude == undefined || !expense.exclude
-        }));
-    const [filteredExpenses, setFilteredExpenses] = useState(excludedExpenses);
-    const [selectedCountries, setSelectedCountries] = useState([])
+    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [selectedCountries, setSelectedCountries] = useLocalStorage("selectedCountries", []);
     const allSecCats = useAllSecondaryCats();
-    const [selectedSecCat, setSelectedSecCat] = useState([])
+    const [selectedSecCat, setSelectedSecCat] = useLocalStorage("selectedSecCat", []);
+    const getFilteredExpenses = (expenses) => {
+        expenses = expenses.filter(expense => {
+            return expense.exclude == undefined || !expense.exclude
+        })
+        if (selectedCountries.length > 0) {  // No country is selected
+            expenses = expenses.filter(expense => selectedCountries.includes(expense.country));
+        }
+        if (selectedSecCat.length > 0) {
+            expenses = expenses.filter(expense => selectedSecCat.includes(expense.secondaryCat));
+        }
+        if (selectedCategory !== '') {
+            expenses = expenses.filter(expense => selectedCategory === expense.category);
+        }
+        return expenses
+    }
+    const [excludedExpenses, setExcludedExpenses] = useState(getFilteredExpenses(expenses));
+    const [filteredExpenses, setFilteredExpenses] = useState(excludedExpenses);
+    const [graphExpenses, setGraphExpenses] = useState(filteredExpenses) // last 30
+    const [pieExpenses, setPieExpenses] = useState(filteredExpenses);
+
     // const [isCountryFilterOpen, setIsCountryFilterOpen] = useState(false);
     const today = new Date();
     const year = today.getFullYear();
@@ -86,25 +101,6 @@ const Home = () => {
         selectRef.current.scrollLeft = 0;
     }
 
-    // useEffect(() => {  // Invisible scrolling
-    //   const c = boxContainerRef.current;
-    //   if (!c) return;
-    //   const oneWidth = c.scrollWidth / 3;
-    //   c.scrollLeft = oneWidth;
-    //   let ticking = false;
-    //   function onScroll() {
-    //     if (ticking) return;
-    //     ticking = true;
-    //     requestAnimationFrame(() => {
-    //       if (c.scrollLeft < oneWidth * 0.5) c.scrollLeft += oneWidth;
-    //       else if (c.scrollLeft > oneWidth * 1.5) c.scrollLeft -= oneWidth;
-    //       ticking = false;
-    //     });
-    //   }
-    //   c.addEventListener('scroll', onScroll, { passive: true });
-    //   return () => c.removeEventListener('scroll', onScroll);
-    // }, []);
-
     useEffect(() => {
         let tmpExpenses = setCurrentExcludedExpenses();
         if (selectedCountries.length > 0) {  // No country is selected
@@ -113,8 +109,12 @@ const Home = () => {
         if (selectedSecCat.length > 0) {
             tmpExpenses = tmpExpenses.filter(expense => selectedSecCat.includes(expense.secondaryCat));
         }
+        if (selectedCategory !== '') {
+            if (selectedCategory !== 'All') tmpExpenses = tmpExpenses.filter(expense => selectedCategory === expense.category);
+        }
         setExcludedExpenses(tmpExpenses);
-    }, [selectedCountries, expenses, selectedSecCat])
+
+    }, [selectedCountries, expenses, selectedSecCat, selectedCategory])
 
     const getExpensesFrame = (expensesArray, t1, t2) => {
          return expensesArray.filter((expense) => {
@@ -470,6 +470,18 @@ const Home = () => {
 
                 {/* Selection  */}
                 <div className='filter-containers' ref={selectRef}>
+                <CustomSelect onSelect={val => setSelectedCategory(val)} optionTitle={selectedCategory} style={{boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)', paddingBottom: '1px'}} onClose={onClose} onOpen={onOpen} className="s-cat-dropdown-container">
+                    <div data-value="All" className="s-option-container">
+                        <img className="s-filter-icon" src={icons["All"]} />
+                        <div key={"All"}>All</div>
+                    </div>
+                    {categories.map((cat) => (
+                        <div key={cat.name} data-value={cat.name} className="s-option-container">
+                            <img className="s-filter-icon" src={getIconSrc(cat.name)} />
+                            <div>{cat.name}</div>
+                        </div>
+                    ))}
+                </CustomSelect>
                 <CustomSelect onSelect={setSelectFrame} optionTitle={selectFrame} onOpen={onOpen} onClose={onClose} className='range-frame-select'>
                     <div data-value='All' className='select-frame-tab'>All</div>
                     <div data-value='Last 30 days' className='select-frame-tab'>Last 30 days</div>

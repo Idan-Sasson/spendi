@@ -6,7 +6,9 @@ export const useSyncExpenses = () => {  // Adds all the expenses from localStora
     const { addExpense } = useAddExpense();
     const [expenses, setExpenses] = useLocalStorage("expenses", [])
 
+
     const syncExpenses = async (userID) => {
+        console.log('sync start', new Date().toISOString());  // Sanity check
         try {
             let updated = [...expenses];
             for (const expense of expenses) {
@@ -20,6 +22,7 @@ export const useSyncExpenses = () => {  // Adds all the expenses from localStora
             }
 
             const fbExpenses = await getAllExpenses(userID);
+            // console.log(fbExpenses);
             setExpenses(fbExpenses);
             return fbExpenses;  // Return the updated expenses from firebase
         } catch (err) {

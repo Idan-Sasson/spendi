@@ -21,18 +21,20 @@ import settings from "../assets/icons/settings.png"
 import arrow from "../assets/icons/arrow.png"
 import Delete from "../assets/icons/delete.png"
 import Health from "../assets/icons/Health.png"
+import Transport from "../assets/icons/transport.png"
 
 export const categories = [  // https://codepen.io/sosuke/pen/Pjoqqp
   { name: "General", color: "rgba(93, 202, 173, 1)", isExpense: true },
   { name: "Food", color: "rgba(106, 197, 104, 1)", isExpense: true },
   { name: "Car", color: "rgba(241, 191, 68, 1)", isExpense: true },
-  { name: "Entertainment", color: "rgba(127, 87, 187, 1)", isExpense: true },
+  { name: "Entertainment", color: "rgba(147, 87, 187, 1)", isExpense: true },
   { name: "Groceries", color: "rgba(79, 166, 255, 1)", isExpense: true },
   { name: "Flights", color: "rgba(235, 148, 19, 1)", isExpense: true },
   { name: "Accommodations", color: "rgba(231, 142, 208, 1)", isExpense: true },
   { name: "Shopping", color: "rgba(20, 233, 233, 1)", isExpense: true },
   { name: "Fees", color: "rgba(255, 0, 0, 1)", isExpense: true },
   { name: "Health", color: "rgba(230, 103, 110, 1)", isExpense: true },
+  { name: "Transport", color: "rgba(241, 58, 196, 1)", isExpense: true },
   { name: "Other", color: "rgba(197, 197, 197, 1)", isExpense: true },
   // { name: "Salary", color: 'rgba(99, 138, 0,1)', isExpense: false },
   // { name: "Gift", color: 'rgba(7, 255, 52, 1)', isExpense: false }
@@ -73,4 +75,5 @@ export const icons = {
   Arrow: arrow,
   Delete,
   Health,
+  Transport
 }

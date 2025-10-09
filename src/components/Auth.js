@@ -43,6 +43,7 @@ export default function Auth({ setIsOpen, setIsLoggedInModal }) {
         isAuth: true
       };
       setAuthInfo(authData);
+      console.log("Sync3")
       await syncExpenses(authData["userID"]);
       const firebaseExpenses = await getAllExpenses(authData["userID"]);
       setLocalExpenses(firebaseExpenses);
@@ -50,6 +51,8 @@ export default function Auth({ setIsOpen, setIsLoggedInModal }) {
       setEmail('');
       setPassword('');
     } catch (err) {
+      console.log("ERROR:");
+      console.log(err.code);
       if (err.code === 'auth/invalid-email') {
         console.log('Invalid email');
         setError("Please enter a valid email.");
@@ -93,6 +96,7 @@ export default function Auth({ setIsOpen, setIsLoggedInModal }) {
         isAuth: true
       };
       setAuthInfo(authData);
+      console.log("Sync4");
       await syncExpenses(authData["userID"]);
       setEmail('');
       setPassword('');

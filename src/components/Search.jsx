@@ -21,11 +21,17 @@ export default function Search() {
   const baseCurrency = useBaseCurrency();
   const curSymbol = getSymbol(baseCurrency);
   const [isEmpty, setIsEmpty] = useState(false);
-  const [selectedCountries, setSelectedCountries] = useState([])
-  const [filteredExpenses, setFilteredExpenses] = useState(expenses);
+  const [selectedSecCat, setSelectedSecCat] = useLocalStorage("selectedSecCat", []);
+  const [selectedCountries, setSelectedCountries] = useLocalStorage("selectedCountries", []);
   const selectRef = useRef(null);
-  const [selectedSecCat, setSelectedSecCat] = useState([])
   const allSecCats = useAllSecondaryCats();
+  const getFilteredExpenses = (expenses) => {
+	return(selectedCategory.toLowerCase() === "all" ? expenses : expenses.filter(item => item.category === selectedCategory)  // Filter categories
+	  .filter(item => search === '' || item.name.toLowerCase().includes(search.toLowerCase()))  // Filter search
+	  .filter(item => selectedCountries.length === 0 || selectedCountries.includes(item.country))  // Filter countries
+	  .filter(item => selectedSecCat.length === 0 || selectedSecCat.includes(item.secondaryCat)));  // Filter second category
+  }
+  const [filteredExpenses, setFilteredExpenses] = useState(getFilteredExpenses(expenses));
 
   useEffect(() => {
     const meta = document.querySelector('meta[name="theme-color"]');

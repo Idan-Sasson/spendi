@@ -11,6 +11,7 @@ import { useAddExpense } from "./firebaseHooks/useAddExpense";
 import { useGetUserInfo } from "./firebaseHooks/useGetUserInfo";
 import Calculator from "./customs/Calculator";
 import SecondaryCategory from "./SecondaryCategory";
+import Warning from "./customs/Warning";
 
 
 export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
@@ -40,6 +41,9 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   const [currency, setCurrency] = useState("ils")
   const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
   const [secondaryCat, setSecondaryCat] = useState("")
+  const [isPriceEmpty, setIsPriceEmpty] = useState(false);  // If user tries to submit when price is empty, colors the placeholder to red
+  const [isCloseWarningOpen, setIsCloseWarningOpen] = useState(false);  // Sets a warning if user clicks on the overlay in order to close
+  const [selectedWarningClick, setSelectedWarningClick] = useState('');
 
   
   useEffect(() => {  // On start set country by ipCountry
@@ -50,40 +54,45 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
   }, [])
 
   const handleModalSubmit = async () => {
-    if (String(modalExpense).trim() === "" || String(modalPrice).trim() === "") return; // Blank input check
+    // if (String(modalExpense).trim() === "" )  // Blank name - renames to category name
+    // if (String(modalPrice).trim() === "") {
+    //   setIsPriceEmpty(true);
+    //   return;
+    // }; // Blank price check
+    console.log(parseFloat(modalPrice) || 0);
     handleClose();
 
    const tmpRate = rate || 1;
-  const convertedPrice = parseFloat(modalPrice) / tmpRate;
+    const convertedPrice = parseFloat(modalPrice) / tmpRate;
 
-  const expenseData = {
-    name: modalExpense,
-    price: parseFloat(modalPrice),
-    date: selectedDate, // keep this if you're intentionally overriding current time
-    category,
-    currency,
-    convertedPrice: parseFloat(convertedPrice),
-    country,
-    rate: tmpRate,
-    note, 
-    expenseId: new Date().getTime(),
-    exclude,
-    userID,
-    secondaryCat,
+    const expenseData = {
+      name: modalExpense || category,  // Renames to category's name if blank
+      price: parseFloat(modalPrice) || 0,
+      date: selectedDate, // keep this if you're intentionally overriding current time
+      category,
+      currency,
+      convertedPrice: parseFloat(convertedPrice) || 0,
+      country,
+      rate: tmpRate,
+      note, 
+      expenseId: new Date().getTime(),
+      exclude,
+      userID,
+      secondaryCat,
+    };
+
+    // Update localStorage
+    const updatedExpenses = [...expenses, { ...expenseData}]
+    setExpenses(updatedExpenses);
+    // Update firebase and get firebase's ID
+    const fbId = await addExpense(expenseData);
+      if (fbId) {
+        const patched = updatedExpenses.map(exp =>
+        exp.expenseId === expenseData.expenseId ? { ...exp, id: fbId } : exp
+      );
+      setExpenses(patched); 
+      }
   };
-
-  // Update localStorage
-  const updatedExpenses = [...expenses, { ...expenseData}]
-  setExpenses(updatedExpenses);
-  // Update firebase and get firebase's ID
-  const fbId = await addExpense(expenseData);
-    if (fbId) {
-      const patched = updatedExpenses.map(exp =>
-      exp.expenseId === expenseData.expenseId ? { ...exp, id: fbId } : exp
-    );
-    setExpenses(patched); 
-    }
-};
 
   useEffect(() => {
     const getRates = async () => {
@@ -106,7 +115,10 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
       }
 
     }
-    if (AppOptions.baseCurrency === currency) return;
+    if (AppOptions.baseCurrency === currency) {  // resets rate to 1 if resets to baseCurrency
+      setRate(1);
+      return
+    };
     if (!rates) {
       getRates();
     }
@@ -147,14 +159,30 @@ export default function AddExpenseModal({ setIsOpen, expenses, setExpenses }) {
     if (!modalPrice) setModalPrice('');
   }, [modalPrice])
 
+  useEffect(() => {
+    if (selectedWarningClick.trim() === "Leave") {
+      handleClose();
+      return;
+    }
+  }, [selectedWarningClick])
+
   const handleToggle = (setChange) => {
     setChange(t => !t);
   }
 
+  const closeWarning = () => {
+    if (!modalExpense && !modalPrice && !note) {
+      handleClose();  // Closes if user didn't fill anything important
+      return;
+    }
+      setIsCloseWarningOpen(true);
+  }
+
   return (
     <div>
+          {isCloseWarningOpen && <Warning warning="Leave without saving?" options={["Back", "Leave"]} setSelected={setSelectedWarningClick} setOpen={setIsCloseWarningOpen} />}
           {isCalcOpen && <Calculator calc={calcDisplay} setCalc={setCalcDisplay} setResult={setModalPrice} setIsCalcOpen={setIsCalcOpen} setToDisplay={setToDisplay}/>}
-    <div className={`modal-overlay ${isClosing ? 'blur-out' : ''}`} onClick={handleClose}>
+    <div className={`modal-overlay ${isClosing ? 'blur-out' : ''}`} onClick={closeWarning}>
 
       <div className={`modal-container ${isClosing ? 'fade-out' : ''}`} onClick={(e) => e.stopPropagation()} onAnimationEnd={handleAnimationEnd} style={{boxShadow: `0 0 32px 0 ${setAlpha(categoryColor, 0.2)}`}}>
 

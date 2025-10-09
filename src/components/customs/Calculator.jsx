@@ -26,7 +26,7 @@ export default function Calculator({ calc, setCalc, setResult, setIsCalcOpen, se
 
     if (toCalc === '') return;  // In case it's empty
     if (toCalc === '.') return 0;  // Handle dot .
-    if (operationSymbols.includes(toCalc.at(-1)) && calc.length < 2) {console.log("h"); return 0};  // In case it's just an operation symbol
+    if (operationSymbols.includes(toCalc.at(-1)) && calc.length < 2) {return 0};  // In case it's just an operation symbol
     // if (!isOperation) return // In case the user hasn't made any math operation to calculate
     if (!toCalc) return // In case it's empty
     if (toCalc.at(-1) === '.' && operationSymbols.includes(toCalc.at(-2))) toCalc = toCalc.slice(0, -1); // In case op dot (+.)
