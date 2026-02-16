@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 import './Home.css';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, plugins} from 'chart.js';
@@ -19,7 +19,7 @@ const Home = () => {
     const [cachedIcons, setCachedIcons] = useLocalStorage("cachedIcons", []);
     const baseCurrency = useBaseCurrency();
     const currencySymbol = getSymbol(baseCurrency);
-    const [showGraph, setShowGraph] = useState(30)  // Shows the last X dates entries (dates that had entry) in the bar graph
+    const [showGraph, setShowGraph] = useState(10)  // Shows the last X dates entries (dates that had entry) in the bar graph
     const [selectFrame, setSelectFrame] = useState('All');
     const boxContainerRef = useRef(null);
     const [selectedCategory, setSelectedCategory] = useState('All');
@@ -46,7 +46,6 @@ const Home = () => {
     const [graphExpenses, setGraphExpenses] = useState(filteredExpenses) // last 30
     const [pieExpenses, setPieExpenses] = useState(filteredExpenses);
 
-    // const [isCountryFilterOpen, setIsCountryFilterOpen] = useState(false);
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
@@ -126,6 +125,14 @@ const Home = () => {
         return expensesArray.reduce((sum, item) => sum + (item.convertedPrice || 0), 0);
     }
 
+    // Gets a range t1,t2 and returns the daily average between these dates
+    const rangeAvg2 = (t1, t2) => {
+        if (filteredExpenses.length == 0) return 0;
+        const total = totalRange(t1, t2);
+        return (total / new Date().getDate()).toFixed(2);
+    }
+
+    // Gets a range t1,t2 and returns the daily average between the first expense and the last expense of the range
     const rangeAvg = (t1, t2) => {
         if (filteredExpenses.length === 0) return 0;
         const tmpExpenses = filteredExpenses.filter((expense) => {
@@ -190,13 +197,25 @@ const Home = () => {
         return icons[category]
     }
 
+    // Returns the first date first expense of filteredExpenses
+    const getFirstExpDate = (expensesArray=filteredExpenses) => {
+        if (expensesArray.length === 0) return 0;
+        expensesArray.sort((a, b) => a.date - b.date);
+        const firstDay = new Date(expensesArray[0].date);
+        return firstDay.getTime();
+    }
+
+    console.log(getFirstExpDate(filteredExpenses));
+
     const boxesData = [
         {title: 'Total', value: currencySymbol + getTotal(filteredExpenses).toFixed(2)},
-        {title: "Daily Average", value: currencySymbol + dayAvg()},
+        {title: "Daily Average", value: currencySymbol + totalRange(getFirstExpDate(filteredExpenses), new Date().getTime())},
         {title: "MTD Total", value: currencySymbol + totalRange(FirstMTs, new Date().getTime())},
-        {title: "MTD Daily Average", value: currencySymbol + rangeAvg(FirstMTs, new Date().getTime())}
+        {title: "MTD Daily Average", value: currencySymbol + rangeAvg2(FirstMTs, new Date().getTime())}
     ]
-    // const boxes = [...boxesData, ...boxesData, ...boxesData];
+    
+    // If apple does it like so why should I
+    const boxes = [...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData, ...boxesData];
 
     ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, ArcElement);
     // Bar graph
@@ -204,31 +223,119 @@ const Home = () => {
     const labels = [];
     const sums = [];
 
-    // Grouped
-    const graphGrouped = graphExpenses.reduce((result, item) => {
-        const isoDate = new Date(item.date).toISOString().split("T")[0];
-        if (!result[isoDate]) {  // If this date doesn't exist in our groups yet, create an empty list
-            result[isoDate] = [];
+    const getWeek = (date) => {  // GEMINI
+        const sunday = new Date(date.getTime());
+        sunday.setDate(sunday.getDate() - sunday.getDay());
+        const saturday = new Date(sunday.getTime());
+        saturday.setDate(saturday.getDate() + 6);
+        const pad = (num) => num.toString().padStart(2, '0');
+
+        // Check if both dates are in the same month
+        if (sunday.getMonth() === saturday.getMonth()) {
+            const sunDay = pad(sunday.getDate());
+            const satDay = pad(saturday.getDate());
+            const month = pad(saturday.getMonth() + 1);
+            
+            return `${sunDay}-${satDay}/${month}`;
+        } else {
+            // Fallback for weeks that cross months (28/12-03/01)
+            const formatFull = (d) => `${pad(d.getDate())}/${pad(d.getMonth() + 1)}`;
+            return `${formatFull(sunday)}-${formatFull(saturday)}`;
         }
-        // Add the item into the correct date group
-        result[isoDate].push(item);
+    }
+    
+    const getFullWeek = (date) => {  // GEMINI
+        const sunday = new Date(date.getTime());
+        sunday.setDate(sunday.getDate() - sunday.getDay());
+        const saturday = new Date(sunday.getTime());
+        saturday.setDate(saturday.getDate() + 6);
+        const pad = (num) => num.toString().padStart(2, '0');
+        
+        const formatFull = (d) => `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+        return `${formatFull(sunday)}-${formatFull(saturday)}`;
+    }
+
+    // GEMINI
+    // 1. Group by the TIMESTAMP of the start of the week (Sunday 00:00)
+    // This ensures accurate sorting across months and years because we use numbers, not strings.
+    const graphGrouped = graphExpenses.reduce((result, item) => {
+        const date = new Date(item.date);
+        
+        // Find Sunday of this week
+        const sunday = new Date(date.getTime());
+        sunday.setDate(sunday.getDate() - sunday.getDay());
+        sunday.setHours(0, 0, 0, 0); // Normalize time to midnight
+        
+        const weekKey = sunday.getTime(); // Use timestamp as key
+
+        if (!result[weekKey]) {
+            result[weekKey] = [];
+        }
+        result[weekKey].push(item);
         return result;
     }, {});
 
-    const sortedDatesDesc = Object.keys(graphGrouped)
-    .sort((a, b) => new Date(b) - new Date(a));
-    const filteredGraphDates = sortedDatesDesc.slice(0, showGraph);
+    // 2. Sort the keys (timestamps) numerically to find the most recent weeks
+    const sortedTimestampsDesc = Object.keys(graphGrouped)
+        .map(k => parseInt(k))    // Convert string keys back to numbers
+        .sort((a, b) => b - a);   // Sort Descending (Newest first)
 
-    const filteredGrouped = filteredGraphDates.reduce((obj, date) => {
-        obj[date] = graphGrouped[date];
-        return obj;
-    }, {})
+    // 3. Slice to get the number of weeks we want to show
+    const filteredTimestamps = sortedTimestampsDesc.slice(0, showGraph);
 
-    Object.entries(filteredGrouped).sort((a, b) => new Date(a[0]) - new Date(b[0])).map(([isoDate, items]) => {
+    // 4. Map to Labels (Sort Ascending so the graph goes Left-to-Right: Old-to-New)
+    const fullDateMap = {}; // Reset map
+    
+    // Sort Ascending for display
+    const sortedTimestampsAsc = [...filteredTimestamps].sort((a, b) => a - b);
+
+    sortedTimestampsAsc.forEach(timestamp => {
+        const items = graphGrouped[timestamp];
+        const dateObj = new Date(timestamp);
+        
+        // Use your existing getWeek function for the display label (e.g. "08-14/02")
+        const weekLabel = getWeek(dateObj);
+        
+        // Use your getFullWeek function for the tooltip
+        const fullLabel = getFullWeek(dateObj);
+        
         const sum = items.reduce((sum, item) => sum + item.convertedPrice, 0);
-        labels.push(isoDate);
+        
+        labels.push(weekLabel);
         sums.push(sum);
+        fullDateMap[weekLabel] = fullLabel;
     });
+
+    // // Grouped
+    // const graphGrouped = graphExpenses.reduce((result, item) => {
+    //     const date = new Date(item.date);
+    //     const week = getWeek(date);
+    //     if (!result[week]) {  // If this date doesn't exist in our groups yet, create an empty list
+    //         result[week] = [];
+    //     }
+    //     // Add the item into the correct date group
+    //     result[week].push(item);
+    //     return result;
+    // }, {});
+
+    // const sortedDatesDesc = Object.keys(graphGrouped)
+    // .sort((a, b) => new Date(b) - new Date(a));
+    // const filteredGraphDates = sortedDatesDesc.slice(0, showGraph);
+
+    // const filteredGrouped = filteredGraphDates.reduce((obj, date) => {
+    //     obj[date] = graphGrouped[date];
+    //     return obj;
+    // }, {})
+    // const fullDateMap = {};
+    // Object.entries(filteredGrouped).sort((a, b) => new Date(a[0]) - new Date(b[0])).map(([weekLabel, items]) => {
+    //     const sum = items.reduce((sum, item) => sum + item.convertedPrice, 0);
+    //     labels.push(weekLabel);
+    //     sums.push(sum);
+
+    //     if (items.length > 0) {
+    //         fullDateMap[weekLabel] = getFullWeek(new Date(items[0].date));
+    //     }
+    // });
 
     // Pie chart
     const getCatsSum = (groupedExpenses) => {
@@ -250,20 +357,6 @@ const Home = () => {
         return catsSum;
     }
     const pieCatSums = getCatsSum(pieExpenses);
-
-    // const groupedCats = pieExpenses.reduce((result, item) => {
-    //     const cat = item.category
-    //     if (!result[cat]) {
-    //         result[cat] = [];
-    //     }
-    //     result[cat].push(item)
-    //     return result;
-    // }, {});
-    // Object.entries(groupedCats).map(([cat, items]) => {
-    //     const sum = items.reduce((sum, item) => sum + item.convertedPrice, 0);
-    //     if (!catSums[cat]) catSums[cat] = sum
-    //     else catSums[cat] += sum
-    // });
 
     const pieData = {
         labels: Object.keys(pieCatSums),
@@ -322,13 +415,18 @@ const Home = () => {
                 position: 'top',
                 display: false
             },
-        title: { display: true, text: `Daily Expenses (${Math.min(showGraph, sortedDatesDesc.length)} nodes)` },
+        // title: { display: true, text: `Weekly Expenses (${Math.min(showGraph, sortedDatesDesc.length)} nodes)` },
+        title: { display: true, text: `Weekly Expenses (${Math.min(showGraph, sortedTimestampsDesc.length)} nodes)` },
         tooltip: {
             backgroundColor: 'rgba(118, 115, 110, 0.9)',
             bodyFont: { weight: "bold" },
             callbacks: {
+                title: function(context) {
+                    const shortLabel = context[0].label;
+                    return fullDateMap[shortLabel] || shortLabel;
+                },
                 label: function(context) {
-                    return `Daily Expense: ${currencySymbol}` + context.parsed.y.toFixed(2);
+                    return `Weekly Expense: ${currencySymbol}` + context.parsed.y.toFixed(2);
                 }}}},
         animation: {
             duration: 1200
@@ -357,7 +455,6 @@ const Home = () => {
     // Bar Month Chart
     const firstDayYearly = new Date(new Date().getFullYear(), 0, 1).getTime();
     const lastYearExpenses = getExpensesFrame(graphExpenses, firstDayYearly, new Date().getTime())
-    // console.log(lastYearExpenses);
     const monthDict = {
         '1': 'January',
         '2': 'February',
@@ -447,20 +544,28 @@ const Home = () => {
                 displayColors: false,
                 callbacks: {
                     label: function(context) {
-                        // console.log(getMonthTotal(context["label"]))
                         return `${currencySymbol}${getMonthTotal(context["label"])}`
                     }}}
 
     },};
 
+    useLayoutEffect(() => {
+        if (boxContainerRef.current) {
+            const scrollWidth = boxContainerRef.current.scrollWidth;
+            boxContainerRef.current.scrollLeft = scrollWidth / 3
+        }
+    }, [expenses.length > 0]);
+
+
     return (
         <div className="home">
         <AddButton  expenses={expenses} setExpenses={setExpenses}/>
-            <img className='home-banner' src={banner} />            { expenses.length > 0 &&
+            <img className='home-banner' src={banner} />            
+            { expenses.length > 0 &&
             <div>
                 {/* Boxes */}
                 <div className="box-container" ref={boxContainerRef}>
-                    {boxesData.map(({ title, value }, index) => (
+                    {boxes.map(({ title, value }, index) => (
                         <div className="box" key={index}>
                             <span className='title'>{title}</span>
                             <span className='number'>{value}</span>
