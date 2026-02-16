@@ -209,7 +209,7 @@ const Home = () => {
 
     const boxesData = [
         {title: 'Total', value: currencySymbol + getTotal(filteredExpenses).toFixed(2)},
-        {title: "Daily Average", value: currencySymbol + totalRange(getFirstExpDate(filteredExpenses), new Date().getTime())},
+        {title: "Daily Average", value: currencySymbol + dayAvg(filteredExpenses)},
         {title: "MTD Total", value: currencySymbol + totalRange(FirstMTs, new Date().getTime())},
         {title: "MTD Daily Average", value: currencySymbol + rangeAvg2(FirstMTs, new Date().getTime())}
     ]
